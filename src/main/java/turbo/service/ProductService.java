@@ -14,15 +14,15 @@ import turbo.POJO.Product;
  */
 public interface ProductService {
 
-    void createContact(Product contact);
+    void createProduct(Product product);
 
-    List<Product> getContacts();
+    List<Product> getProducts();
 
-    List<Product> getContactsByEmail(String email);
+    List<Product> getProductByCode(String code);
 
-    Product getContact(Long id);
+    Product getProduct(Long id);
 
-    void updateContact(Product contact);
+    void updateProduct(Product product);
 
-    void deleteContact(Long id);
+    void deleteProduct(Long id);
 }

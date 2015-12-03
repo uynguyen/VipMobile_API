@@ -6,12 +6,16 @@
 package turbo.controller;
 
 import java.util.ArrayList;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import turbo.POJO.Product;
+import turbo.common.ApplicationContextProvider;
+import turbo.service.ProductService;
 
 /**
  *
@@ -20,25 +24,27 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(value = "/book")
 public class ProductController {
+    @Autowired
+    private ProductService productService;
+    
+    private static ArrayList<Product> books = new ArrayList<Product>();
 
-    private static ArrayList<String> books = new ArrayList<String>();
-
-    static {
-
-        books.add("Java 1");
-        books.add("Java 2");
-        books.add("Java 3");
-
-    }
-
+   
     @RequestMapping(value = {"/list"},
             method = {RequestMethod.GET},
             produces = {"application/json", "application/xml"})
     @ResponseBody
-    public ResponseEntity<String>
+    public ResponseEntity<Product>
             getBooks() {
 
-        ResponseEntity<String> entity = new ResponseEntity(books, HttpStatus.OK);
+        try {
+            
+            books = (ArrayList<Product>) productService.getProducts();
+
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
+        ResponseEntity<Product> entity = new ResponseEntity(books, HttpStatus.OK);
         return entity;
     }
 }

@@ -6,45 +6,49 @@
 package turbo.service;
 
 import java.util.List;
+import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import turbo.POJO.Product;
 
 /**
  *
  * @author LeeSan
  */
+@Service ("productService")
+@Transactional
 public class ProductServiceImpl implements ProductService {
 
     @Autowired
     private ProductDAO productDAO;
 
     @Override
-    public void createContact(Product contact) {
+    public void createProduct(Product contact) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public List<Product> getContacts() {
+    public List<Product> getProducts() {
         return productDAO.getAll();
     }
 
     @Override
-    public List<Product> getContactsByEmail(String email) {
+    public List<Product> getProductByCode(String code) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public Product getContact(Long id) {
+    public Product getProduct(Long id) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void updateContact(Product contact) {
+    public void updateProduct(Product contact) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void deleteContact(Long id) {
+    public void deleteProduct(Long id) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

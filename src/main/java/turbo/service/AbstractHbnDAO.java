@@ -26,6 +26,7 @@ public abstract class AbstractHbnDAO<T extends Object> implements DAO<T> {
     private Class<T> domainClass;
 
     protected Session getSession() {
+        
         return sessionFactory.getCurrentSession();
     }
 
@@ -65,8 +66,16 @@ public abstract class AbstractHbnDAO<T extends Object> implements DAO<T> {
     }
 
     public List<T> getAll() {
-        return getSession().createQuery("from "
+        List<T> result = null;
+        Session ss = getSession();
+        ss.beginTransaction();
+        
+        result = ss.createQuery("from "
                 + getDomainClassName()).list();
+        
+        ss.close();
+        return result;
+        
     }
 
     public void update(T t) {

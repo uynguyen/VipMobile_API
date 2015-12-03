@@ -1,1 +1,3 @@
+turbo\service\DAO.class
 turbo\common\ApplicationContextProvider.class
+turbo\service\AbstractHbnDAO.class
