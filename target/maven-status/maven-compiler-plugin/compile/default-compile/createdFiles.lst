@@ -10,7 +10,6 @@ turbo\service\ProductDAO.class
 turbo\service\ProductService.class
 turbo\POJO\ColorCategory.class
 turbo\POJO\Product.class
-turbo\common\ApplicationContextProvider.class
 turbo\POJO\UserRole.class
 turbo\POJO\User.class
 turbo\POJO\UserBill.class

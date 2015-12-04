@@ -26,7 +26,7 @@
 > 
      
     <!--SPRING HIBERNATE-->
-    <bean id="applicationContextProvder" class="turbo.common.ApplicationContextProvider"/>
+    
     <bean id="dataSource"
           class="org.apache.commons.dbcp.BasicDataSource"
           destroy-method="close">
