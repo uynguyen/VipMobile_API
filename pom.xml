@@ -245,14 +245,14 @@
         <profile>
         <id>openshift</id>
         <build>
-            <finalName>springmvc3</finalName>
+            <finalName>TurboMobileShop</finalName>
             <plugins>
                 <plugin>
                     <artifactId>maven-war-plugin</artifactId>
                     <version>2.1.1</version>
                     <configuration>
                         <outputDirectory>webapps</outputDirectory>
-                        <warName>TurboMobileShop</warName>
+                        <warName>ROOT</warName>
                     </configuration>
                 </plugin>
             </plugins>
