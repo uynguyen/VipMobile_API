@@ -24,6 +24,7 @@ public class HbnProductDAO extends AbstractHbnDAO<Product> implements ProductDAO
         List<Product> result = ss.getNamedQuery("findContactsByEmail")
                 .setString("email", "%" + email + "%")
                 .list();
+      
         ss.close();
         return result;
                 
