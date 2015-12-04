@@ -27,24 +27,25 @@ public class ProductController {
     @Autowired
     private ProductService productService;
     
-    private static ArrayList<Product> books = new ArrayList<Product>();
+    private static ArrayList<String> books = new ArrayList<String>();
 
    
     @RequestMapping(value = {"/list"},
             method = {RequestMethod.GET},
             produces = {"application/json", "application/xml"})
     @ResponseBody
-    public ResponseEntity<Product>
+    public ResponseEntity<String>
             getBooks() {
 
         try {
             
-            books = (ArrayList<Product>) productService.getProducts();
+            //books = (ArrayList<Product>) productService.getProducts();
 
         } catch (Exception e) {
             System.err.println(e.getMessage());
         }
-        ResponseEntity<Product> entity = new ResponseEntity(books, HttpStatus.OK);
+        books.add("Uy Nguyen");
+        ResponseEntity<String> entity = new ResponseEntity(books, HttpStatus.OK);
         return entity;
     }
 }
