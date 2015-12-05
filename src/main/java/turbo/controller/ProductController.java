@@ -24,12 +24,12 @@ import turbo.service.ProductService;
 @RestController
 @RequestMapping(value = "/book")
 public class ProductController {
+
     @Autowired
     private ProductService productService;
-    
+
     private static ArrayList<String> books = new ArrayList<String>();
 
-   
     @RequestMapping(value = {"/list"},
             method = {RequestMethod.GET},
             produces = {"application/json", "application/xml"})
@@ -38,13 +38,13 @@ public class ProductController {
             getBooks() {
 
         try {
-            
-            //books = (ArrayList<Product>) productService.getProducts();
 
+            //books = (ArrayList<Product>) productService.getProducts();
         } catch (Exception e) {
             System.err.println(e.getMessage());
         }
         books.add("Uy Nguyen");
+        books.add("Uy Nguyen 2");
         ResponseEntity<String> entity = new ResponseEntity(books, HttpStatus.OK);
         return entity;
     }
