@@ -20,7 +20,7 @@ public interface ProductService {
 
     List<Product> getProductByCode(String code);
 
-    Product getProduct(Long id);
+    Product getProduct(Integer id);
 
     void updateProduct(Product product);
 

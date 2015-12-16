@@ -58,7 +58,11 @@ public abstract class AbstractHbnDAO<T extends Object> implements DAO<T> {
     }
 
     public T get(Serializable id) {
-        return (T) getSession().get(getDomainClass(), id);
+        Session ss = getSession();
+        ss.beginTransaction();
+        T result = (T) ss.get(getDomainClass(), id);
+        ss.close();
+        return result;
     }
 
     public T load(Serializable id) {

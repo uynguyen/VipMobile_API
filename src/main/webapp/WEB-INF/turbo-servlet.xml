@@ -58,8 +58,22 @@
           class="org.springframework.orm.hibernate3.HibernateTransactionManager"
           p:sessionFactory-ref="hibernate3AnnotatedSessionFactory" />    
     
-      
-    
+    <!--RESTFUL-->
+    <bean id="jacksonMessageConverter"
+            class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"/>
+
+    <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+        <property name="messageConverters">
+            <list>
+                <ref bean="jacksonMessageConverter"/>
+            </list>
+        </property>
+    </bean>
+    <!--   <bean id="jsonConverter" class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+        <property name="prefixJson" value="false"/>
+        <property name="supportedMediaTypes" value="application/json"/>
+    </bean>-->
+    <!--END RESTFUL-->
     
     <mvc:annotation-driven  />
     <context:component-scan
