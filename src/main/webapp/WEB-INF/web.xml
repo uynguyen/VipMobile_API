@@ -3,7 +3,7 @@
     <context-param>
         <param-name>contextConfigLocation</param-name>
         <param-value>
-            /WEB-INF/turbo-servlet-security.xml
+            <!--/WEB-INF/turbo-servlet-security.xml-->
             /WEB-INF/turbo-servlet.xml
         </param-value>
     </context-param>
@@ -32,7 +32,7 @@
     </filter-mapping>
     
     <!--SPRING SECURITY-->
-    
+<!--    
     <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
@@ -48,7 +48,7 @@
     <filter-mapping>
         <filter-name>springSecurityFilterChain</filter-name>
         <url-pattern>/*</url-pattern>
-    </filter-mapping>
+    </filter-mapping>-->
     
     <!--SPRING MVC-->
     <servlet>
