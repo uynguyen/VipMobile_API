@@ -18,7 +18,10 @@ public interface UserService {
 
     User getUserByUsername(String username, String password);
 
+    String registerUser(User user);
 
+    boolean isExistUsername(String username);
+    boolean isExistEmail(String email);
     void updateUser(User product);
 
     void deleteUser(Long id);

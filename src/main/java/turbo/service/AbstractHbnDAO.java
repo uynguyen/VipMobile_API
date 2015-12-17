@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.List;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ReflectionUtils;
 
@@ -26,7 +27,7 @@ public abstract class AbstractHbnDAO<T extends Object> implements DAO<T> {
     private Class<T> domainClass;
 
     protected Session getSession() {
-        
+
         return sessionFactory.getCurrentSession();
     }
 
@@ -43,17 +44,25 @@ public abstract class AbstractHbnDAO<T extends Object> implements DAO<T> {
         return getDomainClass().getName();
     }
 
-    public void create(T t) {
-        Method method = ReflectionUtils.findMethod(
-                getDomainClass(), "setDateCreated",
-                new Class[]{Date.class});
-        if (method != null) {
-            try {
-                method.invoke(t, new Date());
-            } catch (Exception e) { /* Ignore */
+    public boolean create(T t) {
 
-            }
-            getSession().save(t);
+        boolean result = true;
+        Session ss = getSession();
+        Transaction transaction = null;
+        try {
+
+            transaction = ss.beginTransaction();
+
+            ss.save(t);
+            transaction.commit();
+
+        } catch (Exception e) {
+
+            transaction.rollback();
+
+            result = false;
+        } finally {
+            return result;
         }
     }
 
@@ -73,13 +82,13 @@ public abstract class AbstractHbnDAO<T extends Object> implements DAO<T> {
         List<T> result = null;
         Session ss = getSession();
         ss.beginTransaction();
-        
+
         result = ss.createQuery("from "
                 + getDomainClassName()).list();
-        
+
         ss.close();
         return result;
-        
+
     }
 
     public void update(T t) {

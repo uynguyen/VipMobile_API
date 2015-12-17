@@ -6,34 +6,36 @@
 package turbo.POJO;
 
 import java.io.Serializable;
-import java.util.Collection;
+import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
-import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**
  *
  * @author LeeSan
  */
 @Entity
-@Table(name = "color_category", catalog = "turbo_mobileshop", schema = "public")
+@Table(name = "register_token", catalog = "turbo_mobileshop", schema = "public")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "ColorCategory.findAll", query = "SELECT c FROM ColorCategory c"),
-    @NamedQuery(name = "ColorCategory.findById", query = "SELECT c FROM ColorCategory c WHERE c.id = :id"),
-    @NamedQuery(name = "ColorCategory.findByValue", query = "SELECT c FROM ColorCategory c WHERE c.value = :value")})
-public class ColorCategory implements Serializable {
+    @NamedQuery(name = "RegisterToken.findAll", query = "SELECT r FROM RegisterToken r"),
+    @NamedQuery(name = "RegisterToken.findById", query = "SELECT r FROM RegisterToken r WHERE r.id = :id"),
+    @NamedQuery(name = "RegisterToken.findByAccessToken", query = "SELECT r FROM RegisterToken r WHERE r.accessToken = :accessToken"),
+    @NamedQuery(name = "RegisterToken.findByExpise", query = "SELECT r FROM RegisterToken r WHERE r.expise = :expise")})
+public class RegisterToken implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,15 +43,18 @@ public class ColorCategory implements Serializable {
     @Column(nullable = false)
     private Integer id;
     @Size(max = 2147483647)
-    @Column(length = 2147483647)
-    private String value;
-    @OneToMany(mappedBy = "idColor")
-    private Collection<ProductColorDetail> productColorDetailCollection;
+    @Column(name = "access_token", length = 2147483647)
+    private String accessToken;
+    @Temporal(TemporalType.DATE)
+    private Date expise;
+    @JoinColumn(name = "id_user", referencedColumnName = "id")
+    @ManyToOne
+    private User idUser;
 
-    public ColorCategory() {
+    public RegisterToken() {
     }
 
-    public ColorCategory(Integer id) {
+    public RegisterToken(Integer id) {
         this.id = id;
     }
 
@@ -61,22 +66,28 @@ public class ColorCategory implements Serializable {
         this.id = id;
     }
 
-    public String getValue() {
-        return value;
+    public String getAccessToken() {
+        return accessToken;
     }
 
-    public void setValue(String value) {
-        this.value = value;
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
     }
 
-    @XmlTransient
-    @JsonIgnore
-    public Collection<ProductColorDetail> getProductColorDetailCollection() {
-        return productColorDetailCollection;
+    public Date getExpise() {
+        return expise;
     }
 
-    public void setProductColorDetailCollection(Collection<ProductColorDetail> productColorDetailCollection) {
-        this.productColorDetailCollection = productColorDetailCollection;
+    public void setExpise(Date expise) {
+        this.expise = expise;
+    }
+
+    public User getIdUser() {
+        return idUser;
+    }
+
+    public void setIdUser(User idUser) {
+        this.idUser = idUser;
     }
 
     @Override
@@ -89,10 +100,10 @@ public class ColorCategory implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof ColorCategory)) {
+        if (!(object instanceof RegisterToken)) {
             return false;
         }
-        ColorCategory other = (ColorCategory) object;
+        RegisterToken other = (RegisterToken) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -101,7 +112,7 @@ public class ColorCategory implements Serializable {
 
     @Override
     public String toString() {
-        return "turbo.POJO.ColorCategory[ id=" + id + " ]";
+        return "turbo.POJO.RegisterToken[ id=" + id + " ]";
     }
     
 }

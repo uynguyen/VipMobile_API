@@ -25,6 +25,7 @@
             http://www.springframework.org/schema/mvc/spring-mvc.xsd"
 > 
      
+       
     <!--SPRING HIBERNATE-->
     
     <bean id="dataSource"
@@ -60,7 +61,7 @@
     
     <!--RESTFUL-->
     <bean id="jacksonMessageConverter"
-            class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"/>
+          class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"/>
 
     <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
         <property name="messageConverters">

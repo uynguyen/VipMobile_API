@@ -14,4 +14,5 @@ import turbo.POJO.User;
  */
 public interface UserDAO extends DAO<User> {
     User getUserByUsername(String username);
+    User getUserByEmail(String email);
 }

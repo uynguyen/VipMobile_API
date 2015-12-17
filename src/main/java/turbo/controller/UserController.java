@@ -5,7 +5,9 @@
  */
 package turbo.controller;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Properties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -18,8 +20,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import turbo.POJO.Product;
-import turbo.POJO.TEST;
 import turbo.POJO.User;
+import turbo.bussiness.EmailHandlerBus;
 import turbo.service.ProductService;
 import turbo.service.UserService;
 
@@ -27,22 +29,20 @@ import turbo.service.UserService;
  *
  * @author LeeSan
  */
-
 @RestController
 @RequestMapping(value = "/user")
 public class UserController {
+
     @Autowired
     private UserService userService;
 
-           
     @RequestMapping(value = {"/login"},
-            method = {RequestMethod.POST}
-            ,
+            method = {RequestMethod.POST},
             consumes = {MediaType.ALL_VALUE}
     )
     @ResponseBody
     public ResponseEntity<User>
-            getProduct(@RequestBody User user) {
+            userLogin(@RequestBody User user) {
         User result = null;
         String username = "";
         String password = "";
@@ -54,5 +54,27 @@ public class UserController {
         }
         ResponseEntity<User> entity = new ResponseEntity(result, HttpStatus.OK);
         return entity;
+    }
+
+    @RequestMapping(value = {"/register"},
+            method = {RequestMethod.POST},
+            consumes = {MediaType.ALL_VALUE}
+    )
+    @ResponseBody
+    public ResponseEntity<Void>
+            registerUser(@RequestBody User user) throws IOException {
+        EmailHandlerBus test = new EmailHandlerBus();
+       // test.sendEmail();
+//        String result = "";
+//        try {
+//
+//            result = userService.registerUser(user);
+//        } catch (Exception e) {
+//            System.err.println(e.getMessage());
+//        }
+//        if (result.contains("CreateSuccess")) {
+//            return new ResponseEntity<Void>(HttpStatus.CREATED);
+//        }
+        return new ResponseEntity(HttpStatus.CONFLICT);
     }
 }
