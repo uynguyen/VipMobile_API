@@ -61,9 +61,10 @@ public class UserController {
             consumes = {MediaType.ALL_VALUE}
     )
     @ResponseBody
-    public ResponseEntity<Void>
+    public ResponseEntity<String>
             registerUser(@RequestBody User user) throws IOException {
         EmailHandlerBus test = new EmailHandlerBus();
+        String s = test.readContentFromFile("123");
        // test.sendEmail();
 //        String result = "";
 //        try {
@@ -75,6 +76,6 @@ public class UserController {
 //        if (result.contains("CreateSuccess")) {
 //            return new ResponseEntity<Void>(HttpStatus.CREATED);
 //        }
-        return new ResponseEntity(HttpStatus.CONFLICT);
+        return new ResponseEntity<String>( s, HttpStatus.CONFLICT);
     }
 }

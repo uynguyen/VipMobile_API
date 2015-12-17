@@ -5,7 +5,12 @@
  */
 package turbo.bussiness;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Date;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -43,6 +48,29 @@ public class EmailHandlerBus implements Runnable {
         t = new Thread(this);
         t.start();
     }
+    //Method to read HTML file as a String 
+    public String readContentFromFile(String fileName) {
+        StringBuffer contents = new StringBuffer();
+
+        try {
+            //use buffering, reading one line at a time
+            InputStream ip = getClass().getClassLoader().getResourceAsStream("/META-INF/RegisterContent.html");
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(ip,"UTF-8"));
+            try {
+                String line = null;
+                while ((line = reader.readLine()) != null) {
+                    contents.append(line);
+                    contents.append(System.getProperty("line.separator"));
+                }
+            } finally {
+                reader.close();
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        return contents.toString();
+    }
 
     public boolean sendEmail() {
         try {
@@ -71,28 +99,7 @@ public class EmailHandlerBus implements Runnable {
             msg.setRecipients(Message.RecipientType.TO, toAddresses);
             msg.setSubject(props.getProperty("email.subject"));
             msg.setSentDate(new Date());
-
-            String htmlContent = "<h3>Quý khách vừa thực hiện đặt hàng với TURBO MOBILE </h3>\n"
-                    + "<h3>Dưới đây là chi tiết hóa đơn: </h3>\n"
-                    + "<table width='891' border='1' align='center'>\n"
-                    + "  <tr align='center'>\n"
-                    + "    <th width='43' scope='row'><strong>STT</strong></th>\n"
-                    + "    <td width='112'><strong>Mã sản phẩm</strong></td>\n"
-                    + "    <td width='121'><strong>Tên sản phẩm</strong></td>\n"
-                    + "    <td width='89'><strong>Kích thước màn hình</strong></td>\n"
-                    + "    <td width='70'><strong>Màu</strong></td>\n"
-                    + "    <td width='181'><strong>Số lượng</strong></td>\n"
-                    + "    <td width='102'><strong>Đơn giá</strong></td>\n"
-                    + "    <td width='141'>Thành tiền</td>\n"
-                    + "  </tr>\n"
-                    + "  <tr>\n";
-
-            htmlContent += "  <tr>\n"
-                    + "    <th height='39' colspan='7' scope='row'>Tổng cộng</th>\n"
-                    + "    <td>VND</td>\n"
-                    + "  </tr>\n"
-                    + "</table>"
-                    + "<h3>Cảm ơn quý khách đã sử dụng dịch vụ của chúng tôi !!!</h3>\n";
+            String htmlContent = readContentFromFile("13");
             msg.setContent(htmlContent,
                     "text/html; charset=UTF-8");
 
