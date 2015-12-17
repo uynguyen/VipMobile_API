@@ -17,8 +17,7 @@ public interface UserService {
     void addNewUSer(User product);
 
     User getUserByUsername(String username, String password);
-    
-    
+
 
     void updateUser(User product);
 

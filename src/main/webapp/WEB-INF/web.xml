@@ -32,8 +32,8 @@
     </filter-mapping>
     
     <!--SPRING SECURITY-->
-<!--    
-    <listener>
+    
+<!--    <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
 
@@ -48,8 +48,8 @@
     <filter-mapping>
         <filter-name>springSecurityFilterChain</filter-name>
         <url-pattern>/*</url-pattern>
-    </filter-mapping>-->
-    
+    </filter-mapping>
+    -->
     <!--SPRING MVC-->
     <servlet>
         <servlet-name>turbo</servlet-name>

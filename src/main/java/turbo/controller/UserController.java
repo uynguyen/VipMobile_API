@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import turbo.POJO.Product;
+import turbo.POJO.TEST;
 import turbo.POJO.User;
 import turbo.service.ProductService;
 import turbo.service.UserService;
@@ -43,10 +44,11 @@ public class UserController {
     public ResponseEntity<User>
             getProduct(@RequestBody User user) {
         User result = null;
-    
+        String username = "";
+        String password = "";
         try {
 
-            result = (User) userService.getUserByUsername(user.getUsername(), user.getPassword());
+            result = (User) userService.getUserByUsername(username, password);
         } catch (Exception e) {
             System.err.println(e.getMessage());
         }

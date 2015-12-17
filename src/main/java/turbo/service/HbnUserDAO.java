@@ -18,14 +18,13 @@ import turbo.POJO.User;
 @Repository
 public class HbnUserDAO extends AbstractHbnDAO<User> implements UserDAO{
     @Override
-    public User getUserByUsername(String username, String password) {
+    public User getUserByUsername(String username) {
         Session ss = getSession();
         ss.beginTransaction();
         List<User> result = ss.getNamedQuery("findByUsername")
                 .setString("username", "%" + username + "%")
-                .setString("password","%"+ password + "%")
                 .list();
-        
+      
         ss.close();
         return result.get(0);
                 

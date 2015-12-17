@@ -28,7 +28,7 @@ public class UserServiceImpl implements UserService{
     public User getUserByUsername(String username, String password) {
         User result = null;
         
-        userDAO.getUserByUsername(username, password);
+        userDAO.getUserByUsername(username);
         
         return result;
     }
