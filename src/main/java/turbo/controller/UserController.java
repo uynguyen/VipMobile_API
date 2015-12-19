@@ -63,33 +63,42 @@ public class UserController {
     )
     @ResponseBody
     public ResponseEntity<String>
-            registerUser(@RequestBody User user) throws IOException {
-        EmailHandler test = new RegisterEmailHandler();
-       
-       
-       
-        test.sendEmail("uynguyen.itus@gmail.com");
-        
+            registerUser(@RequestBody User user) {
+
         String result = "";
-//        try {
-//
-//            result = userService.registerUser(user);
-//        } catch (Exception e) {
-//            System.err.println(e.getMessage());
-//        }
-      
-//        String result = "";
-//        try {
-//
-//            result = userService.registerUser(user);
-//        } catch (Exception e) {
-//            System.err.println(e.getMessage());
-//        }
-//
-        if (result.contains("CreateSuccess")) {
-            return new ResponseEntity<String>(result,HttpStatus.CREATED);
+        try {
+
+            result = userService.registerUser(user);
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
         }
-            
+
+        if (result.contains("CreateSuccess")) {
+            return new ResponseEntity<String>(result, HttpStatus.CREATED);
+        }
+
         return new ResponseEntity<String>(result, HttpStatus.CONFLICT);
+    }
+
+    @RequestMapping(value = {"/activate/{RegisterToken}"},
+            method = {RequestMethod.GET},
+            produces = {"application/json", "application/xml"})
+
+    @ResponseBody
+    public ResponseEntity<String>
+            activateUser(@PathVariable("RegisterToken") Integer registerToken) {
+
+        String result = "";
+        try {
+
+            userService.activateUser(registerToken);
+
+            return new ResponseEntity<String>(result, HttpStatus.OK);
+
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            return new ResponseEntity<String>(result, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
     }
 }

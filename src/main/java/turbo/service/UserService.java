@@ -25,4 +25,6 @@ public interface UserService {
     void updateUser(User product);
 
     void deleteUser(Long id);
+
+    public boolean activateUser(Integer registerToken);
 }

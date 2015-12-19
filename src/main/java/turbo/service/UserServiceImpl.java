@@ -17,7 +17,7 @@ import turbo.bussiness.EmailHandler;
 import turbo.bussiness.GenerateTokenBus;
 import turbo.bussiness.RegisterEmailHandler;
 import turbo.model.AccessTokenModel;
-
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 /**
  *
  * @author LeeSan
@@ -64,6 +64,7 @@ public class UserServiceImpl implements UserService {
             return "EmailExisted";
         }
         user.setIsActive(false);
+        user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
         User result = (User) userDAO.create(user);
         if (result != null) {
             AccessTokenModel accToken = GenerateTokenBus.generateToken(result.getUsername());
@@ -101,6 +102,10 @@ public class UserServiceImpl implements UserService {
         }
 
         return false;
+    }
+
+    public boolean activateUser(Integer registerToken) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }
