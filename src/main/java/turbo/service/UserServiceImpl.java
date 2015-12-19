@@ -38,6 +38,9 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private RegisterTokenDAO registerTokenDAO;
 
+    @Autowired
+    private AccessTokenDAO accessTokenDAO;
+
     public void addNewUSer(User product) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
@@ -63,9 +66,13 @@ public class UserServiceImpl implements UserService {
         accessToken.setAccessToken(testtoken.getToken());
         accessToken.setExpire(testtoken.getExpireDate());
         accessToken.setUserId(user);
-
-        token = testtoken;
-        return "Success";
+        accessToken.setScope("None");
+        accessToken = accessTokenDAO.create(accessToken);
+        if (accessToken != null) {
+            token = testtoken;
+            return "Success";
+        }
+        return "Fail";
     }
 
     public User getProduct(Integer id) {

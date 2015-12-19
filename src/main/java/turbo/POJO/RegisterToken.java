@@ -5,6 +5,7 @@
  */
 package turbo.POJO;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Basic;
@@ -36,6 +37,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "RegisterToken.findByAccessToken", query = "SELECT r FROM RegisterToken r WHERE r.accessToken = :accessToken"),
     @NamedQuery(name = "RegisterToken.findByExpise", query = "SELECT r FROM RegisterToken r WHERE r.expise = :expise")})
 public class RegisterToken implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -49,6 +51,8 @@ public class RegisterToken implements Serializable {
     private Date expise;
     @JoinColumn(name = "id_user", referencedColumnName = "id")
     @ManyToOne
+    @JsonBackReference
+    @com.fasterxml.jackson.annotation.JsonIgnore
     private User idUser;
 
     public RegisterToken() {
@@ -114,5 +118,5 @@ public class RegisterToken implements Serializable {
     public String toString() {
         return "turbo.POJO.RegisterToken[ id=" + id + " ]";
     }
-    
+
 }

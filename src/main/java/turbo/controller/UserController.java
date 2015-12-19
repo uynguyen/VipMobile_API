@@ -150,4 +150,15 @@ public class UserController {
             return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @RequestMapping(value = {"/requireToken"},
+            method = {RequestMethod.GET},
+            produces = {MediaType.ALL_VALUE})
+    @ResponseBody
+    public ResponseEntity<String>
+            requireToken() {
+
+        return new ResponseEntity<String>("Unauthorized", HttpStatus.BAD_REQUEST);
+
+    }
 }

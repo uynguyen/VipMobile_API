@@ -70,10 +70,7 @@
             </list>
         </property>
     </bean>
-    <!--   <bean id="jsonConverter" class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
-        <property name="prefixJson" value="false"/>
-        <property name="supportedMediaTypes" value="application/json"/>
-    </bean>-->
+
     <!--END RESTFUL-->
     
     <mvc:annotation-driven  />
@@ -84,4 +81,14 @@
     <tx:annotation-driven  />
     <context:component-scan base-package="turbo.service" />
 
+    <!--INTERCEPTOR-->
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/product/*" />
+          
+            <bean class="turbo.interceptor.AuthenticationInterceptor"/>
+        </mvc:interceptor>
+    </mvc:interceptors>
+    <context:component-scan
+        base-package="turbo.interceptor" />
 </beans>

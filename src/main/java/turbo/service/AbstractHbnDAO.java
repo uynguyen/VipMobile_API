@@ -60,7 +60,7 @@ public abstract class AbstractHbnDAO<T extends Object> implements DAO<T> {
         } catch (Exception e) {
 
             transaction.rollback();
-            ss.close();
+          
             return null;
         }
     }
@@ -102,7 +102,7 @@ public abstract class AbstractHbnDAO<T extends Object> implements DAO<T> {
             e.printStackTrace();
             
             transaction.rollback();
-            ss.close();
+          
         } 
 
     }
