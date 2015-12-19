@@ -5,13 +5,11 @@
  */
 package turbo.POJO;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import java.io.Serializable;
 import java.util.Collection;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -40,7 +38,6 @@ import org.codehaus.jackson.annotate.JsonIgnore;
     @NamedQuery(name = "Product.findByAmount", query = "SELECT p FROM Product p WHERE p.amount = :amount"),
     @NamedQuery(name = "Product.findByName", query = "SELECT p FROM Product p WHERE p.name = :name")})
 public class Product implements Serializable {
-
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -60,17 +57,11 @@ public class Product implements Serializable {
     @Size(max = 2147483647)
     @Column(length = 2147483647)
     private String name;
-    @OneToMany(mappedBy = "idProduct", fetch = FetchType.LAZY)
-    @JsonBackReference
-    @com.fasterxml.jackson.annotation.JsonIgnore
+    @OneToMany(mappedBy = "idProduct")
     private Collection<ProductDetail> productDetailCollection;
-    @OneToMany(mappedBy = "idProduct", fetch = FetchType.LAZY)
-    @JsonBackReference
-    @com.fasterxml.jackson.annotation.JsonIgnore
+    @OneToMany(mappedBy = "idProduct")
     private Collection<BillDetail> billDetailCollection;
-    @OneToMany(mappedBy = "idProduct", fetch = FetchType.LAZY)
-    @JsonBackReference
-    @com.fasterxml.jackson.annotation.JsonIgnore
+    @OneToMany(mappedBy = "idProduct")
     private Collection<ProductColorDetail> productColorDetailCollection;
 
     public Product() {
@@ -182,5 +173,5 @@ public class Product implements Serializable {
     public String toString() {
         return "turbo.POJO.Product[ id=" + id + " ]";
     }
-
+    
 }

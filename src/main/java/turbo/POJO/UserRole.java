@@ -5,13 +5,11 @@
  */
 package turbo.POJO;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import java.io.Serializable;
 import java.util.Collection;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -49,9 +47,7 @@ public class UserRole implements Serializable {
     @Size(max = 2147483647)
     @Column(length = 2147483647)
     private String description;
-    @OneToMany(mappedBy = "idRole", fetch = FetchType.LAZY)
-        @JsonBackReference
-    @com.fasterxml.jackson.annotation.JsonIgnore
+    @OneToMany(mappedBy = "idRole")
     private Collection<User> userCollection;
 
     public UserRole() {

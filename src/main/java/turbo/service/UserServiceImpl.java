@@ -22,6 +22,7 @@ import turbo.bussiness.RegisterEmailHandler;
 import turbo.model.AccessTokenModel;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import turbo.POJO.AccessToken;
+import turbo.bussiness.ResetPassEmailHandler;
 
 /**
  *
@@ -62,8 +63,7 @@ public class UserServiceImpl implements UserService {
         accessToken.setAccessToken(testtoken.getToken());
         accessToken.setExpire(testtoken.getExpireDate());
         accessToken.setUserId(user);
-        
-        
+
         token = testtoken;
         return "Success";
     }
@@ -81,7 +81,6 @@ public class UserServiceImpl implements UserService {
     }
 
     //TODO: Set user role
-
     public String registerUser(User user) {
         if (isExistUsername(user.getUsername())) {
             return "UserNameExisted";
@@ -102,7 +101,7 @@ public class UserServiceImpl implements UserService {
             if (registerTokenDAO.create(registerToken) != null) {
                 EmailHandler sendEmailHandler = new RegisterEmailHandler();
 
-                sendEmailHandler.sendEmail("uynguyen.itus@gmail.com");
+                sendEmailHandler.sendEmail(user.getEmail());
                 return "CreateSuccess";
             }
 
@@ -133,18 +132,29 @@ public class UserServiceImpl implements UserService {
     public String activateUser(String registerToken) {
 
         RegisterToken token = registerTokenDAO.getRegisterToken(registerToken);
+        if (token == null) {
+            return "Not exist";
+        }
+
         Timestamp currentTime = new Timestamp(new Date().getTime());
         if (token.getExpise().compareTo(currentTime) < 0) { //Expire
             return "Expire";
         }
         User user = token.getIdUser();
         if (user.getIsActive()) {
-            return "WasActivated";
+            return "Was activated";
         }
         user.setIsActive(true);
         userDAO.update(user);
         return "Activated";
 
+    }
+
+    public String sendResetRequestEmail(String email) {
+        EmailHandler sendEmailHandler = new ResetPassEmailHandler();
+
+        boolean result = sendEmailHandler.sendEmail(email);
+        return "Sent";
     }
 
 }

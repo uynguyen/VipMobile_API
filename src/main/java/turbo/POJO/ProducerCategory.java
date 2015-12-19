@@ -5,13 +5,11 @@
  */
 package turbo.POJO;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import java.io.Serializable;
 import java.util.Collection;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -37,7 +35,6 @@ import org.codehaus.jackson.annotate.JsonIgnore;
     @NamedQuery(name = "ProducerCategory.findById", query = "SELECT p FROM ProducerCategory p WHERE p.id = :id"),
     @NamedQuery(name = "ProducerCategory.findByValue", query = "SELECT p FROM ProducerCategory p WHERE p.value = :value")})
 public class ProducerCategory implements Serializable {
-
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -49,9 +46,7 @@ public class ProducerCategory implements Serializable {
     @Size(min = 1, max = 2147483647)
     @Column(nullable = false, length = 2147483647)
     private String value;
-    @OneToMany(mappedBy = "idProducer", fetch = FetchType.LAZY)
-    @JsonBackReference
-    @com.fasterxml.jackson.annotation.JsonIgnore
+    @OneToMany(mappedBy = "idProducer")
     private Collection<ProductDetail> productDetailCollection;
 
     public ProducerCategory() {
@@ -116,5 +111,5 @@ public class ProducerCategory implements Serializable {
     public String toString() {
         return "turbo.POJO.ProducerCategory[ id=" + id + " ]";
     }
-
+    
 }

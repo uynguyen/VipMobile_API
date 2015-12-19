@@ -31,4 +31,6 @@ public interface UserService {
     void deleteUser(Long id);
 
     public String activateUser(String registerToken);
+
+    public String sendResetRequestEmail(String Email);
 }

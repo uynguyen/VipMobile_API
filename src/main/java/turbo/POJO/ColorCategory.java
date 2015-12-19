@@ -5,13 +5,11 @@
  */
 package turbo.POJO;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import java.io.Serializable;
 import java.util.Collection;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -36,7 +34,6 @@ import org.codehaus.jackson.annotate.JsonIgnore;
     @NamedQuery(name = "ColorCategory.findById", query = "SELECT c FROM ColorCategory c WHERE c.id = :id"),
     @NamedQuery(name = "ColorCategory.findByValue", query = "SELECT c FROM ColorCategory c WHERE c.value = :value")})
 public class ColorCategory implements Serializable {
-
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -46,9 +43,7 @@ public class ColorCategory implements Serializable {
     @Size(max = 2147483647)
     @Column(length = 2147483647)
     private String value;
-    @OneToMany(mappedBy = "idColor", fetch = FetchType.LAZY)
-    @JsonBackReference
-    @com.fasterxml.jackson.annotation.JsonIgnore
+    @OneToMany(mappedBy = "idColor")
     private Collection<ProductColorDetail> productColorDetailCollection;
 
     public ColorCategory() {
@@ -108,5 +103,5 @@ public class ColorCategory implements Serializable {
     public String toString() {
         return "turbo.POJO.ColorCategory[ id=" + id + " ]";
     }
-
+    
 }

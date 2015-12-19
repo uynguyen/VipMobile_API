@@ -40,55 +40,6 @@ public class RegisterEmailHandler extends EmailHandler {
         contentFile = "/META-INF/RegisterContent.html";
     }
 
-    //Method to read HTML file as a String 
-    public String readContentFromFile() {
-        StringBuffer contents = new StringBuffer();
-
-        try {
-            //use buffering, reading one line at a time
-            InputStream ip = getClass().getClassLoader().getResourceAsStream(contentFile);
-
-            BufferedReader reader = new BufferedReader(new InputStreamReader(ip, "UTF-8"));
-            try {
-                String line = null;
-                while ((line = reader.readLine()) != null) {
-                    contents.append(line);
-                    contents.append(System.getProperty("line.separator"));
-                }
-            } finally {
-                reader.close();
-            }
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-        return contents.toString();
-    }
-
-    public void run() {
-
-        try {
-            Session session = createEmailSession();
-
-            // creates a new e-mail message
-            Message msg = new MimeMessage(session);
-
-            msg.setFrom(new InternetAddress(props.getProperty("gmail.username")));
-            InternetAddress[] toAddresses = {new InternetAddress(toUser)};
-            msg.setRecipients(Message.RecipientType.TO, toAddresses);
-            msg.setSubject(props.getProperty("email.subject"));
-            msg.setSentDate(new Date());
-            String htmlContent = readContentFromFile();
-            msg.setContent(htmlContent,
-                    "text/html; charset=UTF-8");
-
-            // sends the e-mail
-            Transport.send(msg);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
-
     @Override
     public boolean sendEmail(String email) {
         try {

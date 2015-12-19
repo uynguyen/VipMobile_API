@@ -24,6 +24,7 @@ import turbo.POJO.User;
 import turbo.bussiness.EmailHandler;
 import turbo.bussiness.RegisterEmailHandler;
 import turbo.model.AccessTokenModel;
+import turbo.model.ResetPassModel;
 import turbo.service.ProductService;
 import turbo.service.UserService;
 
@@ -59,7 +60,7 @@ public class UserController {
 
         } catch (Exception e) {
             System.err.println(e.getMessage());
-             return new ResponseEntity<AccessTokenModel>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<AccessTokenModel>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -88,7 +89,7 @@ public class UserController {
 
     @RequestMapping(value = {"/activate/{RegisterToken}"},
             method = {RequestMethod.GET},
-            produces = {"application/json", "application/xml"})
+            produces = {MediaType.ALL_VALUE})
 
     @ResponseBody
     public ResponseEntity<String>
@@ -98,7 +99,7 @@ public class UserController {
         try {
 
             result = userService.activateUser(registerToken);
-            if (result.contains("Activated")) {
+            if (result.contains("activated")) {
 
                 return new ResponseEntity<String>(result, HttpStatus.OK);
             } else {
@@ -111,5 +112,42 @@ public class UserController {
             return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
+    }
+
+    @RequestMapping(value = {"/requestResetPass/{Email}"},
+            method = {RequestMethod.GET},
+            produces = {MediaType.ALL_VALUE})
+    @ResponseBody
+    public ResponseEntity<String>
+            requestResetPassword(@PathVariable("Email") String Email) {
+
+        String result = "";
+        try {
+
+            result = userService.sendResetRequestEmail(Email);
+
+            return new ResponseEntity<String>(result, HttpStatus.OK);
+
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @RequestMapping(value = {"/resetPass"},
+            method = {RequestMethod.POST},
+            consumes = {MediaType.ALL_VALUE})
+    @ResponseBody
+    public ResponseEntity<String>
+            resetPassword(@RequestBody ResetPassModel pass) {
+
+        String result = "";
+        try {
+
+            return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }

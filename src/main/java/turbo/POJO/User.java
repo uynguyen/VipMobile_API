@@ -5,14 +5,12 @@
  */
 package turbo.POJO;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -48,7 +46,6 @@ import org.codehaus.jackson.annotate.JsonIgnore;
     @NamedQuery(name = "User.findByIsActive", query = "SELECT u FROM User u WHERE u.isActive = :isActive"),
     @NamedQuery(name = "User.findByCreateDate", query = "SELECT u FROM User u WHERE u.createDate = :createDate")})
 public class User implements Serializable {
-
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -70,27 +67,17 @@ public class User implements Serializable {
     @Column(name = "create_date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date createDate;
-    @OneToMany(mappedBy = "userId", fetch = FetchType.LAZY)
-    @JsonBackReference
-    @com.fasterxml.jackson.annotation.JsonIgnore
+    @OneToMany(mappedBy = "userId")
     private Collection<AccessToken> accessTokenCollection;
-    @OneToMany(mappedBy = "idUser", fetch = FetchType.LAZY)
-    @JsonBackReference
-    @com.fasterxml.jackson.annotation.JsonIgnore
+    @OneToMany(mappedBy = "idUser")
     private Collection<RegisterToken> registerTokenCollection;
     @JoinColumn(name = "id_account", referencedColumnName = "id")
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JsonBackReference
-    @com.fasterxml.jackson.annotation.JsonIgnore
+    @ManyToOne
     private Account idAccount;
     @JoinColumn(name = "id_role", referencedColumnName = "id")
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JsonBackReference
-    @com.fasterxml.jackson.annotation.JsonIgnore
+    @ManyToOne
     private UserRole idRole;
-    @OneToMany(mappedBy = "idUser", fetch = FetchType.LAZY)
-    @JsonBackReference
-    @com.fasterxml.jackson.annotation.JsonIgnore
+    @OneToMany(mappedBy = "idUser")
     private Collection<UserBill> userBillCollection;
 
     public User() {
@@ -218,5 +205,5 @@ public class User implements Serializable {
     public String toString() {
         return "turbo.POJO.User[ id=" + id + " ]";
     }
-
+    
 }
