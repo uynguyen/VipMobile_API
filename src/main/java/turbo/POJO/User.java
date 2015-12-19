@@ -5,13 +5,14 @@
  */
 package turbo.POJO;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -21,6 +22,8 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -36,15 +39,16 @@ import org.codehaus.jackson.annotate.JsonIgnore;
     @UniqueConstraint(columnNames = {"email"}),
     @UniqueConstraint(columnNames = {"username"})})
 @XmlRootElement
-@JsonAutoDetect
 @NamedQueries({
     @NamedQuery(name = "User.findAll", query = "SELECT u FROM User u"),
     @NamedQuery(name = "User.findById", query = "SELECT u FROM User u WHERE u.id = :id"),
     @NamedQuery(name = "User.findByUsername", query = "SELECT u FROM User u WHERE u.username = :username"),
     @NamedQuery(name = "User.findByPassword", query = "SELECT u FROM User u WHERE u.password = :password"),
     @NamedQuery(name = "User.findByEmail", query = "SELECT u FROM User u WHERE u.email = :email"),
-    @NamedQuery(name = "User.findByIsActive", query = "SELECT u FROM User u WHERE u.isActive = :isActive")})
+    @NamedQuery(name = "User.findByIsActive", query = "SELECT u FROM User u WHERE u.isActive = :isActive"),
+    @NamedQuery(name = "User.findByCreateDate", query = "SELECT u FROM User u WHERE u.createDate = :createDate")})
 public class User implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -63,21 +67,28 @@ public class User implements Serializable {
     private String email;
     @Column(name = "is_active")
     private Boolean isActive;
-    @OneToMany(mappedBy = "idUser")
+    @Column(name = "create_date")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createDate;
+    @OneToMany(mappedBy = "userId", fetch = FetchType.LAZY)
+    @JsonBackReference
+    @com.fasterxml.jackson.annotation.JsonIgnore
+    private Collection<AccessToken> accessTokenCollection;
+    @OneToMany(mappedBy = "idUser", fetch = FetchType.LAZY)
     @JsonBackReference
     @com.fasterxml.jackson.annotation.JsonIgnore
     private Collection<RegisterToken> registerTokenCollection;
     @JoinColumn(name = "id_account", referencedColumnName = "id")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonBackReference
     @com.fasterxml.jackson.annotation.JsonIgnore
     private Account idAccount;
     @JoinColumn(name = "id_role", referencedColumnName = "id")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonBackReference
     @com.fasterxml.jackson.annotation.JsonIgnore
     private UserRole idRole;
-    @OneToMany(mappedBy = "idUser")
+    @OneToMany(mappedBy = "idUser", fetch = FetchType.LAZY)
     @JsonBackReference
     @com.fasterxml.jackson.annotation.JsonIgnore
     private Collection<UserBill> userBillCollection;
@@ -127,6 +138,24 @@ public class User implements Serializable {
 
     public void setIsActive(Boolean isActive) {
         this.isActive = isActive;
+    }
+
+    public Date getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
+    }
+
+    @XmlTransient
+    @JsonIgnore
+    public Collection<AccessToken> getAccessTokenCollection() {
+        return accessTokenCollection;
+    }
+
+    public void setAccessTokenCollection(Collection<AccessToken> accessTokenCollection) {
+        this.accessTokenCollection = accessTokenCollection;
     }
 
     @XmlTransient
@@ -189,5 +218,5 @@ public class User implements Serializable {
     public String toString() {
         return "turbo.POJO.User[ id=" + id + " ]";
     }
-    
+
 }

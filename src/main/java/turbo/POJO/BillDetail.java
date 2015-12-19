@@ -6,11 +6,11 @@
 package turbo.POJO;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -34,6 +34,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "BillDetail.findByAmount", query = "SELECT b FROM BillDetail b WHERE b.amount = :amount"),
     @NamedQuery(name = "BillDetail.findByTotalPrice", query = "SELECT b FROM BillDetail b WHERE b.totalPrice = :totalPrice")})
 public class BillDetail implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,14 +46,14 @@ public class BillDetail implements Serializable {
     @Column(name = "total_price", precision = 17, scale = 17)
     private Double totalPrice;
     @JoinColumn(name = "id_product", referencedColumnName = "id")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonBackReference
-    @JsonIgnore
+    @com.fasterxml.jackson.annotation.JsonIgnore
     private Product idProduct;
     @JoinColumn(name = "id_bill", referencedColumnName = "id")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonBackReference
-    @JsonIgnore
+    @com.fasterxml.jackson.annotation.JsonIgnore
     private UserBill idBill;
 
     public BillDetail() {
@@ -126,5 +127,5 @@ public class BillDetail implements Serializable {
     public String toString() {
         return "turbo.POJO.BillDetail[ id=" + id + " ]";
     }
-    
+
 }

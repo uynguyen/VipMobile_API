@@ -5,10 +5,12 @@
  */
 package turbo.POJO;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -44,6 +46,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "ProductDetail.findByGpu", query = "SELECT p FROM ProductDetail p WHERE p.gpu = :gpu"),
     @NamedQuery(name = "ProductDetail.findByGuarantee", query = "SELECT p FROM ProductDetail p WHERE p.guarantee = :guarantee")})
 public class ProductDetail implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -80,10 +83,14 @@ public class ProductDetail implements Serializable {
     private String gpu;
     private Integer guarantee;
     @JoinColumn(name = "id_producer", referencedColumnName = "id")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonBackReference
+    @com.fasterxml.jackson.annotation.JsonIgnore
     private ProducerCategory idProducer;
     @JoinColumn(name = "id_product", referencedColumnName = "id")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonBackReference
+    @com.fasterxml.jackson.annotation.JsonIgnore
     private Product idProduct;
 
     public ProductDetail() {
@@ -245,5 +252,5 @@ public class ProductDetail implements Serializable {
     public String toString() {
         return "turbo.POJO.ProductDetail[ id=" + id + " ]";
     }
-    
+
 }

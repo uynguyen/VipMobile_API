@@ -19,6 +19,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -26,12 +27,15 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author LeeSan
  */
 @Entity
-@Table(name = "product_color_detail", catalog = "turbo_mobileshop", schema = "public")
+@Table(name = "access_token", catalog = "turbo_mobileshop", schema = "public")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "ProductColorDetail.findAll", query = "SELECT p FROM ProductColorDetail p"),
-    @NamedQuery(name = "ProductColorDetail.findById", query = "SELECT p FROM ProductColorDetail p WHERE p.id = :id")})
-public class ProductColorDetail implements Serializable {
+    @NamedQuery(name = "AccessToken.findAll", query = "SELECT a FROM AccessToken a"),
+    @NamedQuery(name = "AccessToken.findById", query = "SELECT a FROM AccessToken a WHERE a.id = :id"),
+    @NamedQuery(name = "AccessToken.findByAccessToken", query = "SELECT a FROM AccessToken a WHERE a.accessToken = :accessToken"),
+    @NamedQuery(name = "AccessToken.findByExpire", query = "SELECT a FROM AccessToken a WHERE a.expire = :expire"),
+    @NamedQuery(name = "AccessToken.findByScope", query = "SELECT a FROM AccessToken a WHERE a.scope = :scope")})
+public class AccessToken implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -39,21 +43,23 @@ public class ProductColorDetail implements Serializable {
     @Basic(optional = false)
     @Column(nullable = false)
     private Integer id;
-    @JoinColumn(name = "id_color", referencedColumnName = "id")
+    @Size(max = 2147483647)
+    @Column(name = "access_token", length = 2147483647)
+    private String accessToken;
+    private Serializable expire;
+    @Size(max = 2147483647)
+    @Column(length = 2147483647)
+    private String scope;
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonBackReference
     @com.fasterxml.jackson.annotation.JsonIgnore
-    private ColorCategory idColor;
-    @JoinColumn(name = "id_product", referencedColumnName = "id")
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JsonBackReference
-    @com.fasterxml.jackson.annotation.JsonIgnore
-    private Product idProduct;
+    private User userId;
 
-    public ProductColorDetail() {
+    public AccessToken() {
     }
 
-    public ProductColorDetail(Integer id) {
+    public AccessToken(Integer id) {
         this.id = id;
     }
 
@@ -65,20 +71,36 @@ public class ProductColorDetail implements Serializable {
         this.id = id;
     }
 
-    public ColorCategory getIdColor() {
-        return idColor;
+    public String getAccessToken() {
+        return accessToken;
     }
 
-    public void setIdColor(ColorCategory idColor) {
-        this.idColor = idColor;
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
     }
 
-    public Product getIdProduct() {
-        return idProduct;
+    public Serializable getExpire() {
+        return expire;
     }
 
-    public void setIdProduct(Product idProduct) {
-        this.idProduct = idProduct;
+    public void setExpire(Serializable expire) {
+        this.expire = expire;
+    }
+
+    public String getScope() {
+        return scope;
+    }
+
+    public void setScope(String scope) {
+        this.scope = scope;
+    }
+
+    public User getUserId() {
+        return userId;
+    }
+
+    public void setUserId(User userId) {
+        this.userId = userId;
     }
 
     @Override
@@ -91,10 +113,10 @@ public class ProductColorDetail implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof ProductColorDetail)) {
+        if (!(object instanceof AccessToken)) {
             return false;
         }
-        ProductColorDetail other = (ProductColorDetail) object;
+        AccessToken other = (AccessToken) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -103,7 +125,7 @@ public class ProductColorDetail implements Serializable {
 
     @Override
     public String toString() {
-        return "turbo.POJO.ProductColorDetail[ id=" + id + " ]";
+        return "turbo.POJO.AccessToken[ id=" + id + " ]";
     }
 
 }

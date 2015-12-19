@@ -5,15 +5,13 @@
  */
 package turbo.POJO;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import java.io.Serializable;
 import java.util.Collection;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -24,7 +22,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
-
+import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**
  *
@@ -33,7 +31,6 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @Table(catalog = "turbo_mobileshop", schema = "public")
 @XmlRootElement
-@JsonAutoDetect
 @NamedQueries({
     @NamedQuery(name = "Product.findAll", query = "SELECT p FROM Product p"),
     @NamedQuery(name = "Product.findById", query = "SELECT p FROM Product p WHERE p.id = :id"),
@@ -43,6 +40,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Product.findByAmount", query = "SELECT p FROM Product p WHERE p.amount = :amount"),
     @NamedQuery(name = "Product.findByName", query = "SELECT p FROM Product p WHERE p.name = :name")})
 public class Product implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -62,17 +60,17 @@ public class Product implements Serializable {
     @Size(max = 2147483647)
     @Column(length = 2147483647)
     private String name;
-    @OneToMany(mappedBy = "idProduct")
+    @OneToMany(mappedBy = "idProduct", fetch = FetchType.LAZY)
     @JsonBackReference
-    @JsonIgnore
+    @com.fasterxml.jackson.annotation.JsonIgnore
     private Collection<ProductDetail> productDetailCollection;
-    @OneToMany(mappedBy = "idProduct")
+    @OneToMany(mappedBy = "idProduct", fetch = FetchType.LAZY)
     @JsonBackReference
-    @JsonIgnore
+    @com.fasterxml.jackson.annotation.JsonIgnore
     private Collection<BillDetail> billDetailCollection;
-    @OneToMany(mappedBy = "idProduct")
+    @OneToMany(mappedBy = "idProduct", fetch = FetchType.LAZY)
     @JsonBackReference
-    @JsonIgnore
+    @com.fasterxml.jackson.annotation.JsonIgnore
     private Collection<ProductColorDetail> productColorDetailCollection;
 
     public Product() {
@@ -184,5 +182,5 @@ public class Product implements Serializable {
     public String toString() {
         return "turbo.POJO.Product[ id=" + id + " ]";
     }
-    
+
 }

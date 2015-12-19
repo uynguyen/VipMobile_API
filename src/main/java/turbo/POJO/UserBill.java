@@ -5,12 +5,14 @@
  */
 package turbo.POJO;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -42,6 +44,7 @@ import org.codehaus.jackson.annotate.JsonIgnore;
     @NamedQuery(name = "UserBill.findByDate", query = "SELECT u FROM UserBill u WHERE u.date = :date"),
     @NamedQuery(name = "UserBill.findByTotal", query = "SELECT u FROM UserBill u WHERE u.total = :total")})
 public class UserBill implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -57,10 +60,14 @@ public class UserBill implements Serializable {
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Column(precision = 17, scale = 17)
     private Double total;
-    @OneToMany(mappedBy = "idBill")
+    @OneToMany(mappedBy = "idBill", fetch = FetchType.LAZY)
+    @JsonBackReference
+    @com.fasterxml.jackson.annotation.JsonIgnore
     private Collection<BillDetail> billDetailCollection;
     @JoinColumn(name = "id_user", referencedColumnName = "id")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonBackReference
+    @com.fasterxml.jackson.annotation.JsonIgnore
     private User idUser;
 
     public UserBill() {
@@ -152,5 +159,5 @@ public class UserBill implements Serializable {
     public String toString() {
         return "turbo.POJO.UserBill[ id=" + id + " ]";
     }
-    
+
 }

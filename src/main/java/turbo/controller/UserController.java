@@ -23,6 +23,7 @@ import turbo.POJO.Product;
 import turbo.POJO.User;
 import turbo.bussiness.EmailHandler;
 import turbo.bussiness.RegisterEmailHandler;
+import turbo.model.AccessTokenModel;
 import turbo.service.ProductService;
 import turbo.service.UserService;
 
@@ -42,19 +43,24 @@ public class UserController {
             consumes = {MediaType.ALL_VALUE}
     )
     @ResponseBody
-    public ResponseEntity<User>
+    public ResponseEntity<AccessTokenModel>
             userLogin(@RequestBody User user) {
-        User result = null;
-        String username = "";
-        String password = "";
-        try {
+        String result = null;
 
-            result = (User) userService.getUserByUsername(username, password);
+        try {
+            AccessTokenModel accessToken = null;
+            result = userService.getUserByUsername(user.getUsername(), user.getPassword(), accessToken);
+            if (accessToken != null) {
+                ResponseEntity<AccessTokenModel> entity = new ResponseEntity(accessToken, HttpStatus.OK);
+                return entity;
+            }
+
+            return new ResponseEntity<AccessTokenModel>(HttpStatus.BAD_REQUEST);
+
         } catch (Exception e) {
             System.err.println(e.getMessage());
+             return new ResponseEntity<AccessTokenModel>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        ResponseEntity<User> entity = new ResponseEntity(result, HttpStatus.OK);
-        return entity;
     }
 
     @RequestMapping(value = {"/register"},
@@ -94,10 +100,10 @@ public class UserController {
             result = userService.activateUser(registerToken);
             if (result.contains("Activated")) {
 
-                return new ResponseEntity<String>(result,HttpStatus.OK);
+                return new ResponseEntity<String>(result, HttpStatus.OK);
             } else {
-                
-                return new ResponseEntity<String>(result,HttpStatus.BAD_REQUEST);
+
+                return new ResponseEntity<String>(result, HttpStatus.BAD_REQUEST);
             }
 
         } catch (Exception e) {

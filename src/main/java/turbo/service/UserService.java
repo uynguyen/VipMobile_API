@@ -8,20 +8,24 @@ package turbo.service;
 import java.util.List;
 import turbo.POJO.Product;
 import turbo.POJO.User;
+import turbo.model.AccessTokenModel;
 
 /**
  *
  * @author LeeSan
  */
 public interface UserService {
+
     void addNewUSer(User product);
 
-    User getUserByUsername(String username, String password);
+    String getUserByUsername(String username, String password, AccessTokenModel token);
 
     String registerUser(User user);
 
     boolean isExistUsername(String username);
+
     boolean isExistEmail(String email);
+
     void updateUser(User product);
 
     void deleteUser(Long id);

@@ -21,6 +21,7 @@ import turbo.bussiness.GenerateTokenBus;
 import turbo.bussiness.RegisterEmailHandler;
 import turbo.model.AccessTokenModel;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import turbo.POJO.AccessToken;
 
 /**
  *
@@ -40,12 +41,31 @@ public class UserServiceImpl implements UserService {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public User getUserByUsername(String username, String password) {
-        User result = null;
+    public String getUserByUsername(String username, String password, AccessTokenModel token) {
+        User user = userDAO.getUserByUsername(username);
+        if (user == null) {
+            return "Invalid Infomation";
+        }
 
-        userDAO.getUserByUsername(username);
+        if (!user.getIsActive()) {
+            return "Activated Require";
+        }
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
-        return result;
+        if (encoder.encode(password).equals(user.getPassword())) {
+            return "Invalid Information";
+        }
+
+        AccessTokenModel testtoken = GenerateTokenBus.generateToken(user.getUsername());
+
+        AccessToken accessToken = new AccessToken();
+        accessToken.setAccessToken(testtoken.getToken());
+        accessToken.setExpire(testtoken.getExpireDate());
+        accessToken.setUserId(user);
+        
+        
+        token = testtoken;
+        return "Success";
     }
 
     public User getProduct(Integer id) {
@@ -59,6 +79,8 @@ public class UserServiceImpl implements UserService {
     public void deleteUser(Long id) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
+    //TODO: Set user role
 
     public String registerUser(User user) {
         if (isExistUsername(user.getUsername())) {
@@ -112,7 +134,7 @@ public class UserServiceImpl implements UserService {
 
         RegisterToken token = registerTokenDAO.getRegisterToken(registerToken);
         Timestamp currentTime = new Timestamp(new Date().getTime());
-        if(token.getExpise().compareTo(currentTime) < 0){ //Expire
+        if (token.getExpise().compareTo(currentTime) < 0) { //Expire
             return "Expire";
         }
         User user = token.getIdUser();

@@ -5,17 +5,18 @@
  */
 package turbo.bussiness;
 
-
 import java.util.Calendar;
 import java.util.Date;
 import turbo.model.AccessTokenModel;
 import org.apache.commons.codec.binary.Base64;
+
 /**
  *
  * @author LeeSan
  */
 public class GenerateTokenBus {
-        static int expire_minute = 60;
+
+    static int expire_minute = 60;
 
     public static AccessTokenModel generateToken(String keysource) {
         AccessTokenModel result = new AccessTokenModel();
