@@ -5,8 +5,12 @@
  */
 package turbo.service;
 
+import java.util.List;
+import org.hibernate.Query;
+import org.hibernate.Session;
 import org.springframework.stereotype.Repository;
 import turbo.POJO.RegisterToken;
+import turbo.POJO.User;
 
 /**
  *
@@ -14,5 +18,18 @@ import turbo.POJO.RegisterToken;
  */
 @Repository
 public class HbnRegisterTokenDAO extends AbstractHbnDAO<RegisterToken> implements RegisterTokenDAO{
-    
+    @Override
+    public RegisterToken getRegisterToken(String token) {
+        Session ss = getSession();
+        ss.beginTransaction();
+        Query query = ss.getNamedQuery("RegisterToken.findByAccessToken");
+        query.setString("accessToken", token);
+        List<RegisterToken> result = query.list();
+        ss.close();
+        if (result.size() != 0) {
+            return (RegisterToken) result.get(0);
+        }
+        return null;
+
+    }
 }

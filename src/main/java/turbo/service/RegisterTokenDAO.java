@@ -12,5 +12,5 @@ import turbo.POJO.RegisterToken;
  * @author LeeSan
  */
 public interface RegisterTokenDAO extends DAO<RegisterToken> {
-    
+    RegisterToken getRegisterToken(String token);
 }

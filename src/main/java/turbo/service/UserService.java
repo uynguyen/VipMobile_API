@@ -26,5 +26,5 @@ public interface UserService {
 
     void deleteUser(Long id);
 
-    public boolean activateUser(Integer registerToken);
+    public String activateUser(String registerToken);
 }

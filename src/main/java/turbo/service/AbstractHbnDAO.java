@@ -60,9 +60,9 @@ public abstract class AbstractHbnDAO<T extends Object> implements DAO<T> {
         } catch (Exception e) {
 
             transaction.rollback();
-
+            ss.close();
             return null;
-        } 
+        }
     }
 
     public T get(Serializable id) {
@@ -91,7 +91,20 @@ public abstract class AbstractHbnDAO<T extends Object> implements DAO<T> {
     }
 
     public void update(T t) {
-        getSession().update(t);
+        Session ss = getSession();
+        Transaction transaction = ss.beginTransaction();
+        try {
+
+            ss.beginTransaction();
+            ss.update(t);
+            transaction.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+            
+            transaction.rollback();
+            ss.close();
+        } 
+
     }
 
     public void delete(T t) {

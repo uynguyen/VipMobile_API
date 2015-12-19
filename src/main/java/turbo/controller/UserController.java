@@ -86,18 +86,23 @@ public class UserController {
 
     @ResponseBody
     public ResponseEntity<String>
-            activateUser(@PathVariable("RegisterToken") Integer registerToken) {
+            activateUser(@PathVariable("RegisterToken") String registerToken) {
 
         String result = "";
         try {
 
-            userService.activateUser(registerToken);
+            result = userService.activateUser(registerToken);
+            if (result.contains("Activated")) {
 
-            return new ResponseEntity<String>(result, HttpStatus.OK);
+                return new ResponseEntity<String>(result,HttpStatus.OK);
+            } else {
+                
+                return new ResponseEntity<String>(result,HttpStatus.BAD_REQUEST);
+            }
 
         } catch (Exception e) {
             System.err.println(e.getMessage());
-            return new ResponseEntity<String>(result, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
     }

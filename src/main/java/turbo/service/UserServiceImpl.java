@@ -5,6 +5,9 @@
  */
 package turbo.service;
 
+import java.sql.Timestamp;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import javax.transaction.Transactional;
 import org.hibernate.Session;
@@ -18,6 +21,7 @@ import turbo.bussiness.GenerateTokenBus;
 import turbo.bussiness.RegisterEmailHandler;
 import turbo.model.AccessTokenModel;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
 /**
  *
  * @author LeeSan
@@ -104,8 +108,21 @@ public class UserServiceImpl implements UserService {
         return false;
     }
 
-    public boolean activateUser(Integer registerToken) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public String activateUser(String registerToken) {
+
+        RegisterToken token = registerTokenDAO.getRegisterToken(registerToken);
+        Timestamp currentTime = new Timestamp(new Date().getTime());
+        if(token.getExpise().compareTo(currentTime) < 0){ //Expire
+            return "Expire";
+        }
+        User user = token.getIdUser();
+        if (user.getIsActive()) {
+            return "WasActivated";
+        }
+        user.setIsActive(true);
+        userDAO.update(user);
+        return "Activated";
+
     }
 
 }
