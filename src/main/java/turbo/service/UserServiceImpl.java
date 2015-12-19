@@ -11,7 +11,12 @@ import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import turbo.POJO.Product;
+import turbo.POJO.RegisterToken;
 import turbo.POJO.User;
+import turbo.bussiness.EmailHandler;
+import turbo.bussiness.GenerateTokenBus;
+import turbo.bussiness.RegisterEmailHandler;
+import turbo.model.AccessTokenModel;
 
 /**
  *
@@ -23,6 +28,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserDAO userDAO;
+
+    @Autowired
+    private RegisterTokenDAO registerTokenDAO;
 
     public void addNewUSer(User product) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -49,16 +57,33 @@ public class UserServiceImpl implements UserService {
     }
 
     public String registerUser(User user) {
-        if(isExistUsername(user.getUsername())){
+        if (isExistUsername(user.getUsername())) {
             return "UserNameExisted";
         }
-        if(isExistEmail(user.getEmail())){
+        if (isExistEmail(user.getEmail())) {
             return "EmailExisted";
         }
         user.setIsActive(false);
-        
-        if(userDAO.create(user))
+        User result = (User) userDAO.create(user);
+        if (result != null) {
+            AccessTokenModel accToken = GenerateTokenBus.generateToken(result.getUsername());
+            RegisterToken registerToken = new RegisterToken();
+            registerToken.setIdUser(result);
+            registerToken.setAccessToken(accToken.getToken());
+            registerToken.setExpise(accToken.getExpireDate());
+
+            if (registerTokenDAO.create(registerToken) != null) {
+                EmailHandler sendEmailHandler = new RegisterEmailHandler();
+
+                sendEmailHandler.sendEmail("uynguyen.itus@gmail.com");
+                return "CreateSuccess";
+            }
+
+        }
+
+        if (userDAO.create(user) != null) {
             return "CreateSuccess";
+        }
         return "CreateFail";
 
     }

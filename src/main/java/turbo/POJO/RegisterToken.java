@@ -45,7 +45,7 @@ public class RegisterToken implements Serializable {
     @Size(max = 2147483647)
     @Column(name = "access_token", length = 2147483647)
     private String accessToken;
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date expise;
     @JoinColumn(name = "id_user", referencedColumnName = "id")
     @ManyToOne

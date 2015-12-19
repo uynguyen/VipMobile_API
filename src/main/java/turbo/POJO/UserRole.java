@@ -36,7 +36,6 @@ import org.codehaus.jackson.annotate.JsonIgnore;
     @NamedQuery(name = "UserRole.findByRole", query = "SELECT u FROM UserRole u WHERE u.role = :role"),
     @NamedQuery(name = "UserRole.findByDescription", query = "SELECT u FROM UserRole u WHERE u.description = :description")})
 public class UserRole implements Serializable {
-    private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
@@ -49,9 +48,8 @@ public class UserRole implements Serializable {
     @Column(length = 2147483647)
     private String description;
     @OneToMany(mappedBy = "idRole")
-    @JsonBackReference
-    @com.fasterxml.jackson.annotation.JsonIgnore
     private Collection<User> userCollection;
+    private static final long serialVersionUID = 1L;
 
     public UserRole() {
     }
@@ -84,15 +82,6 @@ public class UserRole implements Serializable {
         this.description = description;
     }
 
-    @XmlTransient
-    @JsonIgnore
-    public Collection<User> getUserCollection() {
-        return userCollection;
-    }
-
-    public void setUserCollection(Collection<User> userCollection) {
-        this.userCollection = userCollection;
-    }
 
     @Override
     public int hashCode() {
@@ -118,5 +107,17 @@ public class UserRole implements Serializable {
     public String toString() {
         return "turbo.POJO.UserRole[ id=" + id + " ]";
     }
+
+    
+    @XmlTransient
+    @JsonIgnore
+    public Collection<User> getUserCollection() {
+        return userCollection;
+    }
+
+    public void setUserCollection(Collection<User> userCollection) {
+        this.userCollection = userCollection;
+    }
+
     
 }

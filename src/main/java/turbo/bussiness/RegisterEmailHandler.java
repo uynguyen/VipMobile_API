@@ -33,30 +33,22 @@ import org.springframework.stereotype.Component;
  * @author LeeSan
  */
 @Component
-public class EmailHandlerBus implements Runnable {
+public class RegisterEmailHandler extends EmailHandler {
 
-    private Properties props;
-    private Thread t;
-
-    public EmailHandlerBus() {
-        Resource resource = new ClassPathResource("/META-INF/EmailHandler.properties");
-        try {
-            this.props = PropertiesLoaderUtils.loadProperties(resource);
-        } catch (IOException ex) {
-            Logger.getLogger(EmailHandlerBus.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        t = new Thread(this);
-        t.start();
+    public RegisterEmailHandler() {
+        super();
+        contentFile = "/META-INF/RegisterContent.html";
     }
+
     //Method to read HTML file as a String 
-    public String readContentFromFile(String fileName) {
+    public String readContentFromFile() {
         StringBuffer contents = new StringBuffer();
 
         try {
             //use buffering, reading one line at a time
-            InputStream ip = getClass().getClassLoader().getResourceAsStream("/META-INF/RegisterContent.html");
+            InputStream ip = getClass().getClassLoader().getResourceAsStream(contentFile);
 
-            BufferedReader reader = new BufferedReader(new InputStreamReader(ip,"UTF-8"));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(ip, "UTF-8"));
             try {
                 String line = null;
                 while ((line = reader.readLine()) != null) {
@@ -72,48 +64,40 @@ public class EmailHandlerBus implements Runnable {
         return contents.toString();
     }
 
-    public boolean sendEmail() {
+    public void run() {
+
         try {
-
-            Properties properties = new Properties();
-            properties.put("mail.smtp.host", props.getProperty("mail.smtp.host"));
-            properties.put("mail.smtp.port", props.getProperty("mail.smtp.port"));
-            properties.put("mail.smtp.auth", props.getProperty("mail.smtp.auth"));
-            properties.put("mail.smtp.starttls.enable", props.getProperty("mail.smtp.starttls.enable"));
-
-            // creates a new session with an authenticator
-            Authenticator auth = new Authenticator() {
-                public PasswordAuthentication getPasswordAuthentication() {
-                    return new PasswordAuthentication(props.getProperty("gmail.username"),
-                            props.getProperty("gmail.password"));
-                }
-            };
-
-            Session session = Session.getInstance(properties, auth);
+            Session session = createEmailSession();
 
             // creates a new e-mail message
             Message msg = new MimeMessage(session);
 
             msg.setFrom(new InternetAddress(props.getProperty("gmail.username")));
-            InternetAddress[] toAddresses = {new InternetAddress("uynguyen.itus@gmail.com")};
+            InternetAddress[] toAddresses = {new InternetAddress(toUser)};
             msg.setRecipients(Message.RecipientType.TO, toAddresses);
             msg.setSubject(props.getProperty("email.subject"));
             msg.setSentDate(new Date());
-            String htmlContent = readContentFromFile("13");
+            String htmlContent = readContentFromFile();
             msg.setContent(htmlContent,
                     "text/html; charset=UTF-8");
 
             // sends the e-mail
             Transport.send(msg);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
+    }
+
+    @Override
+    public boolean sendEmail(String email) {
+        try {
+            toUser = email;
+            t.start();
             return true;
         } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
-    }
-
-    public void run() {
-        sendEmail();
     }
 }

@@ -14,7 +14,7 @@ import java.util.List;
  */
 public interface DAO<T extends Object> {
 
-    boolean create(T t);
+    T create(T t);
 
     T get(Serializable id);
 

@@ -21,7 +21,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import turbo.POJO.Product;
 import turbo.POJO.User;
-import turbo.bussiness.EmailHandlerBus;
+import turbo.bussiness.EmailHandler;
+import turbo.bussiness.RegisterEmailHandler;
 import turbo.service.ProductService;
 import turbo.service.UserService;
 
@@ -63,9 +64,20 @@ public class UserController {
     @ResponseBody
     public ResponseEntity<String>
             registerUser(@RequestBody User user) throws IOException {
-        EmailHandlerBus test = new EmailHandlerBus();
-        String s = test.readContentFromFile("123");
-       // test.sendEmail();
+        EmailHandler test = new RegisterEmailHandler();
+       
+       
+       
+        test.sendEmail("uynguyen.itus@gmail.com");
+        
+        String result = "";
+//        try {
+//
+//            result = userService.registerUser(user);
+//        } catch (Exception e) {
+//            System.err.println(e.getMessage());
+//        }
+      
 //        String result = "";
 //        try {
 //
@@ -73,9 +85,11 @@ public class UserController {
 //        } catch (Exception e) {
 //            System.err.println(e.getMessage());
 //        }
-//        if (result.contains("CreateSuccess")) {
-//            return new ResponseEntity<Void>(HttpStatus.CREATED);
-//        }
-        return new ResponseEntity<String>( s, HttpStatus.CONFLICT);
+//
+        if (result.contains("CreateSuccess")) {
+            return new ResponseEntity<String>(result,HttpStatus.CREATED);
+        }
+            
+        return new ResponseEntity<String>(result, HttpStatus.CONFLICT);
     }
 }

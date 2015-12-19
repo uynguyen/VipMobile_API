@@ -44,7 +44,7 @@ public abstract class AbstractHbnDAO<T extends Object> implements DAO<T> {
         return getDomainClass().getName();
     }
 
-    public boolean create(T t) {
+    public T create(T t) {
 
         boolean result = true;
         Session ss = getSession();
@@ -55,15 +55,14 @@ public abstract class AbstractHbnDAO<T extends Object> implements DAO<T> {
 
             ss.save(t);
             transaction.commit();
+            return t;
 
         } catch (Exception e) {
 
             transaction.rollback();
 
-            result = false;
-        } finally {
-            return result;
-        }
+            return null;
+        } 
     }
 
     public T get(Serializable id) {
