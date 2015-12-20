@@ -82,13 +82,18 @@
     <context:component-scan base-package="turbo.service" />
 
     <!--INTERCEPTOR-->
-    <mvc:interceptors>
+<!--    <mvc:interceptors>
         <mvc:interceptor>
             <mvc:mapping path="/product/*" />
           
-            <bean class="turbo.interceptor.AuthenticationInterceptor"/>
-        </mvc:interceptor>
-    </mvc:interceptors>
-    <context:component-scan
-        base-package="turbo.interceptor" />
+        <bean class="turbo.interceptor.AuthenticationInterceptor"/>
+    </mvc:interceptor>
+</mvc:interceptors>
+<context:component-scan
+    base-package="turbo.interceptor" />-->
+        
+    <context:component-scan base-package="turbo.fillter" />
+   
+    
+    
 </beans>

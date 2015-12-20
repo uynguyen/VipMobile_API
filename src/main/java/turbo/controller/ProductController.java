@@ -15,8 +15,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import turbo.POJO.Product;
+import turbo.POJO.ProductDetail;
 
 import turbo.service.ProductService;
+import turbo.service.SingleProductService;
 
 /**
  *
@@ -29,6 +31,8 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
+    @Autowired
+    private SingleProductService singleProductService;
 
     @RequestMapping(value = {"/list"},
             method = {RequestMethod.GET},
@@ -46,22 +50,22 @@ public class ProductController {
         ResponseEntity<Product> entity = new ResponseEntity(products, HttpStatus.OK);
         return entity;
     }
-            
+
     @RequestMapping(value = {"/{id}"},
             method = {RequestMethod.GET},
             produces = {"application/json", "application/xml"})
     @ResponseBody
-    public ResponseEntity<Product>
+    public ResponseEntity<ProductDetail>
             getProduct(@PathVariable("id") Integer id) {
-        Product result = null;
+        ProductDetail result = null;
         try {
 
-            result = (Product) productService.getProduct(id);
+            result =  singleProductService.getProductDetail(id);
         } catch (Exception e) {
             System.err.println(e.getMessage());
         }
-        ResponseEntity<Product> entity = new ResponseEntity(result, HttpStatus.OK);
+        ResponseEntity<ProductDetail> entity = new ResponseEntity(result, HttpStatus.OK);
         return entity;
     }
-            
+
 }

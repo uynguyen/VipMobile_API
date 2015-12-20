@@ -17,18 +17,6 @@ import turbo.POJO.Product;
 @Repository
 public class HbnProductDAO extends AbstractHbnDAO<Product> implements ProductDAO {
 
-    @Override
-    public List<Product> findByEmail(String email) {
-        Session ss = getSession();
-        ss.beginTransaction();
-        List<Product> result = ss.getNamedQuery("findContactsByEmail")
-                .setString("email", "%" + email + "%")
-                .list();
-      
-        ss.close();
-        return result;
-                
-                
-    }
+  
 
 }

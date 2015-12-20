@@ -31,58 +31,60 @@ import turbo.bussiness.ResetPassEmailHandler;
 @Service("userService")
 @Transactional
 public class UserServiceImpl implements UserService {
-
+    
     @Autowired
     private UserDAO userDAO;
-
+    
     @Autowired
     private RegisterTokenDAO registerTokenDAO;
-
+    
     @Autowired
     private AccessTokenDAO accessTokenDAO;
-
+    
     public void addNewUSer(User product) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
+    
     public String getUserByUsername(String username, String password, AccessTokenModel token) {
         User user = userDAO.getUserByUsername(username);
         if (user == null) {
             return "Invalid Infomation";
         }
-
+        
         if (!user.getIsActive()) {
             return "Activated Require";
         }
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-
+        
         if (encoder.encode(password).equals(user.getPassword())) {
             return "Invalid Information";
         }
-
+        
         AccessTokenModel testtoken = GenerateTokenBus.generateToken(user.getUsername());
-
+        
         AccessToken accessToken = new AccessToken();
         accessToken.setAccessToken(testtoken.getToken());
         accessToken.setExpire(testtoken.getExpireDate());
         accessToken.setUserId(user);
         accessToken.setScope("None");
         accessToken = accessTokenDAO.create(accessToken);
+        
         if (accessToken != null) {
-            token = testtoken;
+            token.setToken(testtoken.getToken());
+            token.setExpireDate(testtoken.getExpireDate());
             return "Success";
         }
         return "Fail";
     }
-
+    
     public User getProduct(Integer id) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
+    
     public void updateUser(User product) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
+    
     public void deleteUser(Long id) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
@@ -104,45 +106,45 @@ public class UserServiceImpl implements UserService {
             registerToken.setIdUser(result);
             registerToken.setAccessToken(accToken.getToken());
             registerToken.setExpise(accToken.getExpireDate());
-
+            
             if (registerTokenDAO.create(registerToken) != null) {
                 EmailHandler sendEmailHandler = new RegisterEmailHandler();
-
+                
                 sendEmailHandler.sendEmail(user.getEmail());
                 return "CreateSuccess";
             }
-
+            
         }
-
+        
         if (userDAO.create(user) != null) {
             return "CreateSuccess";
         }
         return "CreateFail";
-
+        
     }
-
+    
     public boolean isExistUsername(String username) {
-
+        
         User user = userDAO.getUserByUsername(username);
         return (user == null) ? false : true;
     }
-
+    
     public boolean isExistEmail(String email) {
-        User user = userDAO.getUserByUsername(email);
+        User user = userDAO.getUserByEmail(email);
         if (user != null) {
             return (user.getIsActive() == true) ? true : false;
         }
-
+        
         return false;
     }
-
+    
     public String activateUser(String registerToken) {
-
+        
         RegisterToken token = registerTokenDAO.getRegisterToken(registerToken);
         if (token == null) {
             return "Not exist";
         }
-
+        
         Timestamp currentTime = new Timestamp(new Date().getTime());
         if (token.getExpise().compareTo(currentTime) < 0) { //Expire
             return "Expire";
@@ -154,14 +156,14 @@ public class UserServiceImpl implements UserService {
         user.setIsActive(true);
         userDAO.update(user);
         return "Activated";
-
+        
     }
-
+    
     public String sendResetRequestEmail(String email) {
         EmailHandler sendEmailHandler = new ResetPassEmailHandler();
-
+        
         boolean result = sendEmailHandler.sendEmail(email);
         return "Sent";
     }
-
+    
 }

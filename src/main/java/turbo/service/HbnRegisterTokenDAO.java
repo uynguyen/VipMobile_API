@@ -25,7 +25,7 @@ public class HbnRegisterTokenDAO extends AbstractHbnDAO<RegisterToken> implement
         Query query = ss.getNamedQuery("RegisterToken.findByAccessToken");
         query.setString("accessToken", token);
         List<RegisterToken> result = query.list();
-        ss.close();
+       // ss.close();
         if (result.size() != 0) {
             return (RegisterToken) result.get(0);
         }

@@ -5,8 +5,8 @@
  */
 package turbo.POJO;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import java.io.Serializable;
+import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -18,6 +18,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -32,10 +34,9 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "AccessToken.findAll", query = "SELECT a FROM AccessToken a"),
     @NamedQuery(name = "AccessToken.findById", query = "SELECT a FROM AccessToken a WHERE a.id = :id"),
     @NamedQuery(name = "AccessToken.findByAccessToken", query = "SELECT a FROM AccessToken a WHERE a.accessToken = :accessToken"),
-    @NamedQuery(name = "AccessToken.findByExpire", query = "SELECT a FROM AccessToken a WHERE a.expire = :expire"),
-    @NamedQuery(name = "AccessToken.findByScope", query = "SELECT a FROM AccessToken a WHERE a.scope = :scope")})
+    @NamedQuery(name = "AccessToken.findByScope", query = "SELECT a FROM AccessToken a WHERE a.scope = :scope"),
+    @NamedQuery(name = "AccessToken.findByExpire", query = "SELECT a FROM AccessToken a WHERE a.expire = :expire")})
 public class AccessToken implements Serializable {
-
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,14 +46,13 @@ public class AccessToken implements Serializable {
     @Size(max = 2147483647)
     @Column(name = "access_token", length = 2147483647)
     private String accessToken;
-    private Serializable expire;
     @Size(max = 2147483647)
     @Column(length = 2147483647)
     private String scope;
+    @Temporal(TemporalType.DATE)
+    private Date expire;
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     @ManyToOne
-    @JsonBackReference
-    @com.fasterxml.jackson.annotation.JsonIgnore
     private User userId;
 
     public AccessToken() {
@@ -78,20 +78,20 @@ public class AccessToken implements Serializable {
         this.accessToken = accessToken;
     }
 
-    public Serializable getExpire() {
-        return expire;
-    }
-
-    public void setExpire(Serializable expire) {
-        this.expire = expire;
-    }
-
     public String getScope() {
         return scope;
     }
 
     public void setScope(String scope) {
         this.scope = scope;
+    }
+
+    public Date getExpire() {
+        return expire;
+    }
+
+    public void setExpire(Date expire) {
+        this.expire = expire;
     }
 
     public User getUserId() {
@@ -126,5 +126,5 @@ public class AccessToken implements Serializable {
     public String toString() {
         return "turbo.POJO.AccessToken[ id=" + id + " ]";
     }
-
+    
 }

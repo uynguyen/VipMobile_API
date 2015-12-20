@@ -28,7 +28,7 @@ public class HbnUserDAO extends AbstractHbnDAO<User> implements UserDAO {
         Query query = ss.getNamedQuery("User.findByUsername");
         query.setString("username", username);
         List<User> result = query.list();
-        ss.close();
+     //   ss.close();
         if (result.size() != 0) {
             return (User) result.get(0);
         }
@@ -43,7 +43,7 @@ public class HbnUserDAO extends AbstractHbnDAO<User> implements UserDAO {
         Query query = ss.getNamedQuery("User.findByEmail");
         query.setString("email", email);
         List<User> result = query.list();
-        ss.close();
+       // ss.close();
 
         if (result.size() != 0) {
             return (User) result.get(0);

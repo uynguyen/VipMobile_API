@@ -49,9 +49,9 @@ public class UserController {
         String result = null;
 
         try {
-            AccessTokenModel accessToken = null;
+            AccessTokenModel accessToken = new AccessTokenModel();
             result = userService.getUserByUsername(user.getUsername(), user.getPassword(), accessToken);
-            if (accessToken != null) {
+            if (result.contains("Success")) {
                 ResponseEntity<AccessTokenModel> entity = new ResponseEntity(accessToken, HttpStatus.OK);
                 return entity;
             }
@@ -134,6 +134,8 @@ public class UserController {
         }
     }
 
+            
+    //TODO: Do later
     @RequestMapping(value = {"/resetPass"},
             method = {RequestMethod.POST},
             consumes = {MediaType.ALL_VALUE})
