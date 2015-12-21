@@ -5,7 +5,11 @@
  */
 package turbo.controller;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +19,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import turbo.POJO.Product;
+import turbo.POJO.ProductColorDetail;
 import turbo.POJO.ProductDetail;
+import turbo.model.ProductDetailModel;
 
 import turbo.service.ProductService;
 import turbo.service.SingleProductService;
@@ -38,16 +44,17 @@ public class ProductController {
             method = {RequestMethod.GET},
             produces = {"application/json", "application/xml"})
     @ResponseBody
-    public ResponseEntity<Product>
-            getProducts() {
-        ArrayList<Product> products = new ArrayList<Product>();
+    public ResponseEntity<List<Product>>
+            getProducts(HttpServletRequest request) {
+        List<Product> products = new ArrayList<Product>();
         try {
 
-            products = (ArrayList<Product>) productService.getProducts();
+            products = (List<Product>) productService.getProducts();
+
         } catch (Exception e) {
             System.err.println(e.getMessage());
         }
-        ResponseEntity<Product> entity = new ResponseEntity(products, HttpStatus.OK);
+        ResponseEntity<List<Product>> entity = new ResponseEntity<List<Product>>(products, HttpStatus.OK);
         return entity;
     }
 
@@ -55,17 +62,22 @@ public class ProductController {
             method = {RequestMethod.GET},
             produces = {"application/json", "application/xml"})
     @ResponseBody
-    public ResponseEntity<ProductDetail>
+    public ResponseEntity<ProductDetailModel>
             getProduct(@PathVariable("id") Integer id) {
-        ProductDetail result = null;
-        try {
 
-            result =  singleProductService.getProductDetail(id);
+        ProductDetailModel result = new ProductDetailModel();
+        try {
+            result = singleProductService.getProductDetail(id);
+
+            ResponseEntity<ProductDetailModel> entity = new ResponseEntity(result, HttpStatus.OK);
+            return entity;
+
         } catch (Exception e) {
             System.err.println(e.getMessage());
+            ResponseEntity<ProductDetailModel> entity = new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+            return entity;
         }
-        ResponseEntity<ProductDetail> entity = new ResponseEntity(result, HttpStatus.OK);
-        return entity;
+
     }
 
 }

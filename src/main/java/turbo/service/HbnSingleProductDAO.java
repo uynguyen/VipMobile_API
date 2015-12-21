@@ -5,6 +5,7 @@
  */
 package turbo.service;
 
+import java.util.Collection;
 import java.util.List;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -29,7 +30,11 @@ public class HbnSingleProductDAO extends AbstractHbnDAO<ProductDetail> implement
         Query query = ss.getNamedQuery("Product.findById");
         query.setInteger("id", idProduct);
         Product product = (Product) query.uniqueResult();
+        Collection detail = product.getProductDetailCollection();
+        if(!detail.isEmpty())
+            result = (ProductDetail) detail.toArray()[0];
         
+                
         // ss.close();
        
         return result;

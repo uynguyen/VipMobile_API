@@ -84,7 +84,6 @@ public class ProductDetail implements Serializable {
     @JoinColumn(name = "id_producer", referencedColumnName = "id")
     @ManyToOne
     @JsonBackReference
-    @JsonIgnore
     private ProducerCategory idProducer;
     @JoinColumn(name = "id_product", referencedColumnName = "id")
     @ManyToOne

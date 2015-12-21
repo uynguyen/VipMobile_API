@@ -7,11 +7,13 @@ package turbo.service;
 
 import turbo.POJO.ProductDetail;
 import turbo.POJO.User;
+import turbo.model.ProductDetailModel;
 
 /**
  *
  * @author LeeSan
  */
 public interface SingleProductService {
-     ProductDetail getProductDetail(int idProduct);
+
+    ProductDetailModel getProductDetail(int idProduct);
 }

@@ -44,6 +44,7 @@ public class ColorCategory implements Serializable {
     @Column(length = 2147483647)
     private String value;
     @OneToMany(mappedBy = "idColor")
+    @JsonIgnore
     private Collection<ProductColorDetail> productColorDetailCollection;
 
     public ColorCategory() {

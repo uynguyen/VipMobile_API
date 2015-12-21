@@ -78,22 +78,26 @@
         base-package="turbo.controller" />
     
     
-    <tx:annotation-driven  />
+ 
     <context:component-scan base-package="turbo.service" />
 
     <!--INTERCEPTOR-->
 <!--    <mvc:interceptors>
         <mvc:interceptor>
             <mvc:mapping path="/product/*" />
-          
-        <bean class="turbo.interceptor.AuthenticationInterceptor"/>
-    </mvc:interceptor>
-</mvc:interceptors>
-<context:component-scan
-    base-package="turbo.interceptor" />-->
+            <bean class="turbo.interceptor.ProductInterceptor"/>
+            <bean class="turbo.interceptor.AuthenticationInterceptor"/>
+        </mvc:interceptor>
+    </mvc:interceptors>
+    <context:component-scan
+        base-package="turbo.interceptor" />
         
-    <context:component-scan base-package="turbo.fillter" />
+    <context:component-scan base-package="turbo.fillter" />-->
    
+    
+    <!--RESOURCE CONFIG-->
+    
+    <mvc:resources mapping="/Resources/**" location="/Resources/" cache-period="31556926"/>
     
     
 </beans>
