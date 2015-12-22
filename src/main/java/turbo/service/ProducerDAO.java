@@ -5,17 +5,14 @@
  */
 package turbo.service;
 
-import java.util.ArrayList;
+import turbo.POJO.ProducerCategory;
 import turbo.POJO.Product;
 import turbo.POJO.ProductDetail;
-import turbo.POJO.User;
 
 /**
  *
  * @author LeeSan
  */
-public interface SingleProductDAO extends DAO<ProductDetail>{
-    ProductDetail getProductDetail(int idProduct);
-
-    
+public interface ProducerDAO extends DAO<ProducerCategory>{
+    ProducerCategory getProducerCategoryByValue(String value);
 }

@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.client.token.AccessTokenRequest;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,6 +26,7 @@ import turbo.bussiness.EmailHandler;
 import turbo.bussiness.RegisterEmailHandler;
 import turbo.model.AccessTokenModel;
 import turbo.model.ResetPassModel;
+import turbo.model.ReturnedMessage;
 import turbo.service.ProductService;
 import turbo.service.UserService;
 
@@ -69,22 +71,28 @@ public class UserController {
             consumes = {MediaType.ALL_VALUE}
     )
     @ResponseBody
-    public ResponseEntity<String>
+    public ResponseEntity<ReturnedMessage>
             registerUser(@RequestBody User user) {
 
-        String result = "";
+        ReturnedMessage result = new ReturnedMessage();
+
         try {
 
-            result = userService.registerUser(user);
+            String mess = userService.registerUser(user);
+            result.setMess(mess);
+            if (mess.contains("CreateSuccess")) {
+
+                return new ResponseEntity<ReturnedMessage>(result, HttpStatus.CREATED);
+            } else {
+
+                return new ResponseEntity<ReturnedMessage>(result, HttpStatus.BAD_REQUEST);
+            }
+
         } catch (Exception e) {
             System.err.println(e.getMessage());
+            return new ResponseEntity<ReturnedMessage>(result, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        if (result.contains("CreateSuccess")) {
-            return new ResponseEntity<String>(result, HttpStatus.CREATED);
-        }
-
-        return new ResponseEntity<String>(result, HttpStatus.CONFLICT);
     }
 
     @RequestMapping(value = {"/activate/{RegisterToken}"},
@@ -92,24 +100,25 @@ public class UserController {
             produces = {MediaType.ALL_VALUE})
 
     @ResponseBody
-    public ResponseEntity<String>
+    public ResponseEntity<ReturnedMessage>
             activateUser(@PathVariable("RegisterToken") String registerToken) {
 
-        String result = "";
+        ReturnedMessage result = new ReturnedMessage();
         try {
 
-            result = userService.activateUser(registerToken);
-            if (result.contains("activated")) {
+            String mess = userService.activateUser(registerToken);
+            result.setMess(mess);
+            if (mess.contains("activated")) {
 
-                return new ResponseEntity<String>(result, HttpStatus.OK);
+                return new ResponseEntity<ReturnedMessage>(result, HttpStatus.OK);
             } else {
 
-                return new ResponseEntity<String>(result, HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<ReturnedMessage>(result, HttpStatus.BAD_REQUEST);
             }
 
         } catch (Exception e) {
             System.err.println(e.getMessage());
-            return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<ReturnedMessage>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
     }
@@ -118,38 +127,38 @@ public class UserController {
             method = {RequestMethod.GET},
             produces = {MediaType.ALL_VALUE})
     @ResponseBody
-    public ResponseEntity<String>
+    public ResponseEntity<ReturnedMessage>
             requestResetPassword(@PathVariable("Email") String Email) {
 
-        String result = "";
+        ReturnedMessage result = new ReturnedMessage();
         try {
 
-            result = userService.sendResetRequestEmail(Email);
-
-            return new ResponseEntity<String>(result, HttpStatus.OK);
+            String mess = userService.sendResetRequestEmail(Email);
+            result.setMess(mess);
+            return new ResponseEntity<ReturnedMessage>(result, HttpStatus.OK);
 
         } catch (Exception e) {
             System.err.println(e.getMessage());
-            return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<ReturnedMessage>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-            
     //TODO: Do later
     @RequestMapping(value = {"/resetPass"},
             method = {RequestMethod.POST},
             consumes = {MediaType.ALL_VALUE})
     @ResponseBody
-    public ResponseEntity<String>
+    public ResponseEntity<ReturnedMessage>
             resetPassword(@RequestBody ResetPassModel pass) {
 
-        String result = "";
+        ReturnedMessage result = new ReturnedMessage();
+
         try {
 
-            return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<ReturnedMessage>(HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (Exception e) {
             System.err.println(e.getMessage());
-            return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<ReturnedMessage>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -157,10 +166,10 @@ public class UserController {
             method = {RequestMethod.GET},
             produces = {MediaType.ALL_VALUE})
     @ResponseBody
-    public ResponseEntity<String>
+    public ResponseEntity<ReturnedMessage>
             requireToken() {
 
-        return new ResponseEntity<String>("Unauthorized", HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<ReturnedMessage>(new ReturnedMessage("Unauthorized"), HttpStatus.BAD_REQUEST);
 
     }
 }

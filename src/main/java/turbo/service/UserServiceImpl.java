@@ -142,7 +142,7 @@ public class UserServiceImpl implements UserService {
         
         RegisterToken token = registerTokenDAO.getRegisterToken(registerToken);
         if (token == null) {
-            return "Not exist";
+            return "NotExist";
         }
         
         Timestamp currentTime = new Timestamp(new Date().getTime());

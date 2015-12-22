@@ -7,6 +7,7 @@ package turbo.service;
 
 import java.util.List;
 import turbo.POJO.Product;
+import turbo.model.QueryProductStringModel;
 
 /**
  *
@@ -17,6 +18,7 @@ public interface ProductService {
     void createProduct(Product product);
 
     List<Product> getProducts();
+    
 
     List<Product> getProductByCode(String code);
 
@@ -25,4 +27,6 @@ public interface ProductService {
     void updateProduct(Product product);
 
     void deleteProduct(Long id);
+
+    List<Product> searchProduct(QueryProductStringModel query);
 }

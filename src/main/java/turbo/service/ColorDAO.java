@@ -5,17 +5,15 @@
  */
 package turbo.service;
 
-import java.util.ArrayList;
-import turbo.POJO.Product;
-import turbo.POJO.ProductDetail;
-import turbo.POJO.User;
+
+import turbo.POJO.ColorCategory;
+import turbo.POJO.ProducerCategory;
+import turbo.POJO.ProductColorDetail;
 
 /**
  *
  * @author LeeSan
  */
-public interface SingleProductDAO extends DAO<ProductDetail>{
-    ProductDetail getProductDetail(int idProduct);
-
-    
+public interface ColorDAO  extends DAO<ColorCategory>{
+    ColorCategory getProductColorDetailByValue(String value);
 }

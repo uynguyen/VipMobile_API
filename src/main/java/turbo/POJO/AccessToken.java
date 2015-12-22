@@ -49,7 +49,7 @@ public class AccessToken implements Serializable {
     @Size(max = 2147483647)
     @Column(length = 2147483647)
     private String scope;
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date expire;
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     @ManyToOne

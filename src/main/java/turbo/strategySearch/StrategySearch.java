@@ -3,19 +3,17 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package turbo.service;
+package turbo.strategySearch;
 
 import java.util.ArrayList;
 import turbo.POJO.Product;
-import turbo.POJO.ProductDetail;
-import turbo.POJO.User;
+import turbo.model.QueryProductStringModel;
 
 /**
  *
  * @author LeeSan
  */
-public interface SingleProductDAO extends DAO<ProductDetail>{
-    ProductDetail getProductDetail(int idProduct);
-
+public interface StrategySearch {
+    public ArrayList<Product> Search(ArrayList<Product> lstProducts,QueryProductStringModel query);
     
 }

@@ -5,6 +5,7 @@
  */
 package turbo.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import turbo.POJO.Product;
 
@@ -13,5 +14,13 @@ import turbo.POJO.Product;
  * @author LeeSan
  */
 public interface ProductDAO extends DAO<Product>{
+
+    public ArrayList<Product> getProductByPriceArrange(int min, int max);
+    public ArrayList<Product> getProductByScreenSize(ArrayList<Double> screenSize);
+    
+    public ArrayList<Product> getProducts(int page, int limit);
+
+    public ArrayList<Product> getProductsByName(String searchString);
+   
   
 }

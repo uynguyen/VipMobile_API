@@ -6,7 +6,6 @@
 package turbo.POJO;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.util.Collection;
 import javax.persistence.Basic;
@@ -22,7 +21,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
-
+import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**
  *
@@ -61,15 +60,15 @@ public class Product implements Serializable {
     private String name;
     @OneToMany(mappedBy = "idProduct")
     @JsonBackReference
-    @JsonIgnore
+    @com.fasterxml.jackson.annotation.JsonIgnore
     private Collection<ProductDetail> productDetailCollection;
     @OneToMany(mappedBy = "idProduct")
     @JsonBackReference
-    @JsonIgnore
+    @com.fasterxml.jackson.annotation.JsonIgnore
     private Collection<BillDetail> billDetailCollection;
     @OneToMany(mappedBy = "idProduct")
     @JsonBackReference
-    @JsonIgnore
+    @com.fasterxml.jackson.annotation.JsonIgnore
     private Collection<ProductColorDetail> productColorDetailCollection;
 
     public Product() {
