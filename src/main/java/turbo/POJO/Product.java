@@ -5,9 +5,9 @@
  */
 package turbo.POJO;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -18,6 +18,8 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -37,7 +39,8 @@ import org.codehaus.jackson.annotate.JsonIgnore;
     @NamedQuery(name = "Product.findByImage", query = "SELECT p FROM Product p WHERE p.image = :image"),
     @NamedQuery(name = "Product.findByPrice", query = "SELECT p FROM Product p WHERE p.price = :price"),
     @NamedQuery(name = "Product.findByAmount", query = "SELECT p FROM Product p WHERE p.amount = :amount"),
-    @NamedQuery(name = "Product.findByName", query = "SELECT p FROM Product p WHERE p.name = :name")})
+    @NamedQuery(name = "Product.findByName", query = "SELECT p FROM Product p WHERE p.name = :name"),
+    @NamedQuery(name = "Product.findByImportDate", query = "SELECT p FROM Product p WHERE p.importDate = :importDate")})
 public class Product implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -58,18 +61,17 @@ public class Product implements Serializable {
     @Size(max = 2147483647)
     @Column(length = 2147483647)
     private String name;
+    @Column(name = "import_date")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date importDate;
     @OneToMany(mappedBy = "idProduct")
-    @JsonBackReference
-    @com.fasterxml.jackson.annotation.JsonIgnore
     private Collection<ProductDetail> productDetailCollection;
     @OneToMany(mappedBy = "idProduct")
-    @JsonBackReference
-    @com.fasterxml.jackson.annotation.JsonIgnore
     private Collection<BillDetail> billDetailCollection;
     @OneToMany(mappedBy = "idProduct")
-    @JsonBackReference
-    @com.fasterxml.jackson.annotation.JsonIgnore
     private Collection<ProductColorDetail> productColorDetailCollection;
+    @OneToMany(mappedBy = "idProduct")
+    private Collection<SaleProduct> saleProductCollection;
 
     public Product() {
     }
@@ -126,6 +128,14 @@ public class Product implements Serializable {
         this.name = name;
     }
 
+    public Date getImportDate() {
+        return importDate;
+    }
+
+    public void setImportDate(Date importDate) {
+        this.importDate = importDate;
+    }
+
     @XmlTransient
     @JsonIgnore
     public Collection<ProductDetail> getProductDetailCollection() {
@@ -154,6 +164,16 @@ public class Product implements Serializable {
 
     public void setProductColorDetailCollection(Collection<ProductColorDetail> productColorDetailCollection) {
         this.productColorDetailCollection = productColorDetailCollection;
+    }
+
+    @XmlTransient
+    @JsonIgnore
+    public Collection<SaleProduct> getSaleProductCollection() {
+        return saleProductCollection;
+    }
+
+    public void setSaleProductCollection(Collection<SaleProduct> saleProductCollection) {
+        this.saleProductCollection = saleProductCollection;
     }
 
     @Override

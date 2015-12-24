@@ -53,12 +53,14 @@ public class UserController {
         try {
             AccessTokenModel accessToken = new AccessTokenModel();
             result = userService.getUserByUsername(user.getUsername(), user.getPassword(), accessToken);
+            accessToken.setMess(result);
             if (result.contains("Success")) {
+
                 ResponseEntity<AccessTokenModel> entity = new ResponseEntity(accessToken, HttpStatus.OK);
                 return entity;
             }
 
-            return new ResponseEntity<AccessTokenModel>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<AccessTokenModel>(accessToken, HttpStatus.BAD_REQUEST);
 
         } catch (Exception e) {
             System.err.println(e.getMessage());

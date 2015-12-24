@@ -5,6 +5,8 @@
  */
 package turbo.POJO;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
@@ -25,7 +27,7 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
-import org.codehaus.jackson.annotate.JsonIgnore;
+
 
 /**
  *
@@ -39,7 +41,7 @@ import org.codehaus.jackson.annotate.JsonIgnore;
     @NamedQuery(name = "UserBill.findById", query = "SELECT u FROM UserBill u WHERE u.id = :id"),
     @NamedQuery(name = "UserBill.findByCode", query = "SELECT u FROM UserBill u WHERE u.code = :code"),
     @NamedQuery(name = "UserBill.findByState", query = "SELECT u FROM UserBill u WHERE u.state = :state"),
-    @NamedQuery(name = "UserBill.findByDate", query = "SELECT u FROM UserBill u WHERE u.date = :date"),
+    @NamedQuery(name = "UserBill.findByBookDate", query = "SELECT u FROM UserBill u WHERE u.bookDate = :bookDate"),
     @NamedQuery(name = "UserBill.findByTotal", query = "SELECT u FROM UserBill u WHERE u.total = :total")})
 public class UserBill implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -52,15 +54,20 @@ public class UserBill implements Serializable {
     @Column(length = 2147483647)
     private String code;
     private Boolean state;
-    @Temporal(TemporalType.DATE)
-    private Date date;
+    @Column(name = "book_date")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date bookDate;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Column(precision = 17, scale = 17)
     private Double total;
     @OneToMany(mappedBy = "idBill")
+    @JsonBackReference
+    @JsonIgnore
     private Collection<BillDetail> billDetailCollection;
     @JoinColumn(name = "id_user", referencedColumnName = "id")
     @ManyToOne
+    @JsonBackReference
+    @JsonIgnore
     private User idUser;
 
     public UserBill() {
@@ -94,12 +101,12 @@ public class UserBill implements Serializable {
         this.state = state;
     }
 
-    public Date getDate() {
-        return date;
+    public Date getBookDate() {
+        return bookDate;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public void setBookDate(Date bookDate) {
+        this.bookDate = bookDate;
     }
 
     public Double getTotal() {

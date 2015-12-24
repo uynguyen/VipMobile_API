@@ -67,6 +67,8 @@ public class User implements Serializable {
     @Column(name = "create_date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date createDate;
+    @OneToMany(mappedBy = "idUser")
+    private Collection<UserBill> userBillCollection;
     @OneToMany(mappedBy = "userId")
     private Collection<AccessToken> accessTokenCollection;
     @OneToMany(mappedBy = "idUser")
@@ -77,8 +79,6 @@ public class User implements Serializable {
     @JoinColumn(name = "id_role", referencedColumnName = "id")
     @ManyToOne
     private UserRole idRole;
-    @OneToMany(mappedBy = "idUser")
-    private Collection<UserBill> userBillCollection;
 
     public User() {
     }
@@ -137,6 +137,16 @@ public class User implements Serializable {
 
     @XmlTransient
     @JsonIgnore
+    public Collection<UserBill> getUserBillCollection() {
+        return userBillCollection;
+    }
+
+    public void setUserBillCollection(Collection<UserBill> userBillCollection) {
+        this.userBillCollection = userBillCollection;
+    }
+
+    @XmlTransient
+    @JsonIgnore
     public Collection<AccessToken> getAccessTokenCollection() {
         return accessTokenCollection;
     }
@@ -169,16 +179,6 @@ public class User implements Serializable {
 
     public void setIdRole(UserRole idRole) {
         this.idRole = idRole;
-    }
-
-    @XmlTransient
-    @JsonIgnore
-    public Collection<UserBill> getUserBillCollection() {
-        return userBillCollection;
-    }
-
-    public void setUserBillCollection(Collection<UserBill> userBillCollection) {
-        this.userBillCollection = userBillCollection;
     }
 
     @Override

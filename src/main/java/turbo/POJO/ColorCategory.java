@@ -32,7 +32,8 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 @NamedQueries({
     @NamedQuery(name = "ColorCategory.findAll", query = "SELECT c FROM ColorCategory c"),
     @NamedQuery(name = "ColorCategory.findById", query = "SELECT c FROM ColorCategory c WHERE c.id = :id"),
-    @NamedQuery(name = "ColorCategory.findByValue", query = "SELECT c FROM ColorCategory c WHERE c.value = :value")})
+    @NamedQuery(name = "ColorCategory.findByValue", query = "SELECT c FROM ColorCategory c WHERE c.value = :value"),
+    @NamedQuery(name = "ColorCategory.findByColorCode", query = "SELECT c FROM ColorCategory c WHERE c.colorCode = :colorCode")})
 public class ColorCategory implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -43,6 +44,9 @@ public class ColorCategory implements Serializable {
     @Size(max = 2147483647)
     @Column(length = 2147483647)
     private String value;
+    @Size(max = 2147483647)
+    @Column(name = "color_code", length = 2147483647)
+    private String colorCode;
     @OneToMany(mappedBy = "idColor")
     private Collection<ProductColorDetail> productColorDetailCollection;
 
@@ -67,6 +71,14 @@ public class ColorCategory implements Serializable {
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    public String getColorCode() {
+        return colorCode;
+    }
+
+    public void setColorCode(String colorCode) {
+        this.colorCode = colorCode;
     }
 
     @XmlTransient
