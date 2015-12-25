@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import turbo.POJO.User;
 import turbo.POJO.UserBill;
 import turbo.model.AccessTokenModel;
+import turbo.model.BillDetailModel;
 import turbo.model.UserBillModel;
 import turbo.service.UserBillService;
 import turbo.service.UserService;
@@ -40,7 +41,7 @@ public class UserBillController {
     )
     @ResponseBody
     public ResponseEntity<ArrayList<UserBillModel>>
-            getUserBills(@PathVariable("page") int page, @PathVariable("limit") int limit ) {
+            getUserBills(@PathVariable("page") int page, @PathVariable("limit") int limit) {
         ArrayList<UserBillModel> result = new ArrayList<>();
 
         try {
@@ -52,6 +53,27 @@ public class UserBillController {
         } catch (Exception e) {
             System.err.println(e.getMessage());
             return new ResponseEntity<ArrayList<UserBillModel>>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @RequestMapping(value = {"/getBillDetail/{id}"},
+            method = {RequestMethod.GET},
+            consumes = {MediaType.ALL_VALUE}
+    )
+    @ResponseBody
+    public ResponseEntity<ArrayList<BillDetailModel>>
+            getUserBills(@PathVariable("id") int id) {
+        ArrayList<BillDetailModel> result = new ArrayList<>();
+
+        try {
+
+            result = userBillService.getBillDetail(id);
+
+            return new ResponseEntity<ArrayList<BillDetailModel>>(result, HttpStatus.OK);
+
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            return new ResponseEntity<ArrayList<BillDetailModel>>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

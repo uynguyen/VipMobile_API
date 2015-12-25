@@ -8,6 +8,7 @@ package turbo.service;
 import java.util.ArrayList;
 import turbo.POJO.User;
 import turbo.POJO.UserBill;
+import turbo.model.BillDetailModel;
 import turbo.model.UserBillModel;
 
 /**
@@ -16,4 +17,7 @@ import turbo.model.UserBillModel;
  */
 public interface UserBillService {
     ArrayList<UserBillModel> getUserBill(int page, int limit);
+    
+    ArrayList<BillDetailModel> getBillDetail(int id);
+    
 }

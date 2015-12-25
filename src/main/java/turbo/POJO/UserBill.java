@@ -6,7 +6,6 @@
 package turbo.POJO;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
@@ -27,7 +26,7 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
-
+import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**
  *
@@ -40,10 +39,14 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "UserBill.findAll", query = "SELECT u FROM UserBill u"),
     @NamedQuery(name = "UserBill.findById", query = "SELECT u FROM UserBill u WHERE u.id = :id"),
     @NamedQuery(name = "UserBill.findByCode", query = "SELECT u FROM UserBill u WHERE u.code = :code"),
-    @NamedQuery(name = "UserBill.findByState", query = "SELECT u FROM UserBill u WHERE u.state = :state"),
     @NamedQuery(name = "UserBill.findByBookDate", query = "SELECT u FROM UserBill u WHERE u.bookDate = :bookDate"),
-    @NamedQuery(name = "UserBill.findByTotal", query = "SELECT u FROM UserBill u WHERE u.total = :total")})
+    @NamedQuery(name = "UserBill.findByTotal", query = "SELECT u FROM UserBill u WHERE u.total = :total"),
+    @NamedQuery(name = "UserBill.findByVat", query = "SELECT u FROM UserBill u WHERE u.vat = :vat"),
+    @NamedQuery(name = "UserBill.findBySale", query = "SELECT u FROM UserBill u WHERE u.sale = :sale"),
+    @NamedQuery(name = "UserBill.findByAddress", query = "SELECT u FROM UserBill u WHERE u.address = :address"),
+    @NamedQuery(name = "UserBill.findByPhone", query = "SELECT u FROM UserBill u WHERE u.phone = :phone")})
 public class UserBill implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -53,21 +56,34 @@ public class UserBill implements Serializable {
     @Size(max = 2147483647)
     @Column(length = 2147483647)
     private String code;
-    private Boolean state;
     @Column(name = "book_date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date bookDate;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Column(precision = 17, scale = 17)
     private Double total;
+    @Column(precision = 17, scale = 17)
+    private Double vat;
+    @Column(precision = 17, scale = 17)
+    private Double sale;
+    @Size(max = 2147483647)
+    @Column(length = 2147483647)
+    private String address;
+    // @Pattern(regexp="^\\(?(\\d{3})\\)?[- ]?(\\d{3})[- ]?(\\d{4})$", message="Invalid phone/fax format, should be as xxx-xxx-xxxx")//if the field contains phone or fax number consider using this annotation to enforce field validation
+    @Size(max = 2147483647)
+    @Column(length = 2147483647)
+    private String phone;
     @OneToMany(mappedBy = "idBill")
     @JsonBackReference
-    @JsonIgnore
     private Collection<BillDetail> billDetailCollection;
+    @JoinColumn(name = "state", referencedColumnName = "id")
+    @ManyToOne
+    @JsonBackReference
+    private BillStateCode state;
     @JoinColumn(name = "id_user", referencedColumnName = "id")
     @ManyToOne
     @JsonBackReference
-    @JsonIgnore
+
     private User idUser;
 
     public UserBill() {
@@ -93,14 +109,6 @@ public class UserBill implements Serializable {
         this.code = code;
     }
 
-    public Boolean getState() {
-        return state;
-    }
-
-    public void setState(Boolean state) {
-        this.state = state;
-    }
-
     public Date getBookDate() {
         return bookDate;
     }
@@ -117,6 +125,38 @@ public class UserBill implements Serializable {
         this.total = total;
     }
 
+    public Double getVat() {
+        return vat;
+    }
+
+    public void setVat(Double vat) {
+        this.vat = vat;
+    }
+
+    public Double getSale() {
+        return sale;
+    }
+
+    public void setSale(Double sale) {
+        this.sale = sale;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
     @XmlTransient
     @JsonIgnore
     public Collection<BillDetail> getBillDetailCollection() {
@@ -125,6 +165,14 @@ public class UserBill implements Serializable {
 
     public void setBillDetailCollection(Collection<BillDetail> billDetailCollection) {
         this.billDetailCollection = billDetailCollection;
+    }
+
+    public BillStateCode getState() {
+        return state;
+    }
+
+    public void setState(BillStateCode state) {
+        this.state = state;
     }
 
     public User getIdUser() {
@@ -159,5 +207,5 @@ public class UserBill implements Serializable {
     public String toString() {
         return "turbo.POJO.UserBill[ id=" + id + " ]";
     }
-    
+
 }
