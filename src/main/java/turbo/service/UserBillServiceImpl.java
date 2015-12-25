@@ -17,6 +17,7 @@ import turbo.POJO.BillStateCode;
 import turbo.POJO.UserBill;
 import turbo.model.AccountModel;
 import turbo.model.BillDetailModel;
+import turbo.model.BillStateCodeModel;
 import turbo.model.BillStateModel;
 import turbo.model.UserBillModel;
 
@@ -33,6 +34,9 @@ public class UserBillServiceImpl implements UserBillService {
 
     @Autowired
     private UserBillDetailDAO billDetailDAO;
+
+    @Autowired
+    private BillStateCodeDAO billStateCodeDAO;
 
     @Override
     public ArrayList<UserBillModel> getUserBill(int page, int limit) {
@@ -62,7 +66,7 @@ public class UserBillServiceImpl implements UserBillService {
 
         result.setId(billState.getId());
         result.setValue(billState.getValue());
-        result.setValue(billState.getDescription());
+        result.setDescription(billState.getDescription());
 
         return result;
 
@@ -101,6 +105,29 @@ public class UserBillServiceImpl implements UserBillService {
                     result.add(itemModel);
                 }
             }
+        }
+
+        return result;
+    }
+
+    private BillStateCodeModel billStateCodePOJO2Model(BillStateCode billState) {
+        BillStateCodeModel result = new BillStateCodeModel();
+        result.setId(billState.getId());
+        result.setValue(billState.getValue());
+        result.setDescription(billState.getDescription());
+
+        return result;
+
+    }
+
+    @Override
+    public ArrayList<BillStateCodeModel> getBillStateCodes() {
+        ArrayList<BillStateCodeModel> result = new ArrayList<>();
+
+        ArrayList<BillStateCode> billStateCode = (ArrayList<BillStateCode>) billStateCodeDAO.getAll();
+
+        for (BillStateCode item : billStateCode) {
+            result.add(billStateCodePOJO2Model(item));
         }
 
         return result;

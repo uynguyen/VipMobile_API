@@ -74,15 +74,15 @@ public class UserBill implements Serializable {
     @Column(length = 2147483647)
     private String phone;
     @OneToMany(mappedBy = "idBill")
-    @JsonBackReference
+    
     private Collection<BillDetail> billDetailCollection;
     @JoinColumn(name = "state", referencedColumnName = "id")
     @ManyToOne
-    @JsonBackReference
+ 
     private BillStateCode state;
     @JoinColumn(name = "id_user", referencedColumnName = "id")
     @ManyToOne
-    @JsonBackReference
+   
 
     private User idUser;
 

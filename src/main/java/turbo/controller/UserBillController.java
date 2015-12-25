@@ -20,6 +20,7 @@ import turbo.POJO.User;
 import turbo.POJO.UserBill;
 import turbo.model.AccessTokenModel;
 import turbo.model.BillDetailModel;
+import turbo.model.BillStateCodeModel;
 import turbo.model.UserBillModel;
 import turbo.service.UserBillService;
 import turbo.service.UserService;
@@ -34,6 +35,27 @@ public class UserBillController {
 
     @Autowired
     private UserBillService userBillService;
+
+    @RequestMapping(value = {"/getBillState"},
+            method = {RequestMethod.GET},
+            consumes = {MediaType.ALL_VALUE}
+    )
+    @ResponseBody
+    public ResponseEntity<ArrayList<BillStateCodeModel>>
+            getUserBills() {
+        ArrayList<BillStateCodeModel> result = new ArrayList<>();
+
+        try {
+
+            result = userBillService.getBillStateCodes();
+
+            return new ResponseEntity<ArrayList<BillStateCodeModel>>(result, HttpStatus.OK);
+
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            return new ResponseEntity<ArrayList<BillStateCodeModel>>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
     @RequestMapping(value = {"/getUserBills/{page}/{limit}"},
             method = {RequestMethod.GET},
