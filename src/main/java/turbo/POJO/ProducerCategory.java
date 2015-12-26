@@ -5,6 +5,7 @@
  */
 package turbo.POJO;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.util.Collection;
 import javax.persistence.Basic;
@@ -21,7 +22,8 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
-import org.codehaus.jackson.annotate.JsonIgnore;
+
+
 
 /**
  *
@@ -47,6 +49,8 @@ public class ProducerCategory implements Serializable {
     @Column(nullable = false, length = 2147483647)
     private String value;
     @OneToMany(mappedBy = "idProducer")
+    @JsonIgnore
+    
     private Collection<ProductDetail> productDetailCollection;
 
     public ProducerCategory() {

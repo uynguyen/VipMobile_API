@@ -35,6 +35,7 @@ public class HbnProductDAO extends AbstractHbnDAO<Product> implements ProductDAO
         query.setInteger("max", max);
 
         result = (ArrayList<Product>) query.list();
+        ss.close();
         return result;
 
     }
@@ -62,7 +63,7 @@ public class HbnProductDAO extends AbstractHbnDAO<Product> implements ProductDAO
                 result.add(item.getIdProduct());
             }
         }
-        // ss.close();
+        ss.close();
         return result;
     }
 
@@ -72,6 +73,7 @@ public class HbnProductDAO extends AbstractHbnDAO<Product> implements ProductDAO
         ss.beginTransaction();
         Query query = ss.getNamedQuery("Product.findAll");
         result = (ArrayList<Product>) query.setFirstResult(page * limit).setMaxResults(limit).list();
+        ss.close();
         return result;
     }
 
@@ -80,7 +82,7 @@ public class HbnProductDAO extends AbstractHbnDAO<Product> implements ProductDAO
         Session ss = getSession();
         ss.beginTransaction();
         result = (ArrayList<Product>) ss.createCriteria(Product.class).add(Restrictions.like("name", searchString, MatchMode.ANYWHERE)).list();
-
+        ss.close();
         return result;
     }
 

@@ -13,9 +13,11 @@ import java.util.List;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import turbo.POJO.ColorCategory;
 import turbo.POJO.ProducerCategory;
 import turbo.POJO.Product;
 import turbo.POJO.ProductDetail;
+import turbo.POJO.SaleProduct;
 import turbo.model.QueryProductStringModel;
 import turbo.strategySearch.SearchByColor;
 import turbo.strategySearch.SearchByPrice;
@@ -43,6 +45,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Autowired
     private SingleProductDAO singleProductDAO;
+
+    @Autowired
+    private SaleProductDAO saleProductDAO;
 
     @Override
     public void createProduct(Product contact) {
@@ -139,8 +144,18 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Product> getSaleProducts(int page, int limit) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public List<SaleProduct> getSaleProducts(int page, int limit) {
+        return saleProductDAO.getSaleProducts(page, limit);
+    }
+
+    @Override
+    public ArrayList<ProducerCategory> getProducerCategory() {
+        return (ArrayList<ProducerCategory>) producerDAO.getAll();
+    }
+
+    @Override
+    public ArrayList<ColorCategory> getColorCategory() {
+        return (ArrayList<ColorCategory>) colorDAO.getAll();
     }
 
 }
