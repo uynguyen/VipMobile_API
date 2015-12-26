@@ -6,6 +6,7 @@
 package turbo.controller;
 
 import java.util.ArrayList;
+import javax.json.JsonObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -21,6 +22,8 @@ import turbo.POJO.UserBill;
 import turbo.model.AccessTokenModel;
 import turbo.model.BillDetailModel;
 import turbo.model.BillStateCodeModel;
+import turbo.model.ReturnedMessage;
+import turbo.model.UpdateUserBillModel;
 import turbo.model.UserBillModel;
 import turbo.service.UserBillService;
 import turbo.service.UserService;
@@ -86,7 +89,7 @@ public class UserBillController {
     public ResponseEntity<ArrayList<BillDetailModel>>
             getUserBills(@PathVariable("id") int id) {
         ArrayList<BillDetailModel> result = new ArrayList<>();
-
+        
         try {
 
             result = userBillService.getBillDetail(id);
@@ -96,6 +99,29 @@ public class UserBillController {
         } catch (Exception e) {
             System.err.println(e.getMessage());
             return new ResponseEntity<ArrayList<BillDetailModel>>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @RequestMapping(value = {"/updateBillState"},
+            method = {RequestMethod.POST},
+            consumes = {MediaType.ALL_VALUE}
+    )
+    @ResponseBody
+    public ResponseEntity<ReturnedMessage>
+            getUserBills(@RequestBody UpdateUserBillModel model) {
+        ReturnedMessage result = new ReturnedMessage();
+        try {
+
+            if (userBillService.updateStateUserBill(model)) {
+                result.setMess("Sucess");
+                return new ResponseEntity<ReturnedMessage>(result,HttpStatus.OK);
+            }
+            result.setMess("Fail");
+            return new ResponseEntity<ReturnedMessage>(result,HttpStatus.BAD_REQUEST);
+
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            return new ResponseEntity<ReturnedMessage>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

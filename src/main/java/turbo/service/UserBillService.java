@@ -10,6 +10,7 @@ import turbo.POJO.User;
 import turbo.POJO.UserBill;
 import turbo.model.BillDetailModel;
 import turbo.model.BillStateCodeModel;
+import turbo.model.UpdateUserBillModel;
 import turbo.model.UserBillModel;
 
 /**
@@ -23,4 +24,6 @@ public interface UserBillService {
     
     
     ArrayList<BillStateCodeModel> getBillStateCodes();
+
+    public boolean updateStateUserBill(UpdateUserBillModel model);
 }

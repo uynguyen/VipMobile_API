@@ -29,4 +29,6 @@ public interface ProductService {
     void deleteProduct(Long id);
 
     List<Product> searchProduct(QueryProductStringModel query);
+
+    public List<Product> getSaleProducts(int page, int limit);
 }

@@ -82,6 +82,28 @@ public class ProductController {
 
     }
 
+    @RequestMapping(value = {"/getSaleProduct/{page}/{limit}"},
+            method = {RequestMethod.GET},
+            produces = {"application/json", "application/xml"})
+    @ResponseBody
+    public ResponseEntity<List<Product>>
+            getSaleProduct(@PathVariable("page") int page, @PathVariable("limit") int limit) {
+
+        List<Product> result = new ArrayList<Product>();
+        try {
+            result = productService.getSaleProducts(page, limit);
+
+            ResponseEntity<List<Product>> entity = new ResponseEntity(result, HttpStatus.OK);
+            return entity;
+
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            ResponseEntity<List<Product>> entity = new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+            return entity;
+        }
+
+    }
+
     @RequestMapping(value = {"/searchProduct"},
             method = {RequestMethod.POST},
             produces = {"application/json", "application/xml"})
@@ -92,7 +114,7 @@ public class ProductController {
         List<Product> result = new ArrayList<Product>();
         try {
             result = productService.searchProduct(model);
-         
+
             ResponseEntity<List<Product>> entity = new ResponseEntity(result, HttpStatus.OK);
             return entity;
 

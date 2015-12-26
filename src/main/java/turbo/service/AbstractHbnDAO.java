@@ -58,7 +58,7 @@ public abstract class AbstractHbnDAO<T extends Object> implements DAO<T> {
         } catch (Exception e) {
 
             transaction.rollback();
-          
+
             return null;
         }
     }
@@ -67,7 +67,7 @@ public abstract class AbstractHbnDAO<T extends Object> implements DAO<T> {
         Session ss = getSession();
         ss.beginTransaction();
         T result = (T) ss.get(getDomainClass(), id);
-      //  ss.close();
+        //  ss.close();
         return result;
     }
 
@@ -83,7 +83,7 @@ public abstract class AbstractHbnDAO<T extends Object> implements DAO<T> {
         result = ss.createQuery("from "
                 + getDomainClassName()).list();
 
-      //  ss.close();
+        //  ss.close();
         return result;
 
     }
@@ -95,18 +95,31 @@ public abstract class AbstractHbnDAO<T extends Object> implements DAO<T> {
 
             ss.beginTransaction();
             ss.update(t);
+            
             transaction.commit();
         } catch (Exception e) {
             e.printStackTrace();
-            
+
             transaction.rollback();
-          
-        } 
+
+        }
 
     }
 
     public void delete(T t) {
-        getSession().delete(t);
+        Session ss = getSession();
+        Transaction transaction = ss.beginTransaction();
+        try {
+
+            ss.beginTransaction();
+            ss.delete(t);
+            transaction.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            transaction.rollback();
+
+        }
     }
 
     public void deleteById(Serializable id) {

@@ -138,4 +138,9 @@ public class ProductServiceImpl implements ProductService {
         return new ArrayList(result.subList(page * limit, (page + 1) * limit));
     }
 
+    @Override
+    public List<Product> getSaleProducts(int page, int limit) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }

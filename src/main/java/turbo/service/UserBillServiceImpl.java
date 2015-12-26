@@ -19,6 +19,7 @@ import turbo.model.AccountModel;
 import turbo.model.BillDetailModel;
 import turbo.model.BillStateCodeModel;
 import turbo.model.BillStateModel;
+import turbo.model.UpdateUserBillModel;
 import turbo.model.UserBillModel;
 
 /**
@@ -131,5 +132,23 @@ public class UserBillServiceImpl implements UserBillService {
         }
 
         return result;
+    }
+
+    @Override
+    public boolean updateStateUserBill(UpdateUserBillModel model) {
+        try {
+            for (int id : model.getId_bills()) {
+                UserBill bill = billDAO.get(id);
+                BillStateCode state = billStateCodeDAO.get(model.getId_state());
+                bill.setState(null);
+                bill.setState(state);
+                billDAO.update(bill);
+            }
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+
     }
 }

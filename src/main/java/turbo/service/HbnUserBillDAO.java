@@ -6,7 +6,9 @@
 package turbo.service;
 
 import java.util.ArrayList;
+import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.hibernate.criterion.Order;
 import org.springframework.stereotype.Repository;
 import turbo.POJO.ProductDetail;
 import turbo.POJO.UserBill;
@@ -25,8 +27,15 @@ public class HbnUserBillDAO extends AbstractHbnDAO<UserBill> implements UserBill
 
         ss.beginTransaction();
 
-        result = (ArrayList<UserBill>) ss.getNamedQuery("UserBill.findAll").setFirstResult(page * limit).setMaxResults(limit).list();
-
+        
+        Criteria criteria = ss.createCriteria(UserBill.class);
+        criteria.addOrder(Order.asc("id"));
+        criteria.setFirstResult(page * limit);
+        criteria.setMaxResults(limit);
+        result = (ArrayList<UserBill>) criteria.list();
+        System.out.println(result.get(1).getState());
+        System.out.println(result.get(2).getState());
+        ss.close();
         return result;
 
     }
@@ -47,3 +56,4 @@ public class HbnUserBillDAO extends AbstractHbnDAO<UserBill> implements UserBill
     }
 
 }
+
