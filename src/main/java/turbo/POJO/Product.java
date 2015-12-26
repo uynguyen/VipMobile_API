@@ -5,6 +5,7 @@
  */
 package turbo.POJO;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
@@ -23,7 +24,7 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
-import org.codehaus.jackson.annotate.JsonIgnore;
+
 
 /**
  *
@@ -65,12 +66,16 @@ public class Product implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date importDate;
     @OneToMany(mappedBy = "idProduct")
+     @JsonIgnore
     private Collection<ProductDetail> productDetailCollection;
     @OneToMany(mappedBy = "idProduct")
+     @JsonIgnore
     private Collection<BillDetail> billDetailCollection;
     @OneToMany(mappedBy = "idProduct")
+     @JsonIgnore
     private Collection<ProductColorDetail> productColorDetailCollection;
     @OneToMany(mappedBy = "idProduct")
+    @JsonIgnore
     private Collection<SaleProduct> saleProductCollection;
 
     public Product() {
