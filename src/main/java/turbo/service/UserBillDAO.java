@@ -6,6 +6,7 @@
 package turbo.service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import turbo.POJO.Product;
 import turbo.POJO.UserBill;
 
@@ -14,8 +15,10 @@ import turbo.POJO.UserBill;
  * @author LeeSan
  */
 public interface UserBillDAO extends DAO<UserBill> {
-    ArrayList<UserBill> getUserBilḷ̣(int page, int limit);
+    ArrayList<UserBill> getUserBilḷ̣(Integer page, Integer limit);
     ArrayList<UserBill> getUserBillByUsernamẹ(String username);
     ArrayList<UserBill> getUserBillByCode(String billCode);
     ArrayList<UserBill> getUserBillByDate(String bookDate);
+    
+    public ArrayList<UserBill> getUserBilḷ̣();
 }

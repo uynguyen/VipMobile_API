@@ -17,6 +17,19 @@ public class AccessTokenModel {
     String token;
     Date expireDate;
 
+    AccountModel acc = new AccountModel();
+
+    public AccountModel getAcc() {
+        return acc;
+    }
+
+    public void setAcc(AccountModel acc) {
+        this.acc = acc;
+    }
+    
+    
+    
+    
     public String getMess() {
         return mess;
     }

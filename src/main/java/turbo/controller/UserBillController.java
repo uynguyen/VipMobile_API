@@ -20,8 +20,10 @@ import org.springframework.web.bind.annotation.RestController;
 import turbo.POJO.User;
 import turbo.POJO.UserBill;
 import turbo.model.AccessTokenModel;
+import turbo.model.ArrayObjectModel;
 import turbo.model.BillDetailModel;
 import turbo.model.BillStateCodeModel;
+import turbo.model.QueryUserBillModel;
 import turbo.model.ReturnedMessage;
 import turbo.model.UpdateUserBillModel;
 import turbo.model.UserBillModel;
@@ -65,19 +67,19 @@ public class UserBillController {
             consumes = {MediaType.ALL_VALUE}
     )
     @ResponseBody
-    public ResponseEntity<ArrayList<UserBillModel>>
+    public ResponseEntity<ArrayObjectModel>
             getUserBills(@PathVariable("page") int page, @PathVariable("limit") int limit) {
-        ArrayList<UserBillModel> result = new ArrayList<>();
+        ArrayObjectModel result = new ArrayObjectModel();
 
         try {
 
             result = userBillService.getUserBill(page, limit);
 
-            return new ResponseEntity<ArrayList<UserBillModel>>(result, HttpStatus.OK);
+            return new ResponseEntity<ArrayObjectModel>(result, HttpStatus.OK);
 
         } catch (Exception e) {
             System.err.println(e.getMessage());
-            return new ResponseEntity<ArrayList<UserBillModel>>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<ArrayObjectModel>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -89,7 +91,7 @@ public class UserBillController {
     public ResponseEntity<ArrayList<BillDetailModel>>
             getUserBills(@PathVariable("id") int id) {
         ArrayList<BillDetailModel> result = new ArrayList<>();
-        
+
         try {
 
             result = userBillService.getBillDetail(id);
@@ -114,14 +116,36 @@ public class UserBillController {
 
             if (userBillService.updateStateUserBill(model)) {
                 result.setMess("Sucess");
-                return new ResponseEntity<ReturnedMessage>(result,HttpStatus.OK);
+                return new ResponseEntity<ReturnedMessage>(result, HttpStatus.OK);
             }
             result.setMess("Fail");
-            return new ResponseEntity<ReturnedMessage>(result,HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<ReturnedMessage>(result, HttpStatus.BAD_REQUEST);
 
         } catch (Exception e) {
             System.err.println(e.getMessage());
             return new ResponseEntity<ReturnedMessage>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @RequestMapping(value = {"/searchBills/{page}/{limit}"},
+            method = {RequestMethod.POST},
+            consumes = {MediaType.ALL_VALUE}
+    )
+    @ResponseBody
+    public ResponseEntity<ArrayObjectModel>
+            searchUserBills(@RequestBody QueryUserBillModel query, @PathVariable("page") int page,
+                    @PathVariable("limit") int limit) {
+        ArrayObjectModel result = new ArrayObjectModel();
+
+        try {
+
+            result = userBillService.searchBill(query, page, limit);
+
+            return new ResponseEntity<ArrayObjectModel>(result, HttpStatus.OK);
+
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            return new ResponseEntity<ArrayObjectModel>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

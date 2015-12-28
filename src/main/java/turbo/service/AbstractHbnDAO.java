@@ -13,8 +13,10 @@ import java.util.List;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.hibernate.criterion.Projections;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ReflectionUtils;
+import turbo.POJO.UserBill;
 
 /**
  *
@@ -95,7 +97,7 @@ public abstract class AbstractHbnDAO<T extends Object> implements DAO<T> {
 
             ss.beginTransaction();
             ss.update(t);
-            
+
             transaction.commit();
         } catch (Exception e) {
             e.printStackTrace();
@@ -131,10 +133,14 @@ public abstract class AbstractHbnDAO<T extends Object> implements DAO<T> {
                 + getDomainClassName()).executeUpdate();
     }
 
-    public long count() {
-        return (Long) getSession().createQuery(
-                "select count(*) from "
-                + getDomainClassName()).uniqueResult();
+    public Long count() {
+
+        Session ss = getSession();
+        ss.beginTransaction();
+        Long result = (Long) ss.createCriteria(getDomainClassName()).setProjection(Projections.rowCount()).uniqueResult();
+        ss.close();
+        return result;
+
     }
 
     public boolean exists(Serializable id) {

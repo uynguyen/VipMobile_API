@@ -14,11 +14,14 @@ import org.springframework.stereotype.Service;
 import turbo.POJO.Account;
 import turbo.POJO.BillDetail;
 import turbo.POJO.BillStateCode;
+import turbo.POJO.Product;
 import turbo.POJO.UserBill;
 import turbo.model.AccountModel;
+import turbo.model.ArrayObjectModel;
 import turbo.model.BillDetailModel;
 import turbo.model.BillStateCodeModel;
 import turbo.model.BillStateModel;
+import turbo.model.QueryUserBillModel;
 import turbo.model.UpdateUserBillModel;
 import turbo.model.UserBillModel;
 
@@ -28,7 +31,7 @@ import turbo.model.UserBillModel;
  */
 @Service("billService")
 @Transactional
-public class UserBillServiceImpl implements UserBillService {
+public class UserBillServiceImpl extends RootService implements UserBillService {
 
     @Autowired
     private UserBillDAO billDAO;
@@ -40,26 +43,38 @@ public class UserBillServiceImpl implements UserBillService {
     private BillStateCodeDAO billStateCodeDAO;
 
     @Override
-    public ArrayList<UserBillModel> getUserBill(int page, int limit) {
-        ArrayList<UserBillModel> result = new ArrayList<UserBillModel>();
+    public ArrayObjectModel getUserBill(int page, int limit) {
+        ArrayObjectModel result = new ArrayObjectModel();
+        ArrayList<UserBillModel> array  = new ArrayList<UserBillModel>();
         ArrayList<UserBill> userBillPojo = billDAO.getUserBilḷ̣(page, limit);
 
         for (UserBill pojo : userBillPojo) {
-            UserBillModel item = new UserBillModel();
+            UserBillModel item = userBillPOJO2Model(pojo);
 
-            item.setId(pojo.getId());
-            item.setCode(pojo.getCode());
-            item.setState(statePOJO2Model(pojo.getState()));
-            item.setTotal(pojo.getTotal());
-            item.setBookDate(pojo.getBookDate());
-
-            Account acc = pojo.getIdUser().getIdAccount();
-            item.setAccount(accountPOJO2Model(acc));
-            result.add(item);
+            array.add(item);
 
         }
 
+        result.setTotal(countTotalPage(billDAO.count().intValue(), limit));
+        result.setResult(array);
+        
         return result;
+    }
+
+    private UserBillModel userBillPOJO2Model(UserBill pojo) {
+        UserBillModel item = new UserBillModel();
+
+        item.setId(pojo.getId());
+        item.setCode(pojo.getCode());
+        item.setState(statePOJO2Model(pojo.getState()));
+        item.setTotal(pojo.getTotal());
+        item.setBookDate(pojo.getBookDate());
+
+        Account acc = pojo.getIdUser().getIdAccount();
+        item.setAccount(accountPOJO2Model(acc));
+
+        return item;
+
     }
 
     private BillStateModel statePOJO2Model(BillStateCode billState) {
@@ -68,20 +83,6 @@ public class UserBillServiceImpl implements UserBillService {
         result.setId(billState.getId());
         result.setValue(billState.getValue());
         result.setDescription(billState.getDescription());
-
-        return result;
-
-    }
-
-    private AccountModel accountPOJO2Model(Account acc) {
-        AccountModel result = new AccountModel();
-        result.setAddress(acc.getAddress());
-        result.setAvata(acc.getAvatar());
-        result.setBirhDate(acc.getBirthday());
-        result.setFullname(acc.getFullName());
-        result.setGender(acc.getGender());
-        result.setId(acc.getId());
-        result.setVisaCode(acc.getVisaCode());
 
         return result;
 
@@ -151,4 +152,43 @@ public class UserBillServiceImpl implements UserBillService {
         }
 
     }
+
+    @Override
+    public ArrayObjectModel searchBill(QueryUserBillModel query, int page, int limit) {
+        ArrayList<UserBillModel> result = new ArrayList<>();
+        ArrayList<UserBill> userbill = new ArrayList<>();
+        if (query.getDate_time() != "") {
+            userbill = billDAO.getUserBillByDate(query.getDate_time());
+        } else {
+            userbill = billDAO.getUserBilḷ̣();
+        }
+        String query_str = query.getQuery_str();
+        for (UserBill item : userbill) {
+            if (item.getCode().equals(query_str)
+                    || item.getIdUser().getIdAccount().getFullName().contains(query_str)
+                    || item.getIdUser().getUsername().contains(query_str)
+                    || item.getIdUser().getEmail().contains(query_str)) {
+                result.add(userBillPOJO2Model(item));
+            }
+        }
+
+      
+        ArrayObjectModel aom = new ArrayObjectModel();      
+        aom.setTotal(countTotalPage(result.size(), limit));
+        aom.setResult(Paging(result,page,limit));
+        
+        return aom;
+        
+    }
+
+//    private ArrayList<UserBillModel> Paging(ArrayList<UserBillModel> result, int page, int limit) {
+//        int size = result.size();
+//        if (size < page * limit) {
+//            return result;
+//        }
+//        if ((size >= page * limit) && (size < (page + 1) * limit)) {
+//            return new ArrayList(result.subList(limit * page, size));
+//        }
+//        return new ArrayList(result.subList(page * limit, (page + 1) * limit));
+//    }
 }

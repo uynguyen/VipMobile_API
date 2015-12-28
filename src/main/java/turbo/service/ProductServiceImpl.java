@@ -32,7 +32,7 @@ import turbo.strategySearch.StrategySearch;
  */
 @Service("productService")
 @Transactional
-public class ProductServiceImpl implements ProductService {
+public class ProductServiceImpl extends RootService implements ProductService {
 
     @Autowired
     private ProductDAO productDAO;
@@ -130,17 +130,6 @@ public class ProductServiceImpl implements ProductService {
                 return p1.getPrice().compareTo(p2.getPrice());
             }
         });
-    }
-
-    private ArrayList<Product> Paging(ArrayList<Product> result, int page, int limit) {
-        int size = result.size();
-        if (size < (page + 1) * limit) {
-            return result;
-        }
-        if ((size >= page * limit) && (size < (page + 1) * limit)) {
-            return new ArrayList(result.subList(page * limit - 1, size - 1));
-        }
-        return new ArrayList(result.subList(page * limit, (page + 1) * limit));
     }
 
     @Override

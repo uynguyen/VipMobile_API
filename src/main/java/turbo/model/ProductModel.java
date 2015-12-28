@@ -5,6 +5,7 @@
  */
 package turbo.model;
 
+import java.io.Serializable;
 import turbo.POJO.Product;
 import turbo.POJO.SaleProduct;
 
@@ -12,7 +13,7 @@ import turbo.POJO.SaleProduct;
  *
  * @author LeeSan
  */
-public class ProductModel {
+public class ProductModel implements Serializable{
     private Product product;
     private SaleProduct saleDetail;
 

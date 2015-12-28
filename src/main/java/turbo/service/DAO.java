@@ -30,7 +30,7 @@ public interface DAO<T extends Object> {
 
     void deleteAll();
 
-    long count();
+    Long count();
 
     boolean exists(Serializable id);
 }
