@@ -217,10 +217,20 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20151123</version>
+        </dependency>
+        <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-web-api</artifactId>
             <version>7.0</version> 
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+    <groupId>com.paypal.sdk</groupId>
+    <artifactId>rest-api-sdk</artifactId>
+    <version>LATEST</version>
         </dependency>
     </dependencies>
 <!--    <profiles>
@@ -261,7 +271,7 @@
                     <source>1.7</source>
                     <target>1.7</target>
                     <compilerArguments>
-                        <proc>none</proc>
+                        <!--<proc>none</proc>-->
                         <endorseddirs>${endorsed.dir}</endorseddirs>
                     </compilerArguments>
                 </configuration>
