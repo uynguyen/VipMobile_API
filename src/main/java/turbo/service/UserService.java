@@ -18,7 +18,7 @@ public interface UserService {
 
     void addNewUSer(User product);
 
-    String getUserByUsername(String username, String password, AccessTokenModel token);
+    String getUserByUsername(String username, String password, String role, AccessTokenModel token);
 
     String registerUser(User user);
 

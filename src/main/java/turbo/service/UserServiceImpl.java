@@ -58,12 +58,18 @@ public class UserServiceImpl extends RootService implements UserService {
     }
 
     //TODO: Hash pass invalid???
-    public String getUserByUsername(String username, String password, AccessTokenModel token) {
+    public String getUserByUsername(String username, String password, String role, AccessTokenModel token) {
         
         User user = userDAO.getUserByUsername(username);
         if (user == null) {
             return "Invalid Infomation";
         }
+        if(role != null && role != "" && role.compareTo("admin") == 0){
+            String userRole = user.getIdRole().getRole().toLowerCase();
+            if(userRole.compareTo("admin") != 0 && userRole.compareTo("superadmin") != 0)
+                return "Require permission";
+        }
+        
         
         if (!user.getIsActive()) {
             return "Activated Require";

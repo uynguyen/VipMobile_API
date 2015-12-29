@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import turbo.POJO.Product;
@@ -47,20 +48,16 @@ public class UserController {
     )
     @ResponseBody
     public ResponseEntity<AccessTokenModel>
-            userLogin(@RequestBody User user) {
+            userLogin(@RequestBody User user, @RequestParam(value = "Role", required = false) String role) {
         String result = null;
 
         try {
             AccessTokenModel accessToken = new AccessTokenModel();
-            result = userService.getUserByUsername(user.getUsername(), user.getPassword(), accessToken);
+            result = userService.getUserByUsername(user.getUsername(), user.getPassword(), role, accessToken);
             accessToken.setMess(result);
-            if (result.contains("Success")) {
 
-                ResponseEntity<AccessTokenModel> entity = new ResponseEntity(accessToken, HttpStatus.OK);
-                return entity;
-            }
-
-            return new ResponseEntity<AccessTokenModel>(accessToken, HttpStatus.BAD_REQUEST);
+            ResponseEntity<AccessTokenModel> entity = new ResponseEntity(accessToken, HttpStatus.OK);
+            return entity;
 
         } catch (Exception e) {
             System.err.println(e.getMessage());
@@ -82,13 +79,8 @@ public class UserController {
 
             String mess = userService.registerUser(user);
             result.setMess(mess);
-            if (mess.contains("CreateSuccess")) {
 
-                return new ResponseEntity<ReturnedMessage>(result, HttpStatus.CREATED);
-            } else {
-
-                return new ResponseEntity<ReturnedMessage>(result, HttpStatus.BAD_REQUEST);
-            }
+            return new ResponseEntity<ReturnedMessage>(result, HttpStatus.CREATED);
 
         } catch (Exception e) {
             System.err.println(e.getMessage());
@@ -110,13 +102,8 @@ public class UserController {
 
             String mess = userService.activateUser(registerToken);
             result.setMess(mess);
-            if (mess.contains("activated")) {
 
-                return new ResponseEntity<ReturnedMessage>(result, HttpStatus.OK);
-            } else {
-
-                return new ResponseEntity<ReturnedMessage>(result, HttpStatus.BAD_REQUEST);
-            }
+            return new ResponseEntity<ReturnedMessage>(result, HttpStatus.OK);
 
         } catch (Exception e) {
             System.err.println(e.getMessage());
