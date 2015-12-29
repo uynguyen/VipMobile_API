@@ -5,6 +5,7 @@
  */
 package turbo.POJO;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Basic;
@@ -49,6 +50,7 @@ public class SaleProduct implements Serializable {
     private Date validDate;
     @JoinColumn(name = "id_product", referencedColumnName = "id")
     @ManyToOne
+    
     private Product idProduct;
 
     public SaleProduct() {

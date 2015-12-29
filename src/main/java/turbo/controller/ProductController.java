@@ -22,6 +22,8 @@ import org.springframework.web.bind.annotation.RestController;
 import turbo.POJO.Product;
 import turbo.POJO.ProductColorDetail;
 import turbo.POJO.ProductDetail;
+import turbo.POJO.SaleProduct;
+import turbo.model.CategoriesModel;
 import turbo.model.ProductDetailModel;
 import turbo.model.QueryProductStringModel;
 
@@ -41,6 +43,24 @@ public class ProductController {
 
     @Autowired
     private SingleProductService singleProductService;
+
+    @RequestMapping(value = {"/getCategories"},
+            method = {RequestMethod.GET},
+            produces = {"application/json", "application/xml"})
+    @ResponseBody
+    public ResponseEntity<CategoriesModel>
+            getCategories(HttpServletRequest request) {
+        CategoriesModel result = new CategoriesModel();
+        try {
+            result.setListProducers(productService.getProducerCategory());
+            result.setListcolors(productService.getColorCategory());
+
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
+        ResponseEntity<CategoriesModel> entity = new ResponseEntity<CategoriesModel>(result, HttpStatus.OK);
+        return entity;
+    }
 
     @RequestMapping(value = {"/list"},
             method = {RequestMethod.GET},
@@ -82,6 +102,28 @@ public class ProductController {
 
     }
 
+    @RequestMapping(value = {"/getSaleProduct/{page}/{limit}"},
+            method = {RequestMethod.GET},
+            produces = {"application/json", "application/xml"})
+    @ResponseBody
+    public ResponseEntity<List<SaleProduct>>
+            getSaleProduct(@PathVariable("page") int page, @PathVariable("limit") int limit) {
+
+        List<SaleProduct> result = new ArrayList<SaleProduct>();
+        try {
+            result = productService.getSaleProducts(page, limit);
+
+            ResponseEntity<List<SaleProduct>> entity = new ResponseEntity(result, HttpStatus.OK);
+            return entity;
+
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            ResponseEntity<List<SaleProduct>> entity = new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+            return entity;
+        }
+
+    }
+
     @RequestMapping(value = {"/searchProduct"},
             method = {RequestMethod.POST},
             produces = {"application/json", "application/xml"})
@@ -92,7 +134,7 @@ public class ProductController {
         List<Product> result = new ArrayList<Product>();
         try {
             result = productService.searchProduct(model);
-         
+
             ResponseEntity<List<Product>> entity = new ResponseEntity(result, HttpStatus.OK);
             return entity;
 

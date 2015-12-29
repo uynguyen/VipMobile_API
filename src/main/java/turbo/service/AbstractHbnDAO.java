@@ -13,8 +13,10 @@ import java.util.List;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.hibernate.criterion.Projections;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ReflectionUtils;
+import turbo.POJO.UserBill;
 
 /**
  *
@@ -58,7 +60,7 @@ public abstract class AbstractHbnDAO<T extends Object> implements DAO<T> {
         } catch (Exception e) {
 
             transaction.rollback();
-          
+
             return null;
         }
     }
@@ -67,7 +69,7 @@ public abstract class AbstractHbnDAO<T extends Object> implements DAO<T> {
         Session ss = getSession();
         ss.beginTransaction();
         T result = (T) ss.get(getDomainClass(), id);
-      //  ss.close();
+        //  ss.close();
         return result;
     }
 
@@ -83,7 +85,7 @@ public abstract class AbstractHbnDAO<T extends Object> implements DAO<T> {
         result = ss.createQuery("from "
                 + getDomainClassName()).list();
 
-      //  ss.close();
+        //  ss.close();
         return result;
 
     }
@@ -95,18 +97,31 @@ public abstract class AbstractHbnDAO<T extends Object> implements DAO<T> {
 
             ss.beginTransaction();
             ss.update(t);
+
             transaction.commit();
         } catch (Exception e) {
             e.printStackTrace();
-            
+
             transaction.rollback();
-          
-        } 
+
+        }
 
     }
 
     public void delete(T t) {
-        getSession().delete(t);
+        Session ss = getSession();
+        Transaction transaction = ss.beginTransaction();
+        try {
+
+            ss.beginTransaction();
+            ss.delete(t);
+            transaction.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            transaction.rollback();
+
+        }
     }
 
     public void deleteById(Serializable id) {
@@ -118,10 +133,14 @@ public abstract class AbstractHbnDAO<T extends Object> implements DAO<T> {
                 + getDomainClassName()).executeUpdate();
     }
 
-    public long count() {
-        return (Long) getSession().createQuery(
-                "select count(*) from "
-                + getDomainClassName()).uniqueResult();
+    public Long count() {
+
+        Session ss = getSession();
+        ss.beginTransaction();
+        Long result = (Long) ss.createCriteria(getDomainClassName()).setProjection(Projections.rowCount()).uniqueResult();
+        ss.close();
+        return result;
+
     }
 
     public boolean exists(Serializable id) {

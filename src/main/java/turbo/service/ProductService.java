@@ -5,8 +5,12 @@
  */
 package turbo.service;
 
+import java.util.ArrayList;
 import java.util.List;
+import turbo.POJO.ColorCategory;
+import turbo.POJO.ProducerCategory;
 import turbo.POJO.Product;
+import turbo.POJO.SaleProduct;
 import turbo.model.QueryProductStringModel;
 
 /**
@@ -29,4 +33,9 @@ public interface ProductService {
     void deleteProduct(Long id);
 
     List<Product> searchProduct(QueryProductStringModel query);
+
+    public List<SaleProduct> getSaleProducts(int page, int limit);
+    
+    ArrayList<ProducerCategory> getProducerCategory();
+    ArrayList<ColorCategory> getColorCategory();
 }

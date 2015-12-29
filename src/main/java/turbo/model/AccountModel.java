@@ -13,13 +13,19 @@ import java.util.Date;
  * @author LeeSan
  */
 public class AccountModel implements Serializable{
-    Integer id;
-    String fullname;
-    String address;
-    Date birhDate;
-    Boolean gender;
-    String avata;
-    String visaCode;
+
+    private Integer id;
+
+    private String fullName;
+
+    private String address;
+
+    private Date birthday;
+    private Boolean gender;
+
+    private String avatar;
+
+    private String visaCode;
 
     public Integer getId() {
         return id;
@@ -29,12 +35,12 @@ public class AccountModel implements Serializable{
         this.id = id;
     }
 
-    public String getFullname() {
-        return fullname;
+    public String getFullName() {
+        return fullName;
     }
 
-    public void setFullname(String fullname) {
-        this.fullname = fullname;
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
     public String getAddress() {
@@ -45,12 +51,12 @@ public class AccountModel implements Serializable{
         this.address = address;
     }
 
-    public Date getBirhDate() {
-        return birhDate;
+    public Date getBirthday() {
+        return birthday;
     }
 
-    public void setBirhDate(Date birhDate) {
-        this.birhDate = birhDate;
+    public void setBirthday(Date birthday) {
+        this.birthday = birthday;
     }
 
     public Boolean getGender() {
@@ -61,12 +67,12 @@ public class AccountModel implements Serializable{
         this.gender = gender;
     }
 
-    public String getAvata() {
-        return avata;
+    public String getAvatar() {
+        return avatar;
     }
 
-    public void setAvata(String avata) {
-        this.avata = avata;
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 
     public String getVisaCode() {
@@ -76,6 +82,8 @@ public class AccountModel implements Serializable{
     public void setVisaCode(String visaCode) {
         this.visaCode = visaCode;
     }
-
+    
+    
+    
    
 }
