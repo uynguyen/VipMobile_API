@@ -157,8 +157,19 @@ public class UserController {
     @ResponseBody
     public ResponseEntity<ReturnedMessage>
             requireToken() {
+        System.err.println("requireToken");
+        return new ResponseEntity<ReturnedMessage>(new ReturnedMessage("Unauthorized"), HttpStatus.OK);
 
-        return new ResponseEntity<ReturnedMessage>(new ReturnedMessage("Unauthorized"), HttpStatus.BAD_REQUEST);
+    }
+
+    @RequestMapping(value = {"/tokenExpire"},
+            method = {RequestMethod.GET},
+            produces = {MediaType.ALL_VALUE})
+    @ResponseBody
+    public ResponseEntity<ReturnedMessage>
+            tokenExpire() {
+        System.err.println("tokenExpire");
+        return new ResponseEntity<ReturnedMessage>(new ReturnedMessage("TokenExpire"), HttpStatus.OK);
 
     }
 }
