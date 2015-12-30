@@ -26,6 +26,7 @@ import turbo.POJO.User;
 import turbo.bussiness.EmailHandler;
 import turbo.bussiness.RegisterEmailHandler;
 import turbo.model.AccessTokenModel;
+import turbo.model.RegiterModel;
 import turbo.model.ResetPassModel;
 import turbo.model.ReturnedMessage;
 import turbo.service.ProductService;
@@ -71,10 +72,10 @@ public class UserController {
     )
     @ResponseBody
     public ResponseEntity<ReturnedMessage>
-            registerUser(@RequestBody User user) {
+            registerUser(@RequestBody RegiterModel user) {
 
         ReturnedMessage result = new ReturnedMessage();
-
+        System.out.println("callback" + user.getCallbackURL());
         try {
 
             String mess = userService.registerUser(user);

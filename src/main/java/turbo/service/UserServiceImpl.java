@@ -32,8 +32,10 @@ import turbo.bussiness.RegisterEmailHandler;
 import turbo.model.AccessTokenModel;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import turbo.POJO.AccessToken;
+import turbo.POJO.Account;
 import turbo.bussiness.ResetPassEmailHandler;
 import turbo.model.AccountModel;
+import turbo.model.RegiterModel;
 
 /**
  *
@@ -53,9 +55,10 @@ public class UserServiceImpl extends RootService implements UserService {
     @Autowired
     private AccessTokenDAO accessTokenDAO;
 
-    public void addNewUSer(User product) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+    @Autowired
+    private AccountDAO accountDAO;
+
+
 
     //TODO: Hash pass invalid???
     public String getUserByUsername(String username, String password, String role, AccessTokenModel token) {
@@ -75,10 +78,11 @@ public class UserServiceImpl extends RootService implements UserService {
             return "Activated Require";
         }
 
-//        String hashPass = hashPass(username, password);
-//        if (!hashPass.equals(user.getPassword())) {
-//            return "Invalid Information";
-//        }
+        String hashPass = hashPass(username, password);
+        if (!hashPass.equals(user.getPassword())) {
+            return "Invalid Information";
+        }
+        
         AccessTokenModel testtoken = GenerateTokenBus.generateToken(user.getUsername());
 
         AccessToken accessToken = new AccessToken();
@@ -127,15 +131,18 @@ public class UserServiceImpl extends RootService implements UserService {
     }
 
     //TODO: Set user role
-    public String registerUser(User user) {
-        if (isExistUsername(user.getUsername())) {
+    public String registerUser(RegiterModel userModel) {
+        if (isExistUsername(userModel.getUsername())) {
             return "UserNameExisted";
         }
-        if (isExistEmail(user.getEmail())) {
+        if (isExistEmail(userModel.getEmail())) {
             return "EmailExisted";
         }
+        User user = new User();
+        user.setUsername(userModel.getUsername());
+        user.setEmail(userModel.getEmail());
         user.setIsActive(false);
-        user.setPassword(encoder.encode(user.getPassword()));
+        user.setPassword(hashPass(userModel.getUsername(),userModel.getPassword()));
         User result = (User) userDAO.create(user);
         if (result != null) {
             AccessTokenModel accToken = GenerateTokenBus.generateToken(result.getUsername());
@@ -145,7 +152,7 @@ public class UserServiceImpl extends RootService implements UserService {
             registerToken.setExpise(accToken.getExpireDate());
 
             if (registerTokenDAO.create(registerToken) != null) {
-                EmailHandler sendEmailHandler = new RegisterEmailHandler();
+                EmailHandler sendEmailHandler = new RegisterEmailHandler(userModel.getCallbackURL() + accToken.getToken(), userModel.getUsername());
 
                 sendEmailHandler.sendEmail(user.getEmail());
                 return "CreateSuccess";
@@ -153,9 +160,9 @@ public class UserServiceImpl extends RootService implements UserService {
 
         }
 
-        if (userDAO.create(user) != null) {
-            return "CreateSuccess";
-        }
+//        if (userDAO.create(user) != null) {
+//            return "CreateSuccess";
+//        }
         return "CreateFail";
 
     }
@@ -208,6 +215,11 @@ public class UserServiceImpl extends RootService implements UserService {
         if (user.getIsActive()) {
             return "Was activated";
         }
+
+        Account acc = new Account();
+        acc.setAvatar("Default");
+        acc = accountDAO.create(acc);
+        user.setIdAccount(acc);
         user.setIsActive(true);
         userDAO.update(user);
         return "Activated";
@@ -220,5 +232,7 @@ public class UserServiceImpl extends RootService implements UserService {
         boolean result = sendEmailHandler.sendEmail(email);
         return "Sent";
     }
+
+    
 
 }

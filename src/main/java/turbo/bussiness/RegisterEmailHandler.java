@@ -35,8 +35,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class RegisterEmailHandler extends EmailHandler {
 
-    public RegisterEmailHandler() {
+    private String callbackURL;
+    private String name;
+    public RegisterEmailHandler(String callback, String name) {
         super();
+        this.callbackURL = callback;
+        this.name = name;
         contentFile = "/META-INF/RegisterContent.html";
     }
 
@@ -50,5 +54,33 @@ public class RegisterEmailHandler extends EmailHandler {
             e.printStackTrace();
             return false;
         }
+    }
+
+    @Override
+    public String readContentFromFile() {
+        StringBuffer contents = new StringBuffer();
+
+        try {
+            //use buffering, reading one line at a time
+            InputStream ip = getClass().getClassLoader().getResourceAsStream(contentFile);
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(ip, "UTF-8"));
+            try {
+                String line = null;
+                while ((line = reader.readLine()) != null) {
+                    contents.append(line);
+                    contents.append(System.getProperty("line.separator"));
+                }
+            } finally {
+                reader.close();
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        String result = contents.toString();
+        result = result.replace("[REGISTERLINK]", callbackURL).replace("[NAME]", name);
+        Date now = new Date();
+        result += now.toLocaleString();
+        return result;
     }
 }

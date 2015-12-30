@@ -9,6 +9,7 @@ import java.util.List;
 import turbo.POJO.Product;
 import turbo.POJO.User;
 import turbo.model.AccessTokenModel;
+import turbo.model.RegiterModel;
 
 /**
  *
@@ -16,11 +17,11 @@ import turbo.model.AccessTokenModel;
  */
 public interface UserService {
 
-    void addNewUSer(User product);
+
 
     String getUserByUsername(String username, String password, String role, AccessTokenModel token);
 
-    String registerUser(User user);
+    String registerUser(RegiterModel user);
 
     boolean isExistUsername(String username);
 
