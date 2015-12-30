@@ -158,7 +158,7 @@ public class UserController {
     public ResponseEntity<ReturnedMessage>
             requireToken() {
         System.err.println("requireToken");
-        return new ResponseEntity<ReturnedMessage>(new ReturnedMessage("Unauthorized"), HttpStatus.OK);
+        return new ResponseEntity<ReturnedMessage>(new ReturnedMessage("Unauthorized"), HttpStatus.BAD_REQUEST);
 
     }
 
@@ -169,7 +169,7 @@ public class UserController {
     public ResponseEntity<ReturnedMessage>
             tokenExpire() {
         System.err.println("tokenExpire");
-        return new ResponseEntity<ReturnedMessage>(new ReturnedMessage("TokenExpire"), HttpStatus.OK);
+        return new ResponseEntity<ReturnedMessage>(new ReturnedMessage("TokenExpire"), HttpStatus.BAD_REQUEST);
 
     }
 }

@@ -33,4 +33,6 @@ public interface UserService {
     public String activateUser(String registerToken);
 
     public String sendResetRequestEmail(String Email);
+    
+    
 }

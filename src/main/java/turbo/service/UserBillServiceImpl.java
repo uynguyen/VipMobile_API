@@ -5,9 +5,13 @@
  */
 package turbo.service;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
+import java.util.Random;
 import javax.transaction.Transactional;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
@@ -15,6 +19,7 @@ import turbo.POJO.Account;
 import turbo.POJO.BillDetail;
 import turbo.POJO.BillStateCode;
 import turbo.POJO.Product;
+import turbo.POJO.TransportFee;
 import turbo.POJO.UserBill;
 import turbo.model.AccountModel;
 import turbo.model.ArrayObjectModel;
@@ -42,10 +47,13 @@ public class UserBillServiceImpl extends RootService implements UserBillService 
     @Autowired
     private BillStateCodeDAO billStateCodeDAO;
 
+    @Autowired
+    private TransportFeeDAO transportFeeDAO;
+
     @Override
     public ArrayObjectModel getUserBill(int page, int limit) {
         ArrayObjectModel result = new ArrayObjectModel();
-        ArrayList<UserBillModel> array  = new ArrayList<UserBillModel>();
+        ArrayList<UserBillModel> array = new ArrayList<UserBillModel>();
         ArrayList<UserBill> userBillPojo = billDAO.getUserBilḷ̣(page, limit);
 
         for (UserBill pojo : userBillPojo) {
@@ -57,7 +65,7 @@ public class UserBillServiceImpl extends RootService implements UserBillService 
 
         result.setTotal(countTotalPage(billDAO.count().intValue(), limit));
         result.setResult(array);
-        
+
         return result;
     }
 
@@ -172,23 +180,61 @@ public class UserBillServiceImpl extends RootService implements UserBillService 
             }
         }
 
-      
-        ArrayObjectModel aom = new ArrayObjectModel();      
+        ArrayObjectModel aom = new ArrayObjectModel();
         aom.setTotal(countTotalPage(result.size(), limit));
-        aom.setResult(Paging(result,page,limit));
-        
+        aom.setResult(Paging(result, page, limit));
+
         return aom;
-        
+
     }
 
-//    private ArrayList<UserBillModel> Paging(ArrayList<UserBillModel> result, int page, int limit) {
-//        int size = result.size();
-//        if (size < page * limit) {
-//            return result;
-//        }
-//        if ((size >= page * limit) && (size < (page + 1) * limit)) {
-//            return new ArrayList(result.subList(limit * page, size));
-//        }
-//        return new ArrayList(result.subList(page * limit, (page + 1) * limit));
-//    }
+    @Override
+    public ArrayList<TransportFee> getTransportFee() {
+        return (ArrayList<TransportFee>) transportFeeDAO.getAll();
+    }
+
+    @Override
+    public String addNewUserBill(String jsonData, String token) {
+        try {
+            JSONObject object = new JSONObject(jsonData);
+
+            String billCode = generateBillCode(new Date());
+            
+            UserBill bill = new UserBill();
+            bill.setVat(10.0);
+            bill.setCode(billCode);
+            bill.setAddress("Test");
+            bill.setBookDate(new Date());
+            bill.setPhone("0100");
+            
+            System.out.println("REC TOKEN ---" + token);
+            
+            
+            return "";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Error";
+        }
+
+    }
+
+    private String generateBillCode(Date date) {
+        String result = "";
+
+        SimpleDateFormat sdf = new SimpleDateFormat("HHmmssSSSddMMyyyy");
+        String temp = sdf.format(date);
+        result = temp;
+        return result;
+    }
+
+    private String randomChars() {
+        char[] chars = "abcdefghij".toCharArray();
+        StringBuilder sb = new StringBuilder();
+        Random random = new Random();
+        for (int i = 0; i < chars.length; i++) {
+            char c = chars[random.nextInt(chars.length)];
+            sb.append(c);
+        }
+        return sb.toString();
+    }
 }

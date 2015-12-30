@@ -42,6 +42,7 @@ public class PaymentController {
         JSONObject data = new JSONObject(model);
 
         Payment p =  sendCreatePayment(data);
+        
         ResponseEntity<String> entity = new ResponseEntity<String>(p.toJSON(), HttpStatus.OK);
         return entity;
     }
