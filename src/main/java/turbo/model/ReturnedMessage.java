@@ -30,6 +30,5 @@ public class ReturnedMessage implements Serializable{
         this.mess = mess;
     }
   
-
     
 }
