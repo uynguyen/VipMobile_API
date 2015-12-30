@@ -45,12 +45,12 @@ public class AuthenticationInterceptor extends HandlerInterceptorAdapter {
         System.out.println("preHandle");
         String token = extractHeaderToken(request);
 
-        if (token == null || token == "") {
+        AccessToken accessToken = accessTokenDAO.getAccessToken(token);
+
+        if (accessToken == null || token == null || token == "") {
             response.sendRedirect(request.getContextPath() + "/user/requireToken");
             return false;
         }
-
-        AccessToken accessToken = accessTokenDAO.getAccessToken(token);
 
         Timestamp currentTime = new Timestamp(new Date().getTime());
         if (accessToken.getExpire().compareTo(currentTime) < 0) { //Expire
@@ -60,6 +60,7 @@ public class AuthenticationInterceptor extends HandlerInterceptorAdapter {
 
         System.out.println("User access token " + token);
         if (accessToken != null && accessToken.getAccessToken().compareTo(token) == 0) {
+            request.setAttribute("token", token);
             return true;
         }
         return true;

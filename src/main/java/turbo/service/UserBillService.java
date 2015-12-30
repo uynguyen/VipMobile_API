@@ -6,6 +6,7 @@
 package turbo.service;
 
 import java.util.ArrayList;
+import turbo.POJO.TransportFee;
 import turbo.POJO.User;
 import turbo.POJO.UserBill;
 import turbo.model.ArrayObjectModel;
@@ -30,4 +31,8 @@ public interface UserBillService {
     public boolean updateStateUserBill(UpdateUserBillModel model);
     
     public ArrayObjectModel searchBill(QueryUserBillModel query, int page, int limit);
+    
+    public ArrayList<TransportFee> getTransportFee();
+    
+    public String addNewUserBill(String jsonData, String token);
 }

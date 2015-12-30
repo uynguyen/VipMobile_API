@@ -7,6 +7,8 @@ package turbo.controller;
 
 import java.util.ArrayList;
 import javax.json.JsonObject;
+import javax.servlet.http.HttpServletRequest;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import turbo.POJO.TransportFee;
 import turbo.POJO.User;
 import turbo.POJO.UserBill;
 import turbo.model.AccessTokenModel;
@@ -148,4 +151,45 @@ public class UserBillController {
             return new ResponseEntity<ArrayObjectModel>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @RequestMapping(value = {"/getTransportFee"},
+            method = {RequestMethod.GET},
+            produces = {MediaType.ALL_VALUE})
+    public ResponseEntity<ArrayList<TransportFee>>
+            getTransportFee() {
+        ArrayList<TransportFee> result = new ArrayList<TransportFee>();
+
+        try {
+            result = userBillService.getTransportFee();
+            return new ResponseEntity<ArrayList<TransportFee>>(result, HttpStatus.OK);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<ArrayList<TransportFee>>(HttpStatus.INTERNAL_SERVER_ERROR);
+
+        }
+
+    }
+
+    @RequestMapping(value = {"/addNewUserBill"},
+            method = {RequestMethod.POST},
+            produces = {MediaType.ALL_VALUE})
+    public ResponseEntity<String>
+            addNewUserBill(@RequestBody String jsonData, HttpServletRequest request) {
+
+        try {
+
+            JSONObject object = new JSONObject(jsonData);
+            String token = (String) request.getAttribute("token");
+            userBillService.addNewUserBill(jsonData, token);
+            return new ResponseEntity<String>(HttpStatus.OK);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
+
+        }
+
+    }
+
 }
