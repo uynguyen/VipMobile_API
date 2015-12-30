@@ -15,10 +15,16 @@ import turbo.POJO.UserBill;
  * @author LeeSan
  */
 public interface UserBillDAO extends DAO<UserBill> {
+
     ArrayList<UserBill> getUserBilḷ̣(Integer page, Integer limit);
+
     ArrayList<UserBill> getUserBillByUsernamẹ(String username);
+
     ArrayList<UserBill> getUserBillByCode(String billCode);
+
     ArrayList<UserBill> getUserBillByDate(String bookDate);
-    
+
+    ArrayList<UserBill> getUserBilḷ̣ByIdUser(Integer page, Integer limit, Integer idUser);
+
     public ArrayList<UserBill> getUserBilḷ̣();
 }

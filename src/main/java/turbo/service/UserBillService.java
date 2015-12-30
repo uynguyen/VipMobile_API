@@ -21,18 +21,20 @@ import turbo.model.UserBillModel;
  * @author LeeSan
  */
 public interface UserBillService {
-    ArrayObjectModel getUserBill(int page, int limit);
-    
-    ArrayList<BillDetailModel> getBillDetail(int id);
-    
-    
-    ArrayList<BillStateCodeModel> getBillStateCodes();
+
+    public ArrayObjectModel getUserBill(int page, int limit);
+
+    public ArrayList<BillDetailModel> getBillDetail(int id);
+
+    public ArrayList<BillStateCodeModel> getBillStateCodes();
 
     public boolean updateStateUserBill(UpdateUserBillModel model);
-    
+
     public ArrayObjectModel searchBill(QueryUserBillModel query, int page, int limit);
-    
+
     public ArrayList<TransportFee> getTransportFee();
-    
+
     public String addNewUserBill(String jsonData, String token);
+
+    public ArrayObjectModel getUserBill(int page, int limit, String token);
 }

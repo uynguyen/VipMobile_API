@@ -85,7 +85,7 @@
     <mvc:interceptors>
         <mvc:interceptor>
             <mvc:mapping path="/product/*" />
-            <mvc:mapping path="/bill/*" />
+            <mvc:mapping path="/bill/**" />
             <!--<bean class="turbo.interceptor.ProductInterceptor"/>-->
             <bean class="turbo.interceptor.AuthenticationInterceptor"/>
         </mvc:interceptor>
