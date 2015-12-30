@@ -5,6 +5,8 @@
  */
 package turbo.interceptor;
 
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.Enumeration;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -42,15 +44,25 @@ public class AuthenticationInterceptor extends HandlerInterceptorAdapter {
 
         System.out.println("preHandle");
         String token = extractHeaderToken(request);
-        
+
+        if (token == null || token == "") {
+            response.sendRedirect(request.getContextPath() + "/user/requireToken");
+            return false;
+        }
+
         AccessToken accessToken = accessTokenDAO.getAccessToken(token);
-        
-        System.out.println("token" + token);
-        
-        System.out.println("access Token" + accessToken.getAccessToken());
-        
-        response.sendRedirect(request.getContextPath() + "/user/requireToken");
-        return false;
+
+        Timestamp currentTime = new Timestamp(new Date().getTime());
+        if (accessToken.getExpire().compareTo(currentTime) < 0) { //Expire
+            response.sendRedirect(request.getContextPath() + "/user/tokenExpire");
+            return false;
+        }
+
+        System.out.println("User access token " + token);
+        if (accessToken != null && accessToken.getAccessToken().compareTo(token) == 0) {
+            return true;
+        }
+        return true;
     }
 
     @Override
@@ -69,16 +81,20 @@ public class AuthenticationInterceptor extends HandlerInterceptorAdapter {
     }
 
     protected String extractHeaderToken(HttpServletRequest request) {
-        Enumeration<String> headers = request.getHeaders("Authorization");
-        while (headers.hasMoreElements()) { // typically there is only one (most servers enforce that)
-            String value = headers.nextElement();
-            if ((value.toLowerCase().startsWith(OAuth2AccessToken.BEARER_TYPE.toLowerCase()))) {
-                String authHeaderValue = value.substring(OAuth2AccessToken.BEARER_TYPE.length()).trim();
+        try {
+            Enumeration<String> headers = request.getHeaders("Authorization");
+            while (headers.hasMoreElements()) { // typically there is only one (most servers enforce that)
+                String value = headers.nextElement();
+                if ((value.toLowerCase().startsWith(OAuth2AccessToken.BEARER_TYPE.toLowerCase()))) {
+                    String authHeaderValue = value.substring(OAuth2AccessToken.BEARER_TYPE.length()).trim();
 
-                return authHeaderValue;
+                    return authHeaderValue;
+                }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
         return null;
+
     }
 }
