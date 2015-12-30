@@ -5,15 +5,10 @@
  */
 package turbo.controller;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Properties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.oauth2.client.token.AccessTokenRequest;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,14 +16,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import turbo.POJO.Product;
 import turbo.POJO.User;
-import turbo.bussiness.EmailHandler;
-import turbo.bussiness.RegisterEmailHandler;
 import turbo.model.AccessTokenModel;
 import turbo.model.ResetPassModel;
 import turbo.model.ReturnedMessage;
-import turbo.service.ProductService;
 import turbo.service.UserService;
 
 /**

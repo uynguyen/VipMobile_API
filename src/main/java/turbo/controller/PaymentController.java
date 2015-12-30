@@ -40,7 +40,7 @@ public class PaymentController {
     public ResponseEntity<String> createPayment(@RequestBody String model) {
        
         JSONObject data = new JSONObject(model);
-
+        System.out.println(model);
         Payment p =  sendCreatePayment(data);
         ResponseEntity<String> entity = new ResponseEntity<String>(p.toJSON(), HttpStatus.OK);
         return entity;
@@ -101,11 +101,13 @@ public class PaymentController {
             transaction.setAmount(amount);
             transaction.setDescription(JSONTransaction.getString("description"));
 
-//            Item item = new Item();
-//            item.setName("Ground Coffee 40 oz").setQuantity("1").setCurrency("USD").setPrice("5");
-//            ItemList itemList = new ItemList();
 //            List<Item> items = new ArrayList<Item>();
+//            ItemList itemList = new ItemList();
+//            JSONObject cart = paymentinfo.getJSONObject("cart");
+//            Item item = new Item();
+//            item.setName("Ground Coffee 40 oz").setQuantity("1").setCurrency("USD").setPrice("5");           
 //            items.add(item);
+//            
 //            itemList.setItems(items);
 //
 //            transaction.setItemList(itemList);
