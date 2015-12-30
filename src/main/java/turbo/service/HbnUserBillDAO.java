@@ -92,5 +92,9 @@ public class HbnUserBillDAO extends AbstractHbnDAO<UserBill> implements UserBill
         return getUserBilḷ̣(null, null);
     }
 
- 
+    @Override
+    public ArrayList<UserBill> getUserBilḷ̣ByIdUser(Integer page, Integer limit, Integer idUser) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }

@@ -15,11 +15,13 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
+import turbo.POJO.AccessToken;
 import turbo.POJO.Account;
 import turbo.POJO.BillDetail;
 import turbo.POJO.BillStateCode;
 import turbo.POJO.Product;
 import turbo.POJO.TransportFee;
+import turbo.POJO.User;
 import turbo.POJO.UserBill;
 import turbo.model.AccountModel;
 import turbo.model.ArrayObjectModel;
@@ -39,6 +41,9 @@ import turbo.model.UserBillModel;
 public class UserBillServiceImpl extends RootService implements UserBillService {
 
     @Autowired
+    private ProductDAO productDAO;
+
+    @Autowired
     private UserBillDAO billDAO;
 
     @Autowired
@@ -49,6 +54,12 @@ public class UserBillServiceImpl extends RootService implements UserBillService 
 
     @Autowired
     private TransportFeeDAO transportFeeDAO;
+
+    @Autowired
+    private AccessTokenDAO accessTokenDAO;
+
+    @Autowired
+    private UserDAO userDAO;
 
     @Override
     public ArrayObjectModel getUserBill(int page, int limit) {
@@ -193,37 +204,61 @@ public class UserBillServiceImpl extends RootService implements UserBillService 
         return (ArrayList<TransportFee>) transportFeeDAO.getAll();
     }
 
+    //TODO: Send email to user to accounce
     @Override
     public String addNewUserBill(String jsonData, String token) {
         try {
             JSONObject object = new JSONObject(jsonData);
-
-            String billCode = generateBillCode(new Date());
-            
             UserBill bill = new UserBill();
-            bill.setVat(10.0);
-            bill.setCode(billCode);
-            bill.setAddress("Test");
+
+            AccessToken accessToken = accessTokenDAO.getAccessToken(token);
+            User user = accessToken.getUserId();
+            bill.setCode(generateBillCode(user.getUsername(), new Date()));
+            bill.setTotal(object.getDouble("total"));
+            JSONObject infoObject = object.getJSONObject("info");
+            JSONObject transportFee = infoObject.getJSONObject("fee");
+            String address = infoObject.getString("address") + ", " + transportFee.getString("area")
+                    + ", " + infoObject.getString("city");
+            bill.setAddress(address);
             bill.setBookDate(new Date());
-            bill.setPhone("0100");
-            
-            System.out.println("REC TOKEN ---" + token);
-            
-            
-            return "";
+            bill.setVat(10.0);
+            bill.setPhone(infoObject.getString("phone"));
+            bill.setIdUser(user);
+
+            BillStateCode state = billStateCodeDAO.get(1);
+            bill.setState(state);
+            JSONObject cart = object.getJSONObject("cart");
+
+            bill = billDAO.create(bill);
+            if (bill != null) {
+                ArrayList<BillDetail> lst = convertObjectJSONToList(cart, bill);
+                if (lst != null) {
+
+                    System.out.println("INSERT SUCCESSED " + lst.size());
+                    return "Success";
+
+                } else // Remove user bill cause error occur
+                {
+                    System.out.println("Remove user bill cause error occur ");
+                    billDAO.delete(bill);
+                }
+
+            }
+
+            return "Error";
         } catch (Exception e) {
             e.printStackTrace();
-            return "Error";
+            return "Error" + e.getMessage();
         }
 
     }
 
-    private String generateBillCode(Date date) {
+    private String generateBillCode(String fullName, Date date) {
         String result = "";
 
         SimpleDateFormat sdf = new SimpleDateFormat("HHmmssSSSddMMyyyy");
         String temp = sdf.format(date);
-        result = temp;
+        result = fullName.toUpperCase() + temp;
         return result;
     }
 
@@ -236,5 +271,68 @@ public class UserBillServiceImpl extends RootService implements UserBillService 
             sb.append(c);
         }
         return sb.toString();
+    }
+
+    private ArrayList<BillDetail> convertObjectJSONToList(JSONObject cart, UserBill bill) {
+        try {
+            ArrayList<BillDetail> result = new ArrayList<>();
+
+            for (String key : cart.keySet()) {
+                JSONObject productItem = cart.getJSONObject(key);
+                BillDetail billDetailItem = new BillDetail();
+                int quantity = productItem.getInt("quantity");
+                JSONObject product = productItem.getJSONObject("product");
+
+                Product p = productDAO.get(product.getInt("id"));
+                if (p != null) {
+                    billDetailItem.setAmount(quantity);
+                    billDetailItem.setIdProduct(p);
+
+                    double total = quantity * p.getPrice();
+                    billDetailItem.setTotalPrice(total);
+                    billDetailItem.setIdBill(bill);
+                    billDetailItem = billDetailDAO.create(billDetailItem);
+                    if (billDetailItem != null) {
+                        result.add(billDetailItem);
+
+                    } else { //Has error : Cannot insert userbill
+                        return null;
+                    }
+                } else { // Has error: Not exist the product
+                    return null;
+                }
+
+            }
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+
+    }
+
+    @Override
+    public ArrayObjectModel getUserBill(int page, int limit, String token) {
+
+        ArrayObjectModel result = new ArrayObjectModel();
+        User user = accessTokenDAO.getAccessToken(token).getUserId();
+
+        ArrayList<UserBillModel> array = new ArrayList<UserBillModel>();
+
+        User realUser = userDAO.get(user.getId());
+        Collection<UserBill> userBillPojo = realUser.getUserBillCollection();
+
+        for (int i = 0; i < userBillPojo.size(); i++) {
+            UserBill pojo = (UserBill) userBillPojo.toArray()[i];
+            UserBillModel item = userBillPOJO2Model(pojo);
+
+            array.add(item);
+            System.out.println(i);
+        }
+
+        result.setTotal(countTotalPage(billDAO.count().intValue(), limit));
+        result.setResult(Paging(array, page, limit));
+
+        return result;
     }
 }

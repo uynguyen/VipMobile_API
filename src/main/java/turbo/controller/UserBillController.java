@@ -174,22 +174,45 @@ public class UserBillController {
     @RequestMapping(value = {"/addNewUserBill"},
             method = {RequestMethod.POST},
             produces = {MediaType.ALL_VALUE})
-    public ResponseEntity<String>
+    public ResponseEntity<ReturnedMessage>
             addNewUserBill(@RequestBody String jsonData, HttpServletRequest request) {
-
+        ReturnedMessage result = new ReturnedMessage();
         try {
 
             JSONObject object = new JSONObject(jsonData);
             String token = (String) request.getAttribute("token");
-            userBillService.addNewUserBill(jsonData, token);
-            return new ResponseEntity<String>(HttpStatus.OK);
+            String str = userBillService.addNewUserBill(jsonData, token);
+            result.setMess(str);
+            return new ResponseEntity<ReturnedMessage>(result, HttpStatus.OK);
 
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<ReturnedMessage>(HttpStatus.INTERNAL_SERVER_ERROR);
 
         }
 
+    }
+
+    @RequestMapping(value = {"/getMyBill/{page}/{limit}"},
+            method = {RequestMethod.GET},
+            consumes = {MediaType.ALL_VALUE}
+    )
+    @ResponseBody
+    public ResponseEntity<ArrayObjectModel>
+            getMyBill(@PathVariable("page") int page, @PathVariable("limit") int limit, HttpServletRequest request) {
+        ArrayObjectModel result = new ArrayObjectModel();
+
+        try {
+
+            String token = (String) request.getAttribute("token");
+            result = userBillService.getUserBill(page, limit, token);
+
+            return new ResponseEntity<ArrayObjectModel>(result, HttpStatus.OK);
+
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            return new ResponseEntity<ArrayObjectModel>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
 }
