@@ -5,11 +5,17 @@
  */
 package turbo.service;
 
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 import javax.transaction.Transactional;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +29,7 @@ import turbo.POJO.Product;
 import turbo.POJO.TransportFee;
 import turbo.POJO.User;
 import turbo.POJO.UserBill;
+import turbo.common.AppArguments;
 import turbo.model.AccountModel;
 import turbo.model.ArrayObjectModel;
 import turbo.model.BillDetailModel;
@@ -68,7 +75,7 @@ public class UserBillServiceImpl extends RootService implements UserBillService 
         ArrayList<UserBill> userBillPojo = billDAO.getUserBilḷ̣(page, limit);
 
         for (UserBill pojo : userBillPojo) {
-            UserBillModel item = userBillPOJO2Model(pojo);
+            UserBillModel item = userBillPOJO2Model(pojo, false);
 
             array.add(item);
 
@@ -80,7 +87,7 @@ public class UserBillServiceImpl extends RootService implements UserBillService 
         return result;
     }
 
-    private UserBillModel userBillPOJO2Model(UserBill pojo) {
+    private UserBillModel userBillPOJO2Model(UserBill pojo, boolean isAdmin) {
         UserBillModel item = new UserBillModel();
 
         item.setId(pojo.getId());
@@ -89,8 +96,16 @@ public class UserBillServiceImpl extends RootService implements UserBillService 
         item.setTotal(pojo.getTotal());
         item.setBookDate(pojo.getBookDate());
 
-        Account acc = pojo.getIdUser().getIdAccount();
-        item.setAccount(accountPOJO2Model(acc));
+        if (isAdmin) {
+            Account acc = pojo.getIdUser().getIdAccount();
+            item.setAccount(accountPOJO2Model(acc));
+
+        } else {
+            ArrayList<BillDetailModel> detail = getBillDetail(pojo.getId());
+
+            item.setDetail(detail);
+
+        }
 
         return item;
 
@@ -160,7 +175,7 @@ public class UserBillServiceImpl extends RootService implements UserBillService 
             for (int id : model.getId_bills()) {
                 UserBill bill = billDAO.get(id);
                 BillStateCode state = billStateCodeDAO.get(model.getId_state());
-                bill.setState(null);
+                // bill.setState(null);
                 bill.setState(state);
                 billDAO.update(bill);
             }
@@ -187,7 +202,7 @@ public class UserBillServiceImpl extends RootService implements UserBillService 
                     || item.getIdUser().getIdAccount().getFullName().contains(query_str)
                     || item.getIdUser().getUsername().contains(query_str)
                     || item.getIdUser().getEmail().contains(query_str)) {
-                result.add(userBillPOJO2Model(item));
+                result.add(userBillPOJO2Model(item, true));
             }
         }
 
@@ -311,6 +326,16 @@ public class UserBillServiceImpl extends RootService implements UserBillService 
 
     }
 
+    private void sortUserBill(ArrayList<UserBillModel> lst) {
+        Collections.sort(lst, new Comparator<UserBillModel>() {
+            @Override
+            public int compare(UserBillModel p1, UserBillModel p2) {
+
+                return p2.getBookDate().compareTo(p1.getBookDate());
+            }
+        });
+    }
+
     @Override
     public ArrayObjectModel getUserBill(int page, int limit, String token) {
 
@@ -324,15 +349,45 @@ public class UserBillServiceImpl extends RootService implements UserBillService 
 
         for (int i = 0; i < userBillPojo.size(); i++) {
             UserBill pojo = (UserBill) userBillPojo.toArray()[i];
-            UserBillModel item = userBillPOJO2Model(pojo);
+            UserBillModel item = userBillPOJO2Model(pojo, false);
 
             array.add(item);
             System.out.println(i);
         }
-
+        sortUserBill(array);
         result.setTotal(countTotalPage(billDAO.count().intValue(), limit));
         result.setResult(Paging(array, page, limit));
 
         return result;
+    }
+
+    @Override
+    public String deleteBill(int idBill) {
+        try {
+            String result = "";
+            AppArguments aa = new AppArguments();
+            UserBill userbill = billDAO.get(idBill);
+            Date bookDate = userbill.getBookDate();
+            Date currentDate = new Date();
+            long distance = currentDate.getTime() - bookDate.getTime();
+            long hours = TimeUnit.MILLISECONDS.toHours(distance);
+            int consant_time = Integer.parseInt(aa.getProps().get("timeLimitToDeleteBill").toString());
+            if (hours <= consant_time) { //Expire
+
+                //  Collection<BillDetail> detail = userbill.getBillDetailCollection();
+                userbill.setState(billStateCodeDAO.get(5));
+
+                billDAO.update(userbill);
+                return "Deleted";
+
+            } else {
+                result = "Time Expire";
+            }
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Error " + e.getMessage();
+        }
+
     }
 }

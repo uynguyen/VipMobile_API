@@ -6,6 +6,7 @@
 package turbo.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -23,6 +24,7 @@ public class UserBillModel implements Serializable {
     Double sale;
     AccountModel account = new AccountModel();
     BillStateModel state = new BillStateModel();
+    ArrayList<BillDetailModel> detail = new ArrayList<>();
 
     public Integer getId() {
         return id;
@@ -87,5 +89,15 @@ public class UserBillModel implements Serializable {
     public void setState(BillStateModel state) {
         this.state = state;
     }
+
+    public ArrayList<BillDetailModel> getDetail() {
+        return detail;
+    }
+
+    public void setDetail(ArrayList<BillDetailModel> detail) {
+        this.detail = detail;
+    }
+
+    
 
 }

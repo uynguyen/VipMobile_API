@@ -37,4 +37,6 @@ public interface UserBillService {
     public String addNewUserBill(String jsonData, String token);
 
     public ArrayObjectModel getUserBill(int page, int limit, String token);
+    
+    public String deleteBill(int idBill);
 }

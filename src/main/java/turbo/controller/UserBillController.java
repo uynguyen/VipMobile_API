@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import turbo.POJO.TransportFee;
 import turbo.POJO.User;
 import turbo.POJO.UserBill;
+import turbo.common.AppArguments;
 import turbo.model.AccessTokenModel;
 import turbo.model.ArrayObjectModel;
 import turbo.model.BillDetailModel;
@@ -212,6 +213,30 @@ public class UserBillController {
         } catch (Exception e) {
             System.err.println(e.getMessage());
             return new ResponseEntity<ArrayObjectModel>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @RequestMapping(value = {"/deleteMyBill/{id}"},
+            method = {RequestMethod.GET},
+            consumes = {MediaType.ALL_VALUE}
+    )
+    @ResponseBody
+    public ResponseEntity<ReturnedMessage>
+            deleteMyBill(@PathVariable("id") int id) {
+        ReturnedMessage result = new ReturnedMessage();
+
+        try {
+
+            String str = userBillService.deleteBill(id);
+            result.setMess(str);
+            if (str.contains("Deleted")) {
+                return new ResponseEntity<ReturnedMessage>(result, HttpStatus.OK);
+            }
+            return new ResponseEntity<ReturnedMessage>(result, HttpStatus.BAD_REQUEST);
+
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            return new ResponseEntity<ReturnedMessage>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
