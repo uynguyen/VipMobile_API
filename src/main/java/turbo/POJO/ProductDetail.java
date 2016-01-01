@@ -5,7 +5,6 @@
  */
 package turbo.POJO;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -82,11 +81,9 @@ public class ProductDetail implements Serializable {
     private Integer guarantee;
     @JoinColumn(name = "id_producer", referencedColumnName = "id")
     @ManyToOne
-    @JsonIgnore
     private ProducerCategory idProducer;
     @JoinColumn(name = "id_product", referencedColumnName = "id")
     @ManyToOne
-    @JsonIgnore
     private Product idProduct;
 
     public ProductDetail() {

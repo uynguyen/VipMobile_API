@@ -11,6 +11,7 @@ import turbo.POJO.ColorCategory;
 import turbo.POJO.ProducerCategory;
 import turbo.POJO.Product;
 import turbo.POJO.SaleProduct;
+import turbo.model.ArrayObjectModel;
 import turbo.model.QueryProductStringModel;
 
 /**
@@ -19,20 +20,13 @@ import turbo.model.QueryProductStringModel;
  */
 public interface ProductService {
 
-    void createProduct(Product product);
 
-    List<Product> getProducts();
+    List<Product> getProducts(int page, int limit);
     
-
-    List<Product> getProductByCode(String code);
 
     Product getProduct(Integer id);
 
-    void updateProduct(Product product);
-
-    void deleteProduct(Long id);
-
-    List<Product> searchProduct(QueryProductStringModel query);
+    ArrayObjectModel searchProduct(QueryProductStringModel query);
 
     public List<SaleProduct> getSaleProducts(int page, int limit);
     

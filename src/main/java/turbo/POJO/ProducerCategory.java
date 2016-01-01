@@ -5,6 +5,7 @@
  */
 package turbo.POJO;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.util.Collection;
@@ -22,7 +23,6 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
-
 
 
 /**
@@ -49,8 +49,8 @@ public class ProducerCategory implements Serializable {
     @Column(nullable = false, length = 2147483647)
     private String value;
     @OneToMany(mappedBy = "idProducer")
+    @JsonBackReference
     @JsonIgnore
-    
     private Collection<ProductDetail> productDetailCollection;
 
     public ProducerCategory() {

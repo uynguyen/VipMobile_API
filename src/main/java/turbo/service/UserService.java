@@ -9,7 +9,10 @@ import java.util.List;
 import turbo.POJO.Product;
 import turbo.POJO.User;
 import turbo.model.AccessTokenModel;
+import turbo.model.AccountModel;
 import turbo.model.RegiterModel;
+import turbo.model.ResetPassModel;
+import turbo.model.UpdatePasswordModel;
 
 /**
  *
@@ -27,13 +30,16 @@ public interface UserService {
 
     boolean isExistEmail(String email);
 
-    void updateUser(User product);
+    String updateUser(AccountModel account);
 
     void deleteUser(Long id);
 
     public String activateUser(String registerToken);
 
-    public String sendResetRequestEmail(String Email);
+    public String sendResetRequestEmail(String Email, String callbackURL);
+
+    public String updatePassword(UpdatePasswordModel updatePasswordModel, String token);
+    public String resetPass(ResetPassModel password, String resetPassToken);
     
     
 }

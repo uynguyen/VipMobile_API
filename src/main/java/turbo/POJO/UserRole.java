@@ -48,6 +48,7 @@ public class UserRole implements Serializable {
     @Column(length = 2147483647)
     private String description;
     @OneToMany(mappedBy = "idRole")
+    
     private Collection<User> userCollection;
 
     public UserRole() {

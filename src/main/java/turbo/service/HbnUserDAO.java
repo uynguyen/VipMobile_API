@@ -44,9 +44,15 @@ public class HbnUserDAO extends AbstractHbnDAO<User> implements UserDAO {
         query.setString("email", email);
         List<User> result = query.list();
        // ss.close();
-
+        
         if (result.size() != 0) {
-            return (User) result.get(0);
+            for(int i = 0 ; i < result.size(); i++)
+            {
+                User u = (User) result.get(i);
+                if(u.getIsActive())
+                    return u;
+            }
+            
         }
         return null;
 

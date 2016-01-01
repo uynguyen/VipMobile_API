@@ -5,6 +5,7 @@
  */
 package turbo.POJO;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.util.Collection;
@@ -66,16 +67,20 @@ public class Product implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date importDate;
     @OneToMany(mappedBy = "idProduct")
-     @JsonIgnore
+    @JsonIgnore
+    @JsonBackReference
     private Collection<ProductDetail> productDetailCollection;
     @OneToMany(mappedBy = "idProduct")
-     @JsonIgnore
+    @JsonIgnore
+    @JsonBackReference
     private Collection<BillDetail> billDetailCollection;
     @OneToMany(mappedBy = "idProduct")
-     @JsonIgnore
+    @JsonIgnore
+    @JsonBackReference
     private Collection<ProductColorDetail> productColorDetailCollection;
     @OneToMany(mappedBy = "idProduct")
     @JsonIgnore
+    @JsonBackReference
     private Collection<SaleProduct> saleProductCollection;
 
     public Product() {

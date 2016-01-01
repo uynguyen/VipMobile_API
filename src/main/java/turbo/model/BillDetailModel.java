@@ -11,11 +11,15 @@ import java.io.Serializable;
  *
  * @author LeeSan
  */
-public class BillDetailModel implements Serializable{
+public class BillDetailModel implements Serializable {
+
     int id_product;
+    String name;
+    double price;
     int amount;
     double total_price;
     String product_image;
+    String code;
 
     public int getId_product() {
         return id_product;
@@ -23,6 +27,22 @@ public class BillDetailModel implements Serializable{
 
     public void setId_product(int id_product) {
         this.id_product = id_product;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
     }
 
     public int getAmount() {
@@ -48,5 +68,14 @@ public class BillDetailModel implements Serializable{
     public void setProduct_image(String product_image) {
         this.product_image = product_image;
     }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+    
     
 }

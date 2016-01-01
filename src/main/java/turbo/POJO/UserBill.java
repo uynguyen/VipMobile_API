@@ -5,7 +5,6 @@
  */
 package turbo.POJO;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
@@ -46,7 +45,6 @@ import org.codehaus.jackson.annotate.JsonIgnore;
     @NamedQuery(name = "UserBill.findByAddress", query = "SELECT u FROM UserBill u WHERE u.address = :address"),
     @NamedQuery(name = "UserBill.findByPhone", query = "SELECT u FROM UserBill u WHERE u.phone = :phone")})
 public class UserBill implements Serializable {
-
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -74,16 +72,13 @@ public class UserBill implements Serializable {
     @Column(length = 2147483647)
     private String phone;
     @OneToMany(mappedBy = "idBill")
-    
     private Collection<BillDetail> billDetailCollection;
     @JoinColumn(name = "state", referencedColumnName = "id")
     @ManyToOne
- 
     private BillStateCode state;
     @JoinColumn(name = "id_user", referencedColumnName = "id")
     @ManyToOne
-   
-
+    
     private User idUser;
 
     public UserBill() {
@@ -207,5 +202,5 @@ public class UserBill implements Serializable {
     public String toString() {
         return "turbo.POJO.UserBill[ id=" + id + " ]";
     }
-
+    
 }

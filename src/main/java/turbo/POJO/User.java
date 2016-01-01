@@ -5,6 +5,7 @@
  */
 package turbo.POJO;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
@@ -34,7 +35,6 @@ import org.codehaus.jackson.annotate.JsonIgnore;
  */
 @Entity
 @Table(catalog = "turbo_mobileshop", schema = "public", uniqueConstraints = {
-    @UniqueConstraint(columnNames = {"email"}),
     @UniqueConstraint(columnNames = {"username"})})
 @XmlRootElement
 @NamedQueries({
@@ -46,6 +46,7 @@ import org.codehaus.jackson.annotate.JsonIgnore;
     @NamedQuery(name = "User.findByIsActive", query = "SELECT u FROM User u WHERE u.isActive = :isActive"),
     @NamedQuery(name = "User.findByCreateDate", query = "SELECT u FROM User u WHERE u.createDate = :createDate")})
 public class User implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -68,16 +69,25 @@ public class User implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date createDate;
     @OneToMany(mappedBy = "idUser")
+
+    private Collection<ResetpassToken> resetpassTokenCollection;
+    @OneToMany(mappedBy = "idUser")
+
     private Collection<UserBill> userBillCollection;
     @OneToMany(mappedBy = "userId")
+
     private Collection<AccessToken> accessTokenCollection;
     @OneToMany(mappedBy = "idUser")
+
     private Collection<RegisterToken> registerTokenCollection;
     @JoinColumn(name = "id_account", referencedColumnName = "id")
     @ManyToOne
+
     private Account idAccount;
     @JoinColumn(name = "id_role", referencedColumnName = "id")
     @ManyToOne
+    @com.fasterxml.jackson.annotation.JsonIgnore
+    @JsonBackReference
     private UserRole idRole;
 
     public User() {
@@ -133,6 +143,16 @@ public class User implements Serializable {
 
     public void setCreateDate(Date createDate) {
         this.createDate = createDate;
+    }
+
+    @XmlTransient
+    @JsonIgnore
+    public Collection<ResetpassToken> getResetpassTokenCollection() {
+        return resetpassTokenCollection;
+    }
+
+    public void setResetpassTokenCollection(Collection<ResetpassToken> resetpassTokenCollection) {
+        this.resetpassTokenCollection = resetpassTokenCollection;
     }
 
     @XmlTransient
@@ -205,5 +225,5 @@ public class User implements Serializable {
     public String toString() {
         return "turbo.POJO.User[ id=" + id + " ]";
     }
-    
+
 }

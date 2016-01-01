@@ -20,12 +20,14 @@ public class AccountModel implements Serializable{
 
     private String address;
 
-    private Date birthday;
+    private long birthday;
     private Boolean gender;
 
     private String avatar;
 
     private String visaCode;
+
+    private String email;
 
     public Integer getId() {
         return id;
@@ -51,11 +53,11 @@ public class AccountModel implements Serializable{
         this.address = address;
     }
 
-    public Date getBirthday() {
+    public long getBirthday() {
         return birthday;
     }
 
-    public void setBirthday(Date birthday) {
+    public void setBirthday(long birthday) {
         this.birthday = birthday;
     }
 
@@ -82,6 +84,17 @@ public class AccountModel implements Serializable{
     public void setVisaCode(String visaCode) {
         this.visaCode = visaCode;
     }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    
+    
     
     
     

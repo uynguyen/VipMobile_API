@@ -138,6 +138,9 @@ public class UserBillServiceImpl extends RootService implements UserBillService 
                     itemModel.setAmount(item.getAmount());
                     itemModel.setTotal_price(item.getTotalPrice());
                     itemModel.setProduct_image(item.getIdProduct().getImage());
+                    itemModel.setName(item.getIdProduct().getName());
+                    itemModel.setPrice(item.getIdProduct().getPrice());
+                    itemModel.setCode(item.getIdProduct().getCode());
                     result.add(itemModel);
                 }
             }
@@ -355,7 +358,7 @@ public class UserBillServiceImpl extends RootService implements UserBillService 
             System.out.println(i);
         }
         sortUserBill(array);
-        result.setTotal(countTotalPage(billDAO.count().intValue(), limit));
+        result.setTotal(countTotalPage(array.size(), limit));
         result.setResult(Paging(array, page, limit));
 
         return result;

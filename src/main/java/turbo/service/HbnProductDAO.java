@@ -71,7 +71,8 @@ public class HbnProductDAO extends AbstractHbnDAO<Product> implements ProductDAO
         ArrayList<Product> result = new ArrayList<Product>();
         Session ss = getSession();
         ss.beginTransaction();
-        Query query = ss.getNamedQuery("Product.findAll");
+        Query query = ss.createQuery("SELECT p FROM Product p ORDER BY p.price ASC");
+
         result = (ArrayList<Product>) query.setFirstResult(page * limit).setMaxResults(limit).list();
         ss.close();
         return result;

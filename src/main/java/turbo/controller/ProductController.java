@@ -23,6 +23,7 @@ import turbo.POJO.Product;
 import turbo.POJO.ProductColorDetail;
 import turbo.POJO.ProductDetail;
 import turbo.POJO.SaleProduct;
+import turbo.model.ArrayObjectModel;
 import turbo.model.CategoriesModel;
 import turbo.model.ProductDetailModel;
 import turbo.model.QueryProductStringModel;
@@ -62,16 +63,16 @@ public class ProductController {
         return entity;
     }
 
-    @RequestMapping(value = {"/list"},
+    @RequestMapping(value = {"/list/{page}/{limit}"},
             method = {RequestMethod.GET},
             produces = {"application/json", "application/xml"})
     @ResponseBody
     public ResponseEntity<List<Product>>
-            getProducts(HttpServletRequest request) {
+            getProducts(@PathVariable("page") int page, @PathVariable("limit") int limit) {
         List<Product> products = new ArrayList<Product>();
         try {
-
-            products = (List<Product>) productService.getProducts();
+            page -= 1;
+            products = (List<Product>) productService.getProducts(page, limit);
 
         } catch (Exception e) {
             System.err.println(e.getMessage());
@@ -128,19 +129,19 @@ public class ProductController {
             method = {RequestMethod.POST},
             produces = {"application/json", "application/xml"})
     @ResponseBody
-    public ResponseEntity<List<Product>>
+    public ResponseEntity<ArrayObjectModel>
             searchProduct(@RequestBody QueryProductStringModel model) {
 
-        List<Product> result = new ArrayList<Product>();
+        ArrayObjectModel result = new ArrayObjectModel();
         try {
             result = productService.searchProduct(model);
 
-            ResponseEntity<List<Product>> entity = new ResponseEntity(result, HttpStatus.OK);
+            ResponseEntity<ArrayObjectModel> entity = new ResponseEntity(result, HttpStatus.OK);
             return entity;
 
         } catch (Exception e) {
             System.err.println(e.getMessage());
-            ResponseEntity<List<Product>> entity = new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+            ResponseEntity<ArrayObjectModel> entity = new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
             return entity;
         }
 

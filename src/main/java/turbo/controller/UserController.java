@@ -8,6 +8,7 @@ package turbo.controller;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Properties;
+import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -26,9 +27,12 @@ import turbo.POJO.User;
 import turbo.bussiness.EmailHandler;
 import turbo.bussiness.RegisterEmailHandler;
 import turbo.model.AccessTokenModel;
+import turbo.model.AccountModel;
 import turbo.model.RegiterModel;
+import turbo.model.RequestResetPassModel;
 import turbo.model.ResetPassModel;
 import turbo.model.ReturnedMessage;
+import turbo.model.UpdatePasswordModel;
 import turbo.service.ProductService;
 import turbo.service.UserService;
 
@@ -113,17 +117,17 @@ public class UserController {
 
     }
 
-    @RequestMapping(value = {"/requestResetPass/{Email}"},
-            method = {RequestMethod.GET},
+    @RequestMapping(value = {"/requestResetPass"},
+            method = {RequestMethod.POST},
             produces = {MediaType.ALL_VALUE})
     @ResponseBody
     public ResponseEntity<ReturnedMessage>
-            requestResetPassword(@PathVariable("Email") String Email) {
+            requestResetPassword(@RequestBody RequestResetPassModel model) {
 
         ReturnedMessage result = new ReturnedMessage();
         try {
 
-            String mess = userService.sendResetRequestEmail(Email);
+            String mess = userService.sendResetRequestEmail(model.getEmail(), model.getCallback());
             result.setMess(mess);
             return new ResponseEntity<ReturnedMessage>(result, HttpStatus.OK);
 
@@ -134,18 +138,23 @@ public class UserController {
     }
 
     //TODO: Do later
-    @RequestMapping(value = {"/resetPass"},
+    @RequestMapping(value = {"/resetPass/{ResetPassToken}"},
             method = {RequestMethod.POST},
             consumes = {MediaType.ALL_VALUE})
     @ResponseBody
     public ResponseEntity<ReturnedMessage>
-            resetPassword(@RequestBody ResetPassModel pass) {
+            resetPassword(@RequestBody ResetPassModel pass, @PathVariable("ResetPassToken") String resetPassToken) {
 
         ReturnedMessage result = new ReturnedMessage();
 
         try {
 
-            return new ResponseEntity<ReturnedMessage>(HttpStatus.INTERNAL_SERVER_ERROR);
+            String str = userService.resetPass(pass, resetPassToken);
+            result.setMess(str);
+         //   if (str.contains("Reseted")) {
+                return new ResponseEntity<ReturnedMessage>(result, HttpStatus.OK);
+           // }
+           // return new ResponseEntity<ReturnedMessage>(result, HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             System.err.println(e.getMessage());
             return new ResponseEntity<ReturnedMessage>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -172,5 +181,48 @@ public class UserController {
         System.err.println("tokenExpire");
         return new ResponseEntity<ReturnedMessage>(new ReturnedMessage("TokenExpire"), HttpStatus.BAD_REQUEST);
 
+    }
+
+    @RequestMapping(value = {"/updateInfo"},
+            method = {RequestMethod.POST},
+            produces = {MediaType.ALL_VALUE})
+    @ResponseBody
+    public ResponseEntity<ReturnedMessage>
+            updateInfo(@RequestBody AccountModel account) {
+
+        ReturnedMessage result = new ReturnedMessage();
+        try {
+
+            String mess = userService.updateUser(account);
+            result.setMess(mess);
+            return new ResponseEntity<ReturnedMessage>(result, HttpStatus.OK);
+
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            return new ResponseEntity<ReturnedMessage>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @RequestMapping(value = {"/updatePassword"},
+            method = {RequestMethod.POST},
+            produces = {MediaType.ALL_VALUE})
+    @ResponseBody
+    public ResponseEntity<ReturnedMessage>
+            updatePassword(@RequestBody UpdatePasswordModel updatePasswordModel, HttpServletRequest request) {
+
+        ReturnedMessage result = new ReturnedMessage();
+        try {
+            String token = (String) request.getAttribute("token");
+            String mess = userService.updatePassword(updatePasswordModel, token);
+            result.setMess(mess);
+         //   if(mess.contains("Updated"))
+                return new ResponseEntity<ReturnedMessage>(result, HttpStatus.OK);
+  
+          //  return new ResponseEntity<ReturnedMessage>(result, HttpStatus.BAD_REQUEST);
+
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            return new ResponseEntity<ReturnedMessage>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }
