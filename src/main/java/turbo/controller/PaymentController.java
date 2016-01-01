@@ -20,13 +20,19 @@ import org.springframework.web.bind.annotation.RestController;
 import com.paypal.api.payments.*;
 import com.paypal.base.rest.APIContext;
 import com.paypal.base.rest.PayPalRESTException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import turbo.bussiness.PaypalConfig;
 import turbo.service.UserBillDAO;
 import turbo.service.UserBillService;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import turbo.bussiness.PaypalConfig;
+import turbo.service.CurrencyService;
 
 /**
  *
@@ -37,7 +43,10 @@ import turbo.service.UserBillService;
 public class PaymentController {
 
     @Autowired
+
     private UserBillService userBillService;
+
+    private CurrencyService currencyService;
 
     @RequestMapping(value = {"/create"},
             method = {RequestMethod.POST},
@@ -58,7 +67,6 @@ public class PaymentController {
             entity = new ResponseEntity<String>(result, HttpStatus.OK);
 
             //Save bill here....
-            
             String token = (String) request.getAttribute("token");
             userBillService.addNewUserBill(model, token);
         }
@@ -76,15 +84,15 @@ public class PaymentController {
                 .getJSONObject(0);
         Payment createdPayment = null;
         try {
-            Address billingAddress = new Address();
-            billingAddress.setCity(JSONCreditCard.getJSONObject("billing_address").getString("city"));
-            billingAddress.setCountryCode(JSONCreditCard.getJSONObject("billing_address").getString("country_code"));
-            billingAddress.setLine1(JSONCreditCard.getJSONObject("billing_address").getString("line1"));
-            billingAddress.setPostalCode(JSONCreditCard.getJSONObject("billing_address").getString("postal_code"));
-            billingAddress.setState(JSONCreditCard.getJSONObject("billing_address").getString("state"));
+//            Address billingAddress = new Address();
+//            billingAddress.setCity(JSONCreditCard.getJSONObject("billing_address").getString("city"));
+//            billingAddress.setCountryCode(JSONCreditCard.getJSONObject("billing_address").getString("country_code"));
+//            billingAddress.setLine1(JSONCreditCard.getJSONObject("billing_address").getString("line1"));
+//            billingAddress.setPostalCode(JSONCreditCard.getJSONObject("billing_address").getString("postal_code"));
+//            billingAddress.setState(JSONCreditCard.getJSONObject("billing_address").getString("state"));
 
             CreditCard creditCard = new CreditCard();
-            creditCard.setBillingAddress(billingAddress);
+            //  creditCard.setBillingAddress(billingAddress);
             creditCard.setCvv2(JSONCreditCard.getInt("cvv2"));
             creditCard.setExpireMonth(JSONCreditCard.getInt("expire_month"));
             creditCard.setExpireYear(JSONCreditCard.getInt("expire_year"));
@@ -103,21 +111,8 @@ public class PaymentController {
             payer.setFundingInstruments(fundingInstrumentList);
             payer.setPaymentMethod(JSONPayer.getString("payment_method"));
 
-            Details details = new Details();
-            details.setShipping(JSONTransaction.getJSONObject("amount")
-                    .getJSONObject("details").getString("shipping"));
-            details.setSubtotal(JSONTransaction.getJSONObject("amount")
-                    .getJSONObject("details").getString("subtotal"));
-            details.setTax(JSONTransaction.getJSONObject("amount")
-                    .getJSONObject("details").getString("tax"));
-
-            Amount amount = new Amount();
-            amount.setCurrency(JSONTransaction.getJSONObject("amount").getString("currency"));
-            amount.setTotal(JSONTransaction.getJSONObject("amount").getString("total"));
-            amount.setDetails(details);
-
             Transaction transaction = new Transaction();
-            transaction.setAmount(amount);
+            transaction.setAmount(getAmount(JSONTransaction));
             transaction.setDescription(JSONTransaction.getString("description"));
 
 //            List<Item> items = new ArrayList<Item>();
@@ -148,6 +143,29 @@ public class PaymentController {
             return null;
         }
         return createdPayment;
+    }
+
+    private Amount getAmount(JSONObject JSONTransaction) {
+        DecimalFormat df = new DecimalFormat("0.##");
+        double shipping = JSONTransaction.getJSONObject("amount")
+                .getJSONObject("details").getDouble("shipping") / currencyService.getRateVNDtoUSD();
+        double tax = JSONTransaction.getJSONObject("amount")
+                .getJSONObject("details").getDouble("tax") / currencyService.getRateVNDtoUSD();
+        double subtotal = JSONTransaction.getJSONObject("amount")
+                .getJSONObject("details").getDouble("subtotal") / currencyService.getRateVNDtoUSD();
+        double total = JSONTransaction.getJSONObject("amount").getDouble("total") / currencyService.getRateVNDtoUSD();
+
+        Details details = new Details();
+        details.setShipping(df.format(shipping));
+        details.setSubtotal(df.format(subtotal));
+        details.setTax(df.format(tax));
+
+        Amount amount = new Amount();
+        amount.setCurrency(JSONTransaction.getJSONObject("amount").getString("currency"));
+        amount.setTotal(df.format(total));
+        amount.setDetails(details);
+
+        return amount;
     }
 
 }
