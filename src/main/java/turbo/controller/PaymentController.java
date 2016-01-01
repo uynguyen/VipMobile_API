@@ -92,22 +92,10 @@ public class PaymentController {
             payer.setFundingInstruments(fundingInstrumentList);
             payer.setPaymentMethod(JSONPayer.getString("payment_method"));
 
-            Details details = new Details();
-            details.setShipping(JSONTransaction.getJSONObject("amount")
-                    .getJSONObject("details").getString("shipping"));
-            details.setSubtotal(JSONTransaction.getJSONObject("amount")
-                    .getJSONObject("details").getString("subtotal"));
-            details.setTax(JSONTransaction.getJSONObject("amount")
-                    .getJSONObject("details").getString("tax"));
-
-
-            Amount amount = new Amount();
-            amount.setCurrency(JSONTransaction.getJSONObject("amount").getString("currency"));
-            amount.setTotal(JSONTransaction.getJSONObject("amount").getString("total"));
-            amount.setDetails(details);
+            
          
             Transaction transaction = new Transaction();
-            transaction.setAmount(amount);
+            transaction.setAmount(getAmount(JSONTransaction));
             transaction.setDescription(JSONTransaction.getString("description"));
 
 //            List<Item> items = new ArrayList<Item>();
@@ -140,6 +128,24 @@ public class PaymentController {
             return null;
         }
         return createdPayment;
+    }
+    
+    private Amount getAmount(JSONObject JSONTransaction){
+        Details details = new Details();
+            details.setShipping(JSONTransaction.getJSONObject("amount")
+                    .getJSONObject("details").getString("shipping"));
+            details.setSubtotal(JSONTransaction.getJSONObject("amount")
+                    .getJSONObject("details").getString("subtotal"));
+            details.setTax(JSONTransaction.getJSONObject("amount")
+                    .getJSONObject("details").getString("tax"));
+
+
+            Amount amount = new Amount();
+            amount.setCurrency(JSONTransaction.getJSONObject("amount").getString("currency"));
+            amount.setTotal(JSONTransaction.getJSONObject("amount").getString("total"));
+            amount.setDetails(details);
+            
+            return amount;
     }
 
 }

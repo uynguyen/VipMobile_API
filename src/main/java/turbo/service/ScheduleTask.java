@@ -7,7 +7,6 @@ package turbo.service;
 
 import java.util.Date;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -59,7 +58,7 @@ public class ScheduleTask {
         report.generateIncomeReport("year");
     }
     
-    @Scheduled(fixedDelay = 86400)
+    @Scheduled(fixedDelay = 86400000)
     public void autoCreateDailyCustomerReport() {
         System.out.println("Auto generate daily customer report in " + (new Date()).toString());
         report.generateCustomerReport(100);

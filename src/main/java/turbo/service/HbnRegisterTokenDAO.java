@@ -30,6 +30,6 @@ public class HbnRegisterTokenDAO extends AbstractHbnDAO<RegisterToken> implement
             return (RegisterToken) result.get(0);
         }
         return null;
-
+        
     }
 }
