@@ -7,23 +7,15 @@ package turbo.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.Calendar;
+import javax.xml.bind.DatatypeConverter;
 import java.util.Date;
-import java.util.List;
-import java.util.Random;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import javax.transaction.Transactional;
-import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import turbo.POJO.Product;
 import turbo.POJO.RegisterToken;
 import turbo.POJO.User;
 import turbo.bussiness.EmailHandler;
@@ -197,9 +189,9 @@ public class UserServiceImpl extends RootService implements UserService {
             KeySpec spec = new PBEKeySpec(password.toCharArray(), salt, 65536, 128);
             SecretKeyFactory f = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
             byte[] hash = f.generateSecret(spec).getEncoded();
-            Base64.Encoder enc = Base64.getEncoder();
-            String s1 = enc.encodeToString(salt);
-            String s2 = enc.encodeToString(hash);
+
+            String s1 = DatatypeConverter.printBase64Binary(salt);
+            String s2 = DatatypeConverter.printBase64Binary(hash);
             return s2;
         } catch (Exception e) {
             e.printStackTrace();
@@ -207,16 +199,18 @@ public class UserServiceImpl extends RootService implements UserService {
         }
     }
 
+    @Override
     public boolean isExistUsername(String username) {
 
         User user = userDAO.getUserByUsername(username);
-        return (user == null) ? false : true;
+        return (user != null);
     }
 
+    @Override
     public boolean isExistEmail(String email) {
         User user = userDAO.getUserByEmail(email);
         if (user != null) {
-            return (user.getIsActive() == true) ? true : false;
+            return (user.getIsActive() == true);
         }
 
         return false;
@@ -252,6 +246,7 @@ public class UserServiceImpl extends RootService implements UserService {
 
     }
 
+    @Override
     public String sendResetRequestEmail(String email, String callbackURL) {
         
         User user = userDAO.getUserByEmail(email);
@@ -310,8 +305,9 @@ public class UserServiceImpl extends RootService implements UserService {
 
     @Override
     public String resetPass(ResetPassModel password, String resetPassToken) {
-        if(password.getNewPass().compareTo(password.getRetypePass()) != 0)
+        if(password.getNewPass().compareTo(password.getRetypePass()) != 0) {
             return "Password not match";
+        }
         ResetpassToken token = resetpassTokenDAO.getResetpassToken(resetPassToken);
         if (token == null) {
             return "Not Exist";
