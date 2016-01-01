@@ -33,15 +33,6 @@ public class AuthenticationInterceptor extends HandlerInterceptorAdapter {
     public boolean preHandle(HttpServletRequest request,
             HttpServletResponse response, Object handler)
             throws Exception {
-//        String uri = request.getRequestURI();
-//        if (uri.endsWith("payCart.do")) {
-//            Customer cus = (Customer) ((HttpServletRequest) request).getSession().getAttribute("customer");
-//            if (cus == null) {
-//                response.sendRedirect("/Spring/uynguyen/users/login.do?act=loginRequire");
-//                return false;
-//            }
-//        }
-
         System.out.println("preHandle");
         String token = extractHeaderToken(request);
 

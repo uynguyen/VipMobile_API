@@ -35,6 +35,8 @@ public abstract class EmailHandler implements Runnable {
     protected String contentFile;
     protected String toUser;
 
+    
+    
     abstract public boolean sendEmail(String email);
 
     public EmailHandler() {
@@ -103,7 +105,7 @@ public abstract class EmailHandler implements Runnable {
             msg.setRecipients(Message.RecipientType.TO, toAddresses);
             msg.setSubject(props.getProperty("email.subject"));
             msg.setSentDate(new Date());
-            String htmlContent = readContentFromFile();
+            String htmlContent = readContentFromFile().replace("[SHOPNAME]", props.getProperty("shop.name"));
             msg.setContent(htmlContent,
                     "text/html; charset=UTF-8");
 

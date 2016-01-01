@@ -36,7 +36,6 @@ import org.codehaus.jackson.annotate.JsonIgnore;
     @NamedQuery(name = "ProducerCategory.findById", query = "SELECT p FROM ProducerCategory p WHERE p.id = :id"),
     @NamedQuery(name = "ProducerCategory.findByValue", query = "SELECT p FROM ProducerCategory p WHERE p.value = :value")})
 public class ProducerCategory implements Serializable {
-
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -49,7 +48,7 @@ public class ProducerCategory implements Serializable {
     @Column(nullable = false, length = 2147483647)
     private String value;
     @OneToMany(mappedBy = "idProducer")
-    @JsonBackReference
+    @JsonBackReference    
     @com.fasterxml.jackson.annotation.JsonIgnore
     private Collection<ProductDetail> productDetailCollection;
 
@@ -115,5 +114,5 @@ public class ProducerCategory implements Serializable {
     public String toString() {
         return "turbo.POJO.ProducerCategory[ id=" + id + " ]";
     }
-
+    
 }

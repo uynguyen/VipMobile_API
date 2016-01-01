@@ -21,6 +21,12 @@ public interface ProductDAO extends DAO<Product>{
     public ArrayList<Product> getProducts(int page, int limit);
 
     public ArrayList<Product> getProductsByName(String searchString);
+
+    public List<Product> getNewProduct(int page, int limit);
+
+    public List<Product> getHighProduct(int limit);
+
+
    
   
 }

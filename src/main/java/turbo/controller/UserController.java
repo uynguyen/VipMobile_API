@@ -132,7 +132,7 @@ public class UserController {
         }
     }
 
-    //TODO: Do later
+   
     @RequestMapping(value = {"/resetPass/{ResetPassToken}"},
             method = {RequestMethod.POST},
             consumes = {MediaType.ALL_VALUE})

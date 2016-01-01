@@ -30,7 +30,7 @@ public class HbnSaleProductDAO extends AbstractHbnDAO<SaleProduct> implements Sa
 //        for(SaleProduct item : saleProduct){
 //            result.add(item.getIdProduct());
 //        }
-        result = (ArrayList<SaleProduct>) query.list();
+        result = (ArrayList<SaleProduct>) query.setFirstResult(page * limit).setMaxResults(limit).list();
         ss.close();
         return result;
     }

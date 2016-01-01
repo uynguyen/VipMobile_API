@@ -5,16 +5,14 @@
  */
 package turbo.service;
 
-import java.util.List;
-import turbo.POJO.BillDetail;
-import turbo.POJO.Product;
-import turbo.POJO.UserBill;
+import turbo.POJO.Arguments;
 
 /**
  *
  * @author LeeSan
  */
-public interface UserBillDetailDAO extends DAO<BillDetail> {
+public interface ArgumentsDAO extends DAO<Arguments> {
 
-    public List<Product> getBestSaleProducts(int page, int limit);
+    public Arguments getArgumentByName(String name);
+    
 }

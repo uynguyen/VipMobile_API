@@ -23,6 +23,13 @@ import com.paypal.base.rest.PayPalRESTException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Autowired;
+import turbo.bussiness.PaypalConfig;
+import turbo.service.UserBillDAO;
+import turbo.service.UserBillService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import turbo.bussiness.PaypalConfig;
 import turbo.service.CurrencyService;
@@ -36,41 +43,47 @@ import turbo.service.CurrencyService;
 public class PaymentController {
 
     @Autowired
+
+    private UserBillService userBillService;
+
     private CurrencyService currencyService;
-    
+
     @RequestMapping(value = {"/create"},
             method = {RequestMethod.POST},
             consumes = {MediaType.ALL_VALUE},
             produces = {MediaType.ALL_VALUE})
     @ResponseBody
-    public ResponseEntity<String> createPayment(@RequestBody String model) {
+    public ResponseEntity<String> createPayment(@RequestBody String model, HttpServletRequest request) {
         String result = "";
         ResponseEntity<String> entity = null;
         JSONObject data = new JSONObject(model);
         System.out.println(model);
-        Payment p =  sendCreatePayment(data);
+        Payment p = sendCreatePayment(data);
         if (p == null) {
             result = "{mess:'payment failure'}";
             entity = new ResponseEntity<String>(result, HttpStatus.BAD_REQUEST);
-        }
-        else {
+        } else {
             result = p.toJSON();
             entity = new ResponseEntity<String>(result, HttpStatus.OK);
+
+            //Save bill here....
+            String token = (String) request.getAttribute("token");
+            userBillService.addNewUserBill(model, token);
         }
-        
+
         return entity;
     }
-  
+
     private Payment sendCreatePayment(JSONObject data) {
         String token = PaypalConfig.getAccessToken();
         JSONObject paymentinfo = data;
         JSONObject JSONPayer = paymentinfo.getJSONObject("payer");
         JSONObject JSONCreditCard = JSONPayer.getJSONArray("funding_instruments")
                 .getJSONObject(0).getJSONObject("credit_card");
-        JSONObject JSONTransaction= paymentinfo.getJSONArray("transactions")
+        JSONObject JSONTransaction = paymentinfo.getJSONArray("transactions")
                 .getJSONObject(0);
-        Payment	createdPayment = null;
-        try {                   
+        Payment createdPayment = null;
+        try {
 //            Address billingAddress = new Address();
 //            billingAddress.setCity(JSONCreditCard.getJSONObject("billing_address").getString("city"));
 //            billingAddress.setCountryCode(JSONCreditCard.getJSONObject("billing_address").getString("country_code"));
@@ -79,7 +92,7 @@ public class PaymentController {
 //            billingAddress.setState(JSONCreditCard.getJSONObject("billing_address").getString("state"));
 
             CreditCard creditCard = new CreditCard();
-          //  creditCard.setBillingAddress(billingAddress);
+            //  creditCard.setBillingAddress(billingAddress);
             creditCard.setCvv2(JSONCreditCard.getInt("cvv2"));
             creditCard.setExpireMonth(JSONCreditCard.getInt("expire_month"));
             creditCard.setExpireYear(JSONCreditCard.getInt("expire_year"));
@@ -98,8 +111,6 @@ public class PaymentController {
             payer.setFundingInstruments(fundingInstrumentList);
             payer.setPaymentMethod(JSONPayer.getString("payment_method"));
 
-            
-         
             Transaction transaction = new Transaction();
             transaction.setAmount(getAmount(JSONTransaction));
             transaction.setDescription(JSONTransaction.getString("description"));
@@ -116,18 +127,16 @@ public class PaymentController {
 //            transaction.setItemList(itemList);
             List<Transaction> transactions = new ArrayList<Transaction>();
             transactions.add(transaction);
-    
-            
-            
+
             Payment payment = new Payment();
             payment.setPayer(payer);
             payment.setIntent(paymentinfo.getString("intent"));
             payment.setTransactions(transactions);
-     
+
             System.out.println(payment);
             APIContext apiContext = new APIContext(token);
-			
-	createdPayment = payment.create(apiContext);
+
+            createdPayment = payment.create(apiContext);
 
         } catch (PayPalRESTException ex) {
             Logger.getLogger(PaymentController.class.getName()).log(Level.SEVERE, null, ex);
@@ -135,31 +144,28 @@ public class PaymentController {
         }
         return createdPayment;
     }
-    
-    private Amount getAmount(JSONObject JSONTransaction){
-        DecimalFormat df = new  DecimalFormat("0.##");
+
+    private Amount getAmount(JSONObject JSONTransaction) {
+        DecimalFormat df = new DecimalFormat("0.##");
         double shipping = JSONTransaction.getJSONObject("amount")
-                    .getJSONObject("details").getDouble("shipping") / currencyService.getRateVNDtoUSD();
+                .getJSONObject("details").getDouble("shipping") / currencyService.getRateVNDtoUSD();
         double tax = JSONTransaction.getJSONObject("amount")
-                    .getJSONObject("details").getDouble("tax") / currencyService.getRateVNDtoUSD();
+                .getJSONObject("details").getDouble("tax") / currencyService.getRateVNDtoUSD();
         double subtotal = JSONTransaction.getJSONObject("amount")
-                    .getJSONObject("details").getDouble("subtotal") / currencyService.getRateVNDtoUSD();
+                .getJSONObject("details").getDouble("subtotal") / currencyService.getRateVNDtoUSD();
         double total = JSONTransaction.getJSONObject("amount").getDouble("total") / currencyService.getRateVNDtoUSD();
-                 
-        
-        
+
         Details details = new Details();
-            details.setShipping(df.format(shipping));
-            details.setSubtotal(df.format(subtotal));
-            details.setTax(df.format(tax));
+        details.setShipping(df.format(shipping));
+        details.setSubtotal(df.format(subtotal));
+        details.setTax(df.format(tax));
 
+        Amount amount = new Amount();
+        amount.setCurrency(JSONTransaction.getJSONObject("amount").getString("currency"));
+        amount.setTotal(df.format(total));
+        amount.setDetails(details);
 
-            Amount amount = new Amount();
-            amount.setCurrency(JSONTransaction.getJSONObject("amount").getString("currency"));
-            amount.setTotal(df.format(total));
-            amount.setDetails(details);
-            
-            return amount;
+        return amount;
     }
 
 }

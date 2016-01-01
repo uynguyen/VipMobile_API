@@ -30,7 +30,8 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Arguments.findById", query = "SELECT a FROM Arguments a WHERE a.id = :id"),
     @NamedQuery(name = "Arguments.findByName", query = "SELECT a FROM Arguments a WHERE a.name = :name"),
     @NamedQuery(name = "Arguments.findByDataType", query = "SELECT a FROM Arguments a WHERE a.dataType = :dataType"),
-    @NamedQuery(name = "Arguments.findByDescription", query = "SELECT a FROM Arguments a WHERE a.description = :description")})
+    @NamedQuery(name = "Arguments.findByDescription", query = "SELECT a FROM Arguments a WHERE a.description = :description"),
+    @NamedQuery(name = "Arguments.findByValue", query = "SELECT a FROM Arguments a WHERE a.value = :value")})
 public class Arguments implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -47,6 +48,9 @@ public class Arguments implements Serializable {
     @Size(max = 2147483647)
     @Column(length = 2147483647)
     private String description;
+    @Size(max = 2147483647)
+    @Column(length = 2147483647)
+    private String value;
 
     public Arguments() {
     }
@@ -85,6 +89,14 @@ public class Arguments implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
     }
 
     @Override

@@ -5,13 +5,14 @@
  */
 package turbo.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  *
  * @author LeeSan
  */
-public class AccessTokenModel {
+public class AccessTokenModel implements Serializable{
 
     String mess;
     String token;

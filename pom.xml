@@ -296,7 +296,7 @@
                 <configuration>
                     <source>1.7</source>
                     <target>1.7</target>
-                    <proc>none</proc>
+                    <!--<proc>none</proc>-->
                     <compilerArguments>
                 
                         <endorseddirs>${endorsed.dir}</endorseddirs>

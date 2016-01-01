@@ -17,7 +17,7 @@ public class UserBillModel implements Serializable {
 
     Integer id;
     String code;
-
+    Double transport_fee;
     Date bookDate;
     Double total;
     Double VAT;
@@ -40,6 +40,14 @@ public class UserBillModel implements Serializable {
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    public Double getTransport_fee() {
+        return transport_fee;
+    }
+
+    public void setTransport_fee(Double transport_fee) {
+        this.transport_fee = transport_fee;
     }
 
     public Date getBookDate() {
@@ -97,6 +105,8 @@ public class UserBillModel implements Serializable {
     public void setDetail(ArrayList<BillDetailModel> detail) {
         this.detail = detail;
     }
+
+   
 
     
 

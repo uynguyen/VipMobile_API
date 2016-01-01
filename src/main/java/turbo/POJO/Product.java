@@ -44,7 +44,6 @@ import org.codehaus.jackson.annotate.JsonIgnore;
     @NamedQuery(name = "Product.findByImportDate", query = "SELECT p FROM Product p WHERE p.importDate = :importDate"),
     @NamedQuery(name = "Product.findByDescription", query = "SELECT p FROM Product p WHERE p.description = :description")})
 public class Product implements Serializable {
-
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -71,19 +70,19 @@ public class Product implements Serializable {
     @Column(length = 2147483647)
     private String description;
     @OneToMany(mappedBy = "idProduct")
-    @JsonBackReference
+    @JsonBackReference    
     @com.fasterxml.jackson.annotation.JsonIgnore
     private Collection<ProductDetail> productDetailCollection;
     @OneToMany(mappedBy = "idProduct")
-    @JsonBackReference
+    @JsonBackReference    
     @com.fasterxml.jackson.annotation.JsonIgnore
     private Collection<BillDetail> billDetailCollection;
     @OneToMany(mappedBy = "idProduct")
-    @JsonBackReference
+    @JsonBackReference    
     @com.fasterxml.jackson.annotation.JsonIgnore
     private Collection<ProductColorDetail> productColorDetailCollection;
     @OneToMany(mappedBy = "idProduct")
-    @JsonBackReference
+    @JsonBackReference    
     @com.fasterxml.jackson.annotation.JsonIgnore
     private Collection<SaleProduct> saleProductCollection;
 
@@ -222,5 +221,5 @@ public class Product implements Serializable {
     public String toString() {
         return "turbo.POJO.Product[ id=" + id + " ]";
     }
-
+    
 }

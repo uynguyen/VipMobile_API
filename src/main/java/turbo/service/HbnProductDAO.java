@@ -87,4 +87,28 @@ public class HbnProductDAO extends AbstractHbnDAO<Product> implements ProductDAO
         return result;
     }
 
+    @Override
+    public List<Product> getNewProduct(int page, int limit) {
+        ArrayList<Product> result = new ArrayList<Product>();
+        Session ss = getSession();
+        ss.beginTransaction();
+        Query query = ss.createQuery("SELECT p FROM Product p ORDER BY p.importDate DESC");
+
+        result = (ArrayList<Product>) query.setFirstResult(page * limit).setMaxResults(limit).list();
+        ss.close();
+        return result;
+    }
+
+    @Override
+    public List<Product> getHighProduct(int limit) {
+         ArrayList<Product> result = new ArrayList<Product>();
+        Session ss = getSession();
+        ss.beginTransaction();
+        Query query = ss.createQuery("SELECT p FROM Product p ORDER BY p.price DESC");
+
+        result = (ArrayList<Product>) query.setFirstResult(0).setMaxResults(limit).list();
+        ss.close();
+        return result;
+    }
+
 }
