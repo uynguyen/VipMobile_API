@@ -42,6 +42,9 @@ public class BillDetail implements Serializable {
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Column(name = "total_price", precision = 17, scale = 17)
     private Double totalPrice;
+    @JoinColumn(name = "id_select_color", referencedColumnName = "id")
+    @ManyToOne
+    private ColorCategory idSelectColor;
     @JoinColumn(name = "id_product", referencedColumnName = "id")
     @ManyToOne
     private Product idProduct;
@@ -78,6 +81,14 @@ public class BillDetail implements Serializable {
 
     public void setTotalPrice(Double totalPrice) {
         this.totalPrice = totalPrice;
+    }
+
+    public ColorCategory getIdSelectColor() {
+        return idSelectColor;
+    }
+
+    public void setIdSelectColor(ColorCategory idSelectColor) {
+        this.idSelectColor = idSelectColor;
     }
 
     public Product getIdProduct() {

@@ -43,7 +43,8 @@ import org.codehaus.jackson.annotate.JsonIgnore;
     @NamedQuery(name = "UserBill.findByVat", query = "SELECT u FROM UserBill u WHERE u.vat = :vat"),
     @NamedQuery(name = "UserBill.findBySale", query = "SELECT u FROM UserBill u WHERE u.sale = :sale"),
     @NamedQuery(name = "UserBill.findByAddress", query = "SELECT u FROM UserBill u WHERE u.address = :address"),
-    @NamedQuery(name = "UserBill.findByPhone", query = "SELECT u FROM UserBill u WHERE u.phone = :phone")})
+    @NamedQuery(name = "UserBill.findByPhone", query = "SELECT u FROM UserBill u WHERE u.phone = :phone"),
+    @NamedQuery(name = "UserBill.findByStranportFee", query = "SELECT u FROM UserBill u WHERE u.stranportFee = :stranportFee")})
 public class UserBill implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -71,6 +72,8 @@ public class UserBill implements Serializable {
     @Size(max = 2147483647)
     @Column(length = 2147483647)
     private String phone;
+    @Column(name = "stranport_fee", precision = 17, scale = 17)
+    private Double stranportFee;
     @OneToMany(mappedBy = "idBill")
     private Collection<BillDetail> billDetailCollection;
     @JoinColumn(name = "state", referencedColumnName = "id")
@@ -149,6 +152,14 @@ public class UserBill implements Serializable {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public Double getStranportFee() {
+        return stranportFee;
+    }
+
+    public void setStranportFee(Double stranportFee) {
+        this.stranportFee = stranportFee;
     }
 
     @XmlTransient

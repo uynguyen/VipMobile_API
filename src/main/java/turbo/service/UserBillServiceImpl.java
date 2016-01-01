@@ -30,6 +30,8 @@ import turbo.POJO.Product;
 import turbo.POJO.TransportFee;
 import turbo.POJO.User;
 import turbo.POJO.UserBill;
+import turbo.bussiness.BookProductEmailHandler;
+import turbo.bussiness.EmailHandler;
 import turbo.common.AppArguments;
 import turbo.model.AccountModel;
 import turbo.model.ArrayObjectModel;
@@ -99,7 +101,8 @@ public class UserBillServiceImpl extends RootService implements UserBillService 
         item.setState(statePOJO2Model(pojo.getState()));
         item.setTotal(pojo.getTotal());
         item.setBookDate(pojo.getBookDate());
-
+        item.setTransport_fee(pojo.getStranportFee());
+        item.setVAT(pojo.getVat());
         if (isAdmin) {
             Account acc = pojo.getIdUser().getIdAccount();
             item.setAccount(accountPOJO2Model(acc));
@@ -243,7 +246,8 @@ public class UserBillServiceImpl extends RootService implements UserBillService 
                     + ", " + infoObject.getString("city");
             bill.setAddress(address);
             bill.setBookDate(new Date());
-            bill.setVat(10.0);
+            bill.setStranportFee(transportFee.getDouble("fee"));
+            bill.setVat(object.getJSONObject("VAT").getDouble("value"));
             bill.setPhone(infoObject.getString("phone"));
             bill.setIdUser(user);
 
@@ -255,7 +259,9 @@ public class UserBillServiceImpl extends RootService implements UserBillService 
             if (bill != null) {
                 ArrayList<BillDetail> lst = convertObjectJSONToList(cart, bill);
                 if (lst != null) {
-
+                    UserBillModel model = userBillPOJO2Model(bill, false);
+                    EmailHandler emailHandler = new BookProductEmailHandler(user.getUsername(), model);
+                    emailHandler.sendEmail(user.getEmail());                       
                     System.out.println("INSERT SUCCESSED " + lst.size());
                     return "Success";
 
@@ -359,7 +365,7 @@ public class UserBillServiceImpl extends RootService implements UserBillService 
             UserBillModel item = userBillPOJO2Model(pojo, false);
 
             array.add(item);
-            System.out.println(i);
+
         }
         sortUserBill(array);
         result.setTotal(countTotalPage(array.size(), limit));
@@ -411,16 +417,15 @@ public class UserBillServiceImpl extends RootService implements UserBillService 
 
             for (String key : cart.keySet()) {
                 JSONObject productItem = cart.getJSONObject(key);
-                
+
                 int quantity = productItem.getInt("quantity");
                 JSONObject product = productItem.getJSONObject("product");
                 double price = product.getDouble("price");
                 result += quantity * price;
-                
-                
+
             }
-            double vat = 100 - object.getJSONObject("VAT").getDouble("value") / 100;
-            result *= vat;
+            double vat = object.getJSONObject("VAT").getDouble("value") / 100;
+            result += vat * result;
             result += object.getJSONObject("info").getJSONObject("fee").getDouble("fee");
             System.out.println("TOTAL" + result);
             return result;
