@@ -14,6 +14,7 @@ import turbo.POJO.ProductColorDetail;
 import turbo.POJO.ProductDetail;
 import turbo.model.QueryProductStringModel;
 import turbo.service.ColorDAO;
+import turbo.service.ProductDAO;
 
 /**
  *
@@ -21,16 +22,19 @@ import turbo.service.ColorDAO;
  */
 public class SearchByColor implements StrategySearch {
 
+    private ProductDAO productDAO;
     private ColorDAO colorDAO;
 
-    public SearchByColor(ColorDAO dao) {
+    public SearchByColor(ColorDAO dao, ProductDAO productDAO) {
         this.colorDAO = dao;
+        this.productDAO = productDAO;
     }
 
-    public ArrayList<Product> Search(ArrayList<Product> lstProducts, QueryProductStringModel query) {
+    public ArrayList<Product> Search(ArrayList<Product> lstProducts, QueryProductStringModel query, boolean flag_isFirstTime) {
         ArrayList<Product> result = new ArrayList<Product>();
-        if (lstProducts.size() != 0) {
+        if (!flag_isFirstTime) {
             for (Product p : lstProducts) {
+                p = productDAO.get(p.getId());
                 Collection<ProductColorDetail> detail = p.getProductColorDetailCollection();
                 if (detail != null && detail.toArray().length != 0) {
                     for (int i = 0; i < detail.toArray().length; i++) {

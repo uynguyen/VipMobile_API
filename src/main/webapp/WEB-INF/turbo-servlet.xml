@@ -84,8 +84,17 @@
     <!--INTERCEPTOR-->
     <mvc:interceptors>
         <mvc:interceptor>
-            <mvc:mapping path="/product/*" />
+            <!--            <mvc:mapping path="/product/*" />-->
             <mvc:mapping path="/bill/**" />
+            <mvc:mapping path="/user/**" />
+            <mvc:exclude-mapping path="/user/requireToken"/>
+            <mvc:exclude-mapping path="/user/tokenExpire"/>    
+            <mvc:exclude-mapping path="/user/login"/> 
+            <mvc:exclude-mapping path="/user/activate/**"/>
+            <mvc:exclude-mapping path="/user/register"/>
+            <mvc:exclude-mapping path="/user/resetPass/**"/>
+            <mvc:exclude-mapping path="/user/requestResetPass/**"/>
+            
             <!--<bean class="turbo.interceptor.ProductInterceptor"/>-->
             <bean class="turbo.interceptor.AuthenticationInterceptor"/>
         </mvc:interceptor>

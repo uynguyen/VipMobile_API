@@ -204,7 +204,7 @@ public class UserBillController {
         ArrayObjectModel result = new ArrayObjectModel();
 
         try {
-
+            page -=1;
             String token = (String) request.getAttribute("token");
             result = userBillService.getUserBill(page, limit, token);
 

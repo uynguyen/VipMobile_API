@@ -190,10 +190,10 @@
             <version>${spring-framework.version}</version>
         </dependency>
         <dependency>
-  <groupId>org.springframework</groupId>
-  <artifactId>spring-context-support</artifactId>
-  <version>${spring-framework.version}</version>
-</dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context-support</artifactId>
+            <version>${spring-framework.version}</version>
+        </dependency>
         <!--SERVLET-->
         <dependency>
             <groupId>javax.servlet</groupId>
@@ -229,25 +229,25 @@
         </dependency>
         <!-- Jasper Report -->
         <dependency>
-	<groupId>net.sf.jasperreports</groupId>
-	<artifactId>jasperreports</artifactId>
-	<version>6.2.0</version>
-</dependency>
-<dependency>
-	<groupId>com.itextpdf</groupId>
-	<artifactId>itextpdf</artifactId>
-	<version>5.5.8</version>
-</dependency>
+            <groupId>net.sf.jasperreports</groupId>
+            <artifactId>jasperreports</artifactId>
+            <version>6.2.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>itextpdf</artifactId>
+            <version>5.5.8</version>
+        </dependency>
         <dependency>
             <groupId>net.sf.jasperreports</groupId>
             <artifactId>jasperreports-fonts</artifactId>
             <version>6.0.0</version>
         </dependency>
         <dependency>
-	<groupId>org.apache.poi</groupId>
-	<artifactId>poi</artifactId>
-	<version>3.13</version>
-</dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>3.13</version>
+        </dependency>
 
         <dependency>
             <groupId>javax</groupId>
@@ -256,15 +256,15 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-    <groupId>com.paypal.sdk</groupId>
-    <artifactId>rest-api-sdk</artifactId>
-    <version>LATEST</version>
+            <groupId>com.paypal.sdk</groupId>
+            <artifactId>rest-api-sdk</artifactId>
+            <version>LATEST</version>
         </dependency>
         <dependency>
-	<groupId>org.codehaus.groovy</groupId>
-	<artifactId>groovy-all</artifactId>
-	<version>2.4.5</version>
-</dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-all</artifactId>
+            <version>2.4.5</version>
+        </dependency>
 
     </dependencies>
 <!--    <profiles>
@@ -297,8 +297,9 @@
                 <configuration>
                     <source>1.7</source>
                     <target>1.7</target>
-                     <proc>none</proc>
+                    <proc>none</proc>
                     <compilerArguments>
+                
                         <endorseddirs>${endorsed.dir}</endorseddirs>
                     </compilerArguments>
                 </configuration>

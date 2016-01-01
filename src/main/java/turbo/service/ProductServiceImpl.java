@@ -18,6 +18,7 @@ import turbo.POJO.ProducerCategory;
 import turbo.POJO.Product;
 import turbo.POJO.ProductDetail;
 import turbo.POJO.SaleProduct;
+import turbo.model.ArrayObjectModel;
 import turbo.model.QueryProductStringModel;
 import turbo.strategySearch.SearchByColor;
 import turbo.strategySearch.SearchByPrice;
@@ -50,20 +51,10 @@ public class ProductServiceImpl extends RootService implements ProductService {
     private SaleProductDAO saleProductDAO;
 
     @Override
-    public void createProduct(Product contact) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public List<Product> getProducts() {
-        List<Product> result = productDAO.getAll();
+    public List<Product> getProducts(int page, int limit) {
+        ArrayList<Product> result = productDAO.getProducts(page, limit);
 
         return result;
-    }
-
-    @Override
-    public List<Product> getProductByCode(String code) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
@@ -71,55 +62,49 @@ public class ProductServiceImpl extends RootService implements ProductService {
         return productDAO.get(id);
     }
 
-    @Override
-    public void updateProduct(Product contact) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+    public ArrayObjectModel searchProduct(QueryProductStringModel query) {
 
-    @Override
-    public void deleteProduct(Long id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    public List<Product> searchProduct(QueryProductStringModel query) {
         ArrayList<Product> result = new ArrayList<Product>();
         StrategySearch searchMachine;
+        query.setPage(query.getPage() - 1);
+        boolean flag_isFirstTime = true;
         if (query.getProducers() != null && !query.getProducers().isEmpty()) {
             searchMachine = new SearchByProducer(producerDAO);
-            result = searchMachine.Search(result, query);
+            result = searchMachine.Search(result, query, flag_isFirstTime);
+            flag_isFirstTime = false;
         }
 
         if (query.getMinPrice() != null && query.getMaxPrice() != null) {
             searchMachine = new SearchByPrice(productDAO);
-            result = searchMachine.Search(result, query);
+            result = searchMachine.Search(result, query, flag_isFirstTime);
 
         }
         if (query.getColors() != null && !query.getColors().isEmpty()) {
-            searchMachine = new SearchByColor(colorDAO);
-            result = searchMachine.Search(result, query);
+            searchMachine = new SearchByColor(colorDAO, productDAO);
+            result = searchMachine.Search(result, query, flag_isFirstTime);
         }
 
         if (query.getScreenSize() != null && !query.getScreenSize().isEmpty()) {
             searchMachine = new SearchByScreenSize(productDAO);
-            result = searchMachine.Search(result, query);
+            result = searchMachine.Search(result, query, flag_isFirstTime);
         }
         if (query.getSearchString() != null && query.getSearchString() != "") {
             searchMachine = new SearchByStringQuery(productDAO);
-            result = searchMachine.Search(result, query);
+            result = searchMachine.Search(result, query,flag_isFirstTime);
 
         }
+        ArrayObjectModel model = new ArrayObjectModel();
+//        if (result.isEmpty()) {
+//            result = productDAO.getProducts(query.getPage(), query.getLimit());
+//            model.setTotal(result.size());
+//        } else {
+            sortListProducts(result);
+            model.setTotal(result.size());
+            result = Paging(result, query.getPage(), query.getLimit());
+//        }
 
-        if (result.isEmpty()) {
-            result = productDAO.getProducts(query.getPage(), query.getLimit());
-
-            return result;
-        }
-
-        sortListProducts(result);
-
-        result = Paging(result, query.getPage(), query.getLimit());
-
-        return result;
+        model.setResult(result);
+        return model;
     }
 
     private void sortListProducts(ArrayList<Product> lst) {

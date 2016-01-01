@@ -24,12 +24,15 @@ public class RootService<T extends Object> {
         AccountModel result = new AccountModel();
         result.setAddress(acc.getAddress());
         result.setAvatar(acc.getAvatar());
-        result.setBirthday(acc.getBirthday());
+        if(acc.getBirthday() != null)
+            result.setBirthday(acc.getBirthday().getTime());
+        else
+            result.setBirthday(0);
         result.setFullName(acc.getFullName());
         result.setGender(acc.getGender());
         result.setId(acc.getId());
         result.setVisaCode(acc.getVisaCode());
-
+        
         return result;
 
     }

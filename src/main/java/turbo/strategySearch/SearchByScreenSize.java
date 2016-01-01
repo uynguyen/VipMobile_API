@@ -25,10 +25,10 @@ public class SearchByScreenSize implements StrategySearch {
         this.productDAO = dao;
     }
 
-    public ArrayList<Product> Search(ArrayList<Product> lstProducts, QueryProductStringModel query) {
+    public ArrayList<Product> Search(ArrayList<Product> lstProducts, QueryProductStringModel query, boolean flag_isFirstTime) {
         ArrayList<Product> result = new ArrayList<Product>();
 
-        if (!lstProducts.isEmpty()) {
+        if (!flag_isFirstTime) {
             for (Product p : lstProducts) {
                 if (p.getProductDetailCollection() != null && !p.getProductDetailCollection().isEmpty()) {
                     double screenSize = ((ProductDetail) p.getProductDetailCollection().toArray()[0]).getScreenSize();

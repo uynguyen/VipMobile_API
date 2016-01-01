@@ -26,9 +26,9 @@ public class SearchByProducer implements StrategySearch {
     }
 
     @Override
-    public ArrayList<Product> Search(ArrayList<Product> lstProduct, QueryProductStringModel query) {
+    public ArrayList<Product> Search(ArrayList<Product> lstProduct, QueryProductStringModel query, boolean flag_isFirstTime) {
         ArrayList<Product> result = new ArrayList<Product>();
-        if (lstProduct.size() != 0) {
+        if (!flag_isFirstTime) {
             for (Product p : lstProduct) {
                 Collection<ProductDetail> detail = p.getProductDetailCollection();
                 if (detail != null && detail.toArray().length != 0) {

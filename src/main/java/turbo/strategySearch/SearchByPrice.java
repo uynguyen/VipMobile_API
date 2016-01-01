@@ -24,12 +24,12 @@ public class SearchByPrice implements StrategySearch {
     }
 
     @Override
-    public ArrayList<Product> Search(ArrayList<Product> lstProducts, QueryProductStringModel query) {
+    public ArrayList<Product> Search(ArrayList<Product> lstProducts, QueryProductStringModel query, boolean flag_isFirstTime) {
         ArrayList<Product> result = new ArrayList<Product>();
 
         Integer minPrice = query.getMinPrice();
         Integer maxPrice = query.getMaxPrice();
-        if (!lstProducts.isEmpty()) {
+        if (!flag_isFirstTime) {
             for (Product p : lstProducts) {
                 if (p.getPrice() >= minPrice && p.getPrice() <= maxPrice) {
                     result.add(p);

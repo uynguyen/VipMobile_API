@@ -34,7 +34,6 @@ import org.codehaus.jackson.annotate.JsonIgnore;
  */
 @Entity
 @Table(catalog = "turbo_mobileshop", schema = "public", uniqueConstraints = {
-    @UniqueConstraint(columnNames = {"email"}),
     @UniqueConstraint(columnNames = {"username"})})
 @XmlRootElement
 @NamedQueries({
@@ -67,6 +66,8 @@ public class User implements Serializable {
     @Column(name = "create_date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date createDate;
+    @OneToMany(mappedBy = "idUser")
+    private Collection<ResetpassToken> resetpassTokenCollection;
     @OneToMany(mappedBy = "idUser")
     private Collection<UserBill> userBillCollection;
     @OneToMany(mappedBy = "userId")
@@ -133,6 +134,16 @@ public class User implements Serializable {
 
     public void setCreateDate(Date createDate) {
         this.createDate = createDate;
+    }
+
+    @XmlTransient
+    @JsonIgnore
+    public Collection<ResetpassToken> getResetpassTokenCollection() {
+        return resetpassTokenCollection;
+    }
+
+    public void setResetpassTokenCollection(Collection<ResetpassToken> resetpassTokenCollection) {
+        this.resetpassTokenCollection = resetpassTokenCollection;
     }
 
     @XmlTransient

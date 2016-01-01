@@ -24,9 +24,9 @@ public class SearchByStringQuery implements StrategySearch {
     
     
     
-    public ArrayList<Product> Search(ArrayList<Product> lstProducts, QueryProductStringModel query) {
+    public ArrayList<Product> Search(ArrayList<Product> lstProducts, QueryProductStringModel query, boolean flag_isFirstTime) {
         ArrayList<Product> result = new ArrayList<Product>();
-        if (!lstProducts.isEmpty()) {
+        if (!flag_isFirstTime) {
             for (Product p : lstProducts) {
 
                 if (p.getName().toLowerCase().contains(query.getSearchString().toLowerCase())) {

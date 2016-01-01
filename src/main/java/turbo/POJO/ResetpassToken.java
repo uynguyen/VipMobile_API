@@ -20,6 +20,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -27,34 +28,33 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author LeeSan
  */
 @Entity
-@Table(name = "sale_product", catalog = "turbo_mobileshop", schema = "public")
+@Table(name = "resetpass_token", catalog = "turbo_mobileshop", schema = "public")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "SaleProduct.findAll", query = "SELECT s FROM SaleProduct s"),
-    @NamedQuery(name = "SaleProduct.findById", query = "SELECT s FROM SaleProduct s WHERE s.id = :id"),
-    @NamedQuery(name = "SaleProduct.findBySalePercent", query = "SELECT s FROM SaleProduct s WHERE s.salePercent = :salePercent"),
-    @NamedQuery(name = "SaleProduct.findByValidDate", query = "SELECT s FROM SaleProduct s WHERE s.validDate = :validDate")})
-public class SaleProduct implements Serializable {
+    @NamedQuery(name = "ResetpassToken.findAll", query = "SELECT r FROM ResetpassToken r"),
+    @NamedQuery(name = "ResetpassToken.findById", query = "SELECT r FROM ResetpassToken r WHERE r.id = :id"),
+    @NamedQuery(name = "ResetpassToken.findByAccessToken", query = "SELECT r FROM ResetpassToken r WHERE r.accessToken = :accessToken"),
+    @NamedQuery(name = "ResetpassToken.findByExpire", query = "SELECT r FROM ResetpassToken r WHERE r.expire = :expire")})
+public class ResetpassToken implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(nullable = false)
     private Integer id;
-    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
-    @Column(name = "sale_percent", precision = 17, scale = 17)
-    private Double salePercent;
-    @Column(name = "valid_date")
+    @Size(max = 2147483647)
+    @Column(name = "access_token", length = 2147483647)
+    private String accessToken;
     @Temporal(TemporalType.TIMESTAMP)
-    private Date validDate;
-    @JoinColumn(name = "id_product", referencedColumnName = "id")
+    private Date expire;
+    @JoinColumn(name = "id_user", referencedColumnName = "id")
     @ManyToOne
-    private Product idProduct;
+    private User idUser;
 
-    public SaleProduct() {
+    public ResetpassToken() {
     }
 
-    public SaleProduct(Integer id) {
+    public ResetpassToken(Integer id) {
         this.id = id;
     }
 
@@ -66,28 +66,28 @@ public class SaleProduct implements Serializable {
         this.id = id;
     }
 
-    public Double getSalePercent() {
-        return salePercent;
+    public String getAccessToken() {
+        return accessToken;
     }
 
-    public void setSalePercent(Double salePercent) {
-        this.salePercent = salePercent;
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
     }
 
-    public Date getValidDate() {
-        return validDate;
+    public Date getExpire() {
+        return expire;
     }
 
-    public void setValidDate(Date validDate) {
-        this.validDate = validDate;
+    public void setExpire(Date expire) {
+        this.expire = expire;
     }
 
-    public Product getIdProduct() {
-        return idProduct;
+    public User getIdUser() {
+        return idUser;
     }
 
-    public void setIdProduct(Product idProduct) {
-        this.idProduct = idProduct;
+    public void setIdUser(User idUser) {
+        this.idUser = idUser;
     }
 
     @Override
@@ -100,10 +100,10 @@ public class SaleProduct implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof SaleProduct)) {
+        if (!(object instanceof ResetpassToken)) {
             return false;
         }
-        SaleProduct other = (SaleProduct) object;
+        ResetpassToken other = (ResetpassToken) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -112,7 +112,7 @@ public class SaleProduct implements Serializable {
 
     @Override
     public String toString() {
-        return "turbo.POJO.SaleProduct[ id=" + id + " ]";
+        return "turbo.POJO.ResetpassToken[ id=" + id + " ]";
     }
     
 }

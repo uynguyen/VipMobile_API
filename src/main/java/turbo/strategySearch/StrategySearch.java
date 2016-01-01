@@ -14,6 +14,6 @@ import turbo.model.QueryProductStringModel;
  * @author LeeSan
  */
 public interface StrategySearch {
-    public ArrayList<Product> Search(ArrayList<Product> lstProducts,QueryProductStringModel query);
+    public ArrayList<Product> Search(ArrayList<Product> lstProducts,QueryProductStringModel query, boolean flag_isFirstTime);
     
 }
