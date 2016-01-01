@@ -1,15 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>vipmobileshopapi</groupId>
     <artifactId>vipmobileshopapi</artifactId>
     <packaging>war</packaging>
     <version>1.0</version>
     <name>vipmobileshopapi</name>
-    <repositories>
+        <repositories>
         <repository>
             <id>eap</id>
-            <url>http://maven.repository.redhat.com/techpreview/all</url>
+            <url>https://github.com/winlqvin/vipmobile</url>
             <releases>
                 <enabled>true</enabled>
             </releases>
@@ -21,7 +22,7 @@
     <pluginRepositories>
         <pluginRepository>
             <id>eap</id>
-            <url>http://maven.repository.redhat.com/techpreview/all</url>
+            <url>https://github.com/winlqvin/vipmobile</url>
             <releases>
                 <enabled>true</enabled>
             </releases>
@@ -33,7 +34,7 @@
     <properties>
         <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <spring-framework.version>4.0.3.RELEASE</spring-framework.version>
+        <spring-framework.version>4.0.2.RELEASE</spring-framework.version>
         <hibernate.version>3.6.9.Final</hibernate.version>
         <tiles.version>3.0.5</tiles.version>
         <jackson.version>2.6.3</jackson.version>
@@ -188,6 +189,11 @@
             <artifactId>spring-tx</artifactId>
             <version>${spring-framework.version}</version>
         </dependency>
+        <dependency>
+  <groupId>org.springframework</groupId>
+  <artifactId>spring-context-support</artifactId>
+  <version>${spring-framework.version}</version>
+</dependency>
         <!--SERVLET-->
         <dependency>
             <groupId>javax.servlet</groupId>
@@ -221,6 +227,28 @@
             <artifactId>json</artifactId>
             <version>20151123</version>
         </dependency>
+        <!-- Jasper Report -->
+        <dependency>
+	<groupId>net.sf.jasperreports</groupId>
+	<artifactId>jasperreports</artifactId>
+	<version>6.2.0</version>
+</dependency>
+<dependency>
+	<groupId>com.itextpdf</groupId>
+	<artifactId>itextpdf</artifactId>
+	<version>5.5.8</version>
+</dependency>
+        <dependency>
+            <groupId>net.sf.jasperreports</groupId>
+            <artifactId>jasperreports-fonts</artifactId>
+            <version>6.0.0</version>
+        </dependency>
+        <dependency>
+	<groupId>org.apache.poi</groupId>
+	<artifactId>poi</artifactId>
+	<version>3.13</version>
+</dependency>
+
         <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-web-api</artifactId>
@@ -232,16 +260,15 @@
     <artifactId>rest-api-sdk</artifactId>
     <version>LATEST</version>
         </dependency>
+        <dependency>
+	<groupId>org.codehaus.groovy</groupId>
+	<artifactId>groovy-all</artifactId>
+	<version>2.4.5</version>
+</dependency>
+
     </dependencies>
 <!--    <profiles>
         <profile>
-             When built in OpenShift the 'openshift' profile will be used when 
-            invoking mvn. 
-             Use this profile for any OpenShift specific customization your app 
-            will need. 
-             By default that is to put the resulting archive into the 'webapps' 
-            folder. 
-             http://maven.apache.org/guides/mini/guide-building-for-different-environments.html 
             <id>openshift</id>
             <build>
                 <finalName>vipmobileshopapi</finalName>
@@ -270,8 +297,8 @@
                 <configuration>
                     <source>1.7</source>
                     <target>1.7</target>
+                     <proc>none</proc>
                     <compilerArguments>
-<!--                        <proc>none</proc>-->
                         <endorseddirs>${endorsed.dir}</endorseddirs>
                     </compilerArguments>
                 </configuration>

@@ -42,53 +42,53 @@ import turbo.model.AccountModel;
 @Service("userService")
 @Transactional
 public class UserServiceImpl extends RootService implements UserService {
-    
+
     BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
     @Autowired
     private UserDAO userDAO;
-    
+
     @Autowired
     private RegisterTokenDAO registerTokenDAO;
-    
+
     @Autowired
     private AccessTokenDAO accessTokenDAO;
-    
+
     public void addNewUSer(User product) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     //TODO: Hash pass invalid???
     public String getUserByUsername(String username, String password, String role, AccessTokenModel token) {
-        
+
         User user = userDAO.getUserByUsername(username);
         if (user == null) {
             return "Invalid Infomation";
         }
-        if(role != null && role != "" && role.compareTo("admin") == 0){
+        if (role != null && role != "" && role.compareTo("admin") == 0) {
             String userRole = user.getIdRole().getRole().toLowerCase();
-            if(userRole.compareTo("admin") != 0 && userRole.compareTo("superadmin") != 0)
+            if (userRole.compareTo("admin") != 0 && userRole.compareTo("superadmin") != 0) {
                 return "Require permission";
+            }
         }
-        
-        
+
         if (!user.getIsActive()) {
             return "Activated Require";
         }
 
-//        String hashPass = encoder.encode(password);
+//        String hashPass = hashPass(username, password);
 //        if (!hashPass.equals(user.getPassword())) {
 //            return "Invalid Information";
 //        }
         AccessTokenModel testtoken = GenerateTokenBus.generateToken(user.getUsername());
-        
+
         AccessToken accessToken = new AccessToken();
         accessToken.setAccessToken(testtoken.getToken());
         accessToken.setExpire(testtoken.getExpireDate());
         accessToken.setUserId(user);
         accessToken.setScope("None");
-        
+
         accessToken = accessTokenDAO.create(accessToken);
-        
+
         if (accessToken != null) {
             token.setToken(testtoken.getToken());
             token.setExpireDate(testtoken.getExpireDate());
@@ -98,9 +98,9 @@ public class UserServiceImpl extends RootService implements UserService {
         }
         return "Fail";
     }
-    
+
     protected Object JsonToModel(String array, Object template) {
-        
+
         Object result = new Object();
         try {
             ObjectMapper mapper = new ObjectMapper();
@@ -110,18 +110,18 @@ public class UserServiceImpl extends RootService implements UserService {
             e.printStackTrace();
             System.out.println(e);
         }
-        
+
         return result;
     }
-    
+
     public User getProduct(Integer id) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
+
     public void updateUser(User product) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
+
     public void deleteUser(Long id) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
@@ -143,62 +143,63 @@ public class UserServiceImpl extends RootService implements UserService {
             registerToken.setIdUser(result);
             registerToken.setAccessToken(accToken.getToken());
             registerToken.setExpise(accToken.getExpireDate());
-            
+
             if (registerTokenDAO.create(registerToken) != null) {
                 EmailHandler sendEmailHandler = new RegisterEmailHandler();
-                
+
                 sendEmailHandler.sendEmail(user.getEmail());
                 return "CreateSuccess";
             }
-            
+
         }
-        
+
         if (userDAO.create(user) != null) {
             return "CreateSuccess";
         }
         return "CreateFail";
-        
+
     }
 
-//    private String hashPass(String password) {
-//        try {
-//            Random random = new Random();
-//            byte[] salt = new byte[16];
-//            random.nextBytes(salt);
-//            KeySpec spec = new PBEKeySpec("password".toCharArray(), salt, 65536, 128);
-//            SecretKeyFactory f = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
-//            byte[] hash = f.generateSecret(spec).getEncoded();
-//            Base64.Encoder enc = Base64.getEncoder();
-//            String s1 = enc.encodeToString(salt);
-//            String s2 = enc.encodeToString(hash);
-//            return s2;
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return "";
-//        }
-//    }
+    private String hashPass(String username, String password) {
+        try {
+
+            byte[] salt = new byte[16];
+            salt = username.getBytes();
+            KeySpec spec = new PBEKeySpec("password".toCharArray(), salt, 65536, 128);
+            SecretKeyFactory f = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+            byte[] hash = f.generateSecret(spec).getEncoded();
+            Base64.Encoder enc = Base64.getEncoder();
+            String s1 = enc.encodeToString(salt);
+            String s2 = enc.encodeToString(hash);
+            return s2;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "";
+        }
+    }
+
     public boolean isExistUsername(String username) {
-        
+
         User user = userDAO.getUserByUsername(username);
         return (user == null) ? false : true;
     }
-    
+
     public boolean isExistEmail(String email) {
         User user = userDAO.getUserByEmail(email);
         if (user != null) {
             return (user.getIsActive() == true) ? true : false;
         }
-        
+
         return false;
     }
-    
+
     public String activateUser(String registerToken) {
-        
+
         RegisterToken token = registerTokenDAO.getRegisterToken(registerToken);
         if (token == null) {
             return "NotExist";
         }
-        
+
         Timestamp currentTime = new Timestamp(new Date().getTime());
         if (token.getExpise().compareTo(currentTime) < 0) { //Expire
             return "Expire";
@@ -210,14 +211,14 @@ public class UserServiceImpl extends RootService implements UserService {
         user.setIsActive(true);
         userDAO.update(user);
         return "Activated";
-        
+
     }
-    
+
     public String sendResetRequestEmail(String email) {
         EmailHandler sendEmailHandler = new ResetPassEmailHandler();
-        
+
         boolean result = sendEmailHandler.sendEmail(email);
         return "Sent";
     }
-    
+
 }

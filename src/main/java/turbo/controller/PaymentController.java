@@ -38,12 +38,20 @@ public class PaymentController {
             produces = {MediaType.ALL_VALUE})
     @ResponseBody
     public ResponseEntity<String> createPayment(@RequestBody String model) {
-       
+        String result = "";
+        ResponseEntity<String> entity = null;
         JSONObject data = new JSONObject(model);
         System.out.println(model);
         Payment p =  sendCreatePayment(data);
+        if (p == null) {
+            result = "{mess:'payment failure'}";
+            entity = new ResponseEntity<String>(result, HttpStatus.BAD_REQUEST);
+        }
+        else {
+            result = p.toJSON();
+            entity = new ResponseEntity<String>(result, HttpStatus.OK);
+        }
         
-        ResponseEntity<String> entity = new ResponseEntity<String>(p.toJSON(), HttpStatus.OK);
         return entity;
     }
   
@@ -129,6 +137,7 @@ public class PaymentController {
 
         } catch (PayPalRESTException ex) {
             Logger.getLogger(PaymentController.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
         }
         return createdPayment;
     }
