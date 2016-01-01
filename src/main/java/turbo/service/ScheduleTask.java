@@ -58,4 +58,10 @@ public class ScheduleTask {
         System.out.println("Auto generate year income report in " + (new Date()).toString());
         report.generateIncomeReport("year");
     }
+    
+    @Scheduled(fixedDelay = 86400)
+    public void autoCreateDailyCustomerReport() {
+        System.out.println("Auto generate daily customer report in " + (new Date()).toString());
+        report.generateCustomerReport(100);
+    }
 }
