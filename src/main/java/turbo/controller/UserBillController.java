@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import turbo.POJO.Arguments;
+import turbo.POJO.Arguments_;
 import turbo.POJO.TransportFee;
 import turbo.POJO.User;
 import turbo.POJO.UserBill;
@@ -172,6 +174,25 @@ public class UserBillController {
 
     }
 
+    @RequestMapping(value = {"/getVAT"},
+            method = {RequestMethod.GET},
+            produces = {MediaType.ALL_VALUE})
+    public ResponseEntity<Arguments>
+            getVAT() {
+        Arguments result = new Arguments();
+
+        try {
+            result = userBillService.getVAT();
+            return new ResponseEntity<Arguments>(result, HttpStatus.OK);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<Arguments>(HttpStatus.INTERNAL_SERVER_ERROR);
+
+        }
+
+    }
+
     @RequestMapping(value = {"/addNewUserBill"},
             method = {RequestMethod.POST},
             produces = {MediaType.ALL_VALUE})
@@ -204,7 +225,7 @@ public class UserBillController {
         ArrayObjectModel result = new ArrayObjectModel();
 
         try {
-            page -=1;
+            page -= 1;
             String token = (String) request.getAttribute("token");
             result = userBillService.getUserBill(page, limit, token);
 

@@ -6,6 +6,7 @@
 package turbo.service;
 
 import java.util.ArrayList;
+import turbo.POJO.Arguments;
 import turbo.POJO.TransportFee;
 import turbo.POJO.User;
 import turbo.POJO.UserBill;
@@ -34,6 +35,8 @@ public interface UserBillService {
 
     public ArrayList<TransportFee> getTransportFee();
 
+    public Arguments getVAT();
+    
     public String addNewUserBill(String jsonData, String token);
 
     public ArrayObjectModel getUserBill(int page, int limit, String token);

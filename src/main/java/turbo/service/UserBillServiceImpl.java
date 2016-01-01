@@ -23,6 +23,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import turbo.POJO.AccessToken;
 import turbo.POJO.Account;
+import turbo.POJO.Arguments;
 import turbo.POJO.BillDetail;
 import turbo.POJO.BillStateCode;
 import turbo.POJO.Product;
@@ -67,6 +68,9 @@ public class UserBillServiceImpl extends RootService implements UserBillService 
 
     @Autowired
     private UserDAO userDAO;
+
+    @Autowired
+    private ArgumentsDAO argumentsDAO;
 
     @Override
     public ArrayObjectModel getUserBill(int page, int limit) {
@@ -232,7 +236,7 @@ public class UserBillServiceImpl extends RootService implements UserBillService 
             AccessToken accessToken = accessTokenDAO.getAccessToken(token);
             User user = accessToken.getUserId();
             bill.setCode(generateBillCode(user.getUsername(), new Date()));
-            bill.setTotal(object.getDouble("total"));
+            bill.setTotal(calculateBillTotal(object));
             JSONObject infoObject = object.getJSONObject("info");
             JSONObject transportFee = infoObject.getJSONObject("fee");
             String address = infoObject.getString("address") + ", " + transportFee.getString("area")
@@ -243,7 +247,7 @@ public class UserBillServiceImpl extends RootService implements UserBillService 
             bill.setPhone(infoObject.getString("phone"));
             bill.setIdUser(user);
 
-            BillStateCode state = billStateCodeDAO.get(1);
+            BillStateCode state = billStateCodeDAO.get(2);
             bill.setState(state);
             JSONObject cart = object.getJSONObject("cart");
 
@@ -392,5 +396,37 @@ public class UserBillServiceImpl extends RootService implements UserBillService 
             return "Error " + e.getMessage();
         }
 
+    }
+
+    @Override
+    public Arguments getVAT() {
+        Arguments ar = argumentsDAO.getArgumentByName("VAT");
+        return ar;
+    }
+
+    private Double calculateBillTotal(JSONObject object) {
+        double result = 0;
+        try {
+            JSONObject cart = object.getJSONObject("cart");
+
+            for (String key : cart.keySet()) {
+                JSONObject productItem = cart.getJSONObject(key);
+                
+                int quantity = productItem.getInt("quantity");
+                JSONObject product = productItem.getJSONObject("product");
+                double price = product.getDouble("price");
+                result += quantity * price;
+                
+                
+            }
+            double vat = 100 - object.getJSONObject("VAT").getDouble("value") / 100;
+            result *= vat;
+            result += object.getJSONObject("info").getJSONObject("fee").getDouble("fee");
+            System.out.println("TOTAL" + result);
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0d;
+        }
     }
 }
