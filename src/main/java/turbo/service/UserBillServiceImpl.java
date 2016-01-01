@@ -7,8 +7,7 @@ package turbo.service;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.time.Duration;
-import java.time.Instant;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -30,7 +29,7 @@ import turbo.POJO.Product;
 import turbo.POJO.TransportFee;
 import turbo.POJO.User;
 import turbo.POJO.UserBill;
-import turbo.bussiness.BookProductEmailHandler;
+import turbo.bussiness.UserBillEmailHandler;
 import turbo.bussiness.EmailHandler;
 import turbo.common.AppArguments;
 import turbo.model.AccountModel;
@@ -260,8 +259,8 @@ public class UserBillServiceImpl extends RootService implements UserBillService 
                 ArrayList<BillDetail> lst = convertObjectJSONToList(cart, bill);
                 if (lst != null) {
                     UserBillModel model = userBillPOJO2Model(bill, false);
-                    EmailHandler emailHandler = new BookProductEmailHandler(user.getUsername(), model);
-                    emailHandler.sendEmail(user.getEmail());                       
+                    EmailHandler emailHandler = new UserBillEmailHandler(user.getUsername(), model, true);
+                    emailHandler.sendEmail(user.getEmail());
                     System.out.println("INSERT SUCCESSED " + lst.size());
                     return "Success";
 
@@ -391,6 +390,9 @@ public class UserBillServiceImpl extends RootService implements UserBillService 
                 userbill.setState(billStateCodeDAO.get(5));
 
                 billDAO.update(userbill);
+
+                EmailHandler emailHandler = new UserBillEmailHandler(userbill.getIdUser().getUsername(), userBillPOJO2Model(userbill, false), false);
+                emailHandler.sendEmail(userbill.getIdUser().getEmail());
                 return "Deleted";
 
             } else {

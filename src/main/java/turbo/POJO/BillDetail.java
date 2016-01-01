@@ -52,6 +52,8 @@ public class BillDetail implements Serializable {
     @ManyToOne
     private UserBill idBill;
 
+  
+    
     public BillDetail() {
     }
 

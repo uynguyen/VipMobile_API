@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import turbo.POJO.Arguments;
-import turbo.POJO.Arguments_;
 import turbo.POJO.TransportFee;
 import turbo.POJO.User;
 import turbo.POJO.UserBill;
@@ -201,7 +200,7 @@ public class UserBillController {
         ReturnedMessage result = new ReturnedMessage();
         try {
 
-            JSONObject object = new JSONObject(jsonData);
+       
             String token = (String) request.getAttribute("token");
             String str = userBillService.addNewUserBill(jsonData, token);
             result.setMess(str);

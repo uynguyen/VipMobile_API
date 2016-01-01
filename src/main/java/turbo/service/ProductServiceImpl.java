@@ -5,6 +5,7 @@
  */
 package turbo.service;
 
+import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -50,6 +51,9 @@ public class ProductServiceImpl extends RootService implements ProductService {
     @Autowired
     private SaleProductDAO saleProductDAO;
 
+    @Autowired
+    private UserBillDetailDAO billDetailDAO;
+
     @Override
     public List<Product> getProducts(int page, int limit) {
         ArrayList<Product> result = productDAO.getProducts(page, limit);
@@ -90,18 +94,14 @@ public class ProductServiceImpl extends RootService implements ProductService {
         }
         if (query.getSearchString() != null && query.getSearchString() != "") {
             searchMachine = new SearchByStringQuery(productDAO);
-            result = searchMachine.Search(result, query,flag_isFirstTime);
+            result = searchMachine.Search(result, query, flag_isFirstTime);
 
         }
         ArrayObjectModel model = new ArrayObjectModel();
-//        if (result.isEmpty()) {
-//            result = productDAO.getProducts(query.getPage(), query.getLimit());
-//            model.setTotal(result.size());
-//        } else {
-            sortListProducts(result);
-            model.setTotal(result.size());
-            result = Paging(result, query.getPage(), query.getLimit());
-//        }
+
+        sortListProducts(result);
+        model.setTotal(result.size());
+        result = Paging(result, query.getPage(), query.getLimit());
 
         model.setResult(result);
         return model;
@@ -130,6 +130,21 @@ public class ProductServiceImpl extends RootService implements ProductService {
     @Override
     public ArrayList<ColorCategory> getColorCategory() {
         return (ArrayList<ColorCategory>) colorDAO.getAll();
+    }
+
+    @Override
+    public List<Product> getBestSaleProduct(int page, int limit) {
+        return billDetailDAO.getBestSaleProducts(page, limit);
+    }
+
+    @Override
+    public List<Product> getNewProduct(int page, int limit) {
+        return productDAO.getNewProduct(page, limit);
+    }
+
+    @Override
+    public List<Product> getHighProduct(int limit) {
+        return productDAO.getHighProduct(limit);
     }
 
 }

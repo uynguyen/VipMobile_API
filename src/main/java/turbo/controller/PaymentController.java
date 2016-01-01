@@ -22,7 +22,11 @@ import com.paypal.base.rest.APIContext;
 import com.paypal.base.rest.PayPalRESTException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 import turbo.bussiness.PaypalConfig;
+import turbo.service.UserBillDAO;
+import turbo.service.UserBillService;
 
 /**
  *
@@ -32,39 +36,46 @@ import turbo.bussiness.PaypalConfig;
 @RequestMapping(value = "/payment")
 public class PaymentController {
 
+    @Autowired
+    private UserBillService userBillService;
+
     @RequestMapping(value = {"/create"},
             method = {RequestMethod.POST},
             consumes = {MediaType.ALL_VALUE},
             produces = {MediaType.ALL_VALUE})
     @ResponseBody
-    public ResponseEntity<String> createPayment(@RequestBody String model) {
+    public ResponseEntity<String> createPayment(@RequestBody String model, HttpServletRequest request) {
         String result = "";
         ResponseEntity<String> entity = null;
         JSONObject data = new JSONObject(model);
         System.out.println(model);
-        Payment p =  sendCreatePayment(data);
+        Payment p = sendCreatePayment(data);
         if (p == null) {
             result = "{mess:'payment failure'}";
             entity = new ResponseEntity<String>(result, HttpStatus.BAD_REQUEST);
-        }
-        else {
+        } else {
             result = p.toJSON();
             entity = new ResponseEntity<String>(result, HttpStatus.OK);
+
+            //Save bill here....
+            
+            String token = (String) request.getAttribute("token");
+            userBillService.addNewUserBill(model, token);
         }
-        
+
         return entity;
     }
-  
+
     private Payment sendCreatePayment(JSONObject data) {
         String token = PaypalConfig.getAccessToken();
         JSONObject paymentinfo = data;
         JSONObject JSONPayer = paymentinfo.getJSONObject("payer");
         JSONObject JSONCreditCard = JSONPayer.getJSONArray("funding_instruments")
                 .getJSONObject(0).getJSONObject("credit_card");
-        JSONObject JSONTransaction= paymentinfo.getJSONArray("transactions")
+        JSONObject JSONTransaction = paymentinfo.getJSONArray("transactions")
                 .getJSONObject(0);
-        Payment	createdPayment = null;
-        try {                   
+        Payment createdPayment = null;
+        try {
             Address billingAddress = new Address();
             billingAddress.setCity(JSONCreditCard.getJSONObject("billing_address").getString("city"));
             billingAddress.setCountryCode(JSONCreditCard.getJSONObject("billing_address").getString("country_code"));
@@ -100,12 +111,11 @@ public class PaymentController {
             details.setTax(JSONTransaction.getJSONObject("amount")
                     .getJSONObject("details").getString("tax"));
 
-
             Amount amount = new Amount();
             amount.setCurrency(JSONTransaction.getJSONObject("amount").getString("currency"));
             amount.setTotal(JSONTransaction.getJSONObject("amount").getString("total"));
             amount.setDetails(details);
-         
+
             Transaction transaction = new Transaction();
             transaction.setAmount(amount);
             transaction.setDescription(JSONTransaction.getString("description"));
@@ -122,18 +132,16 @@ public class PaymentController {
 //            transaction.setItemList(itemList);
             List<Transaction> transactions = new ArrayList<Transaction>();
             transactions.add(transaction);
-    
-            
-            
+
             Payment payment = new Payment();
             payment.setPayer(payer);
             payment.setIntent(paymentinfo.getString("intent"));
             payment.setTransactions(transactions);
-     
+
             System.out.println(payment);
             APIContext apiContext = new APIContext(token);
-			
-	createdPayment = payment.create(apiContext);
+
+            createdPayment = payment.create(apiContext);
 
         } catch (PayPalRESTException ex) {
             Logger.getLogger(PaymentController.class.getName()).log(Level.SEVERE, null, ex);

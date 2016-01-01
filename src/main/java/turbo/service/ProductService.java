@@ -20,16 +20,21 @@ import turbo.model.QueryProductStringModel;
  */
 public interface ProductService {
 
-
     List<Product> getProducts(int page, int limit);
-    
+
+    List<Product> getBestSaleProduct(int page, int limit);
 
     Product getProduct(Integer id);
 
     ArrayObjectModel searchProduct(QueryProductStringModel query);
 
     public List<SaleProduct> getSaleProducts(int page, int limit);
-    
+
     ArrayList<ProducerCategory> getProducerCategory();
+
     ArrayList<ColorCategory> getColorCategory();
+    
+    List<Product> getNewProduct(int page, int limit);
+
+    public List<Product> getHighProduct(int limit);
 }

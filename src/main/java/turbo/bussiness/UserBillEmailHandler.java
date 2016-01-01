@@ -19,16 +19,23 @@ import turbo.model.UserBillModel;
  *
  * @author LeeSan
  */
-public class BookProductEmailHandler extends EmailHandler {
+public class UserBillEmailHandler extends EmailHandler {
 
     private String name;
     private UserBillModel bill;
 
-    public BookProductEmailHandler(String name, UserBillModel bill) {
+    private boolean is_Create;
+
+    public UserBillEmailHandler(String name, UserBillModel bill, boolean is_Create) {
         super();
         this.bill = bill;
         this.name = name;
-        contentFile = "/META-INF/BookProductContent.html";
+        this.is_Create = is_Create;
+        if (is_Create) {
+            contentFile = "/META-INF/BookProductContent.html";
+        } else { // Update actions
+            contentFile = "/META-INF/UpdateStatusUserBillContent.html";
+        }
     }
 
     @Override
@@ -66,6 +73,9 @@ public class BookProductEmailHandler extends EmailHandler {
         }
         String result = contents.toString();
         result = result.replace("[NAME]", name).replace("[DETAIL]", generateContent());
+        if (!is_Create) {
+            result = result.replace("[BILLCODE]", bill.getCode());
+        }
         Date now = new Date();
         result += now.toLocaleString();
         return result;
@@ -74,14 +84,14 @@ public class BookProductEmailHandler extends EmailHandler {
     private String generateContent() {
         String result = "";
         System.out.println(bill.getTotal());
-        String total = String.format("%,d", Integer.parseInt(String.format("%.0f", bill.getTotal())));
+        String total = String.format("%,d", Integer.parseInt(String.format("%d", bill.getTotal().intValue())));
 
         result += "<h4>Mã hóa đơn: " + bill.getCode() + "</h4>";
         result += "<h4>Ngày đặt hàng: " + bill.getBookDate().toLocaleString() + "</h4>";
         result += "<h4>Tình trạng: " + bill.getState().getValue() + "</h4>";
         result += "<h4>Thuế: " + bill.getVAT() + " %</h4>";
-        result += "<h4>Chi phí vận chuyển: " + String.format("%,d", Integer.parseInt(String.format("%.0f", bill.getTransport_fee()))) + "VND</h4>";
-        result += "<h4>Tổng cộng: " + total + "</h4>";
+        result += "<h4>Chi phí vận chuyển: " + String.format("%,d", Integer.parseInt(String.format("%.0f", bill.getTransport_fee()))) + " VND</h4>";
+        result += "<h4>Tổng cộng: " + total + " VND</h4>";
 
         result += "<br />";
         result += "<table width='891' border='1' align='center'>\n"

@@ -99,6 +99,24 @@ public class ProductController {
 
     }
 
+    @RequestMapping(value = {"/getBestSaleProduct/{page}/{limit}"},
+            method = {RequestMethod.GET},
+            produces = {"application/json", "application/xml"})
+    @ResponseBody
+    public ResponseEntity<List<Product>>
+            getBestSaleProduct(@PathVariable("page") int page, @PathVariable("limit") int limit) {
+        List<Product> products = new ArrayList<Product>();
+        try {
+            page -= 1;
+            products = (List<Product>) productService.getNewProduct(page, limit);
+
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
+        ResponseEntity<List<Product>> entity = new ResponseEntity<List<Product>>(products, HttpStatus.OK);
+        return entity;
+    }
+
     @RequestMapping(value = {"/getSaleProduct/{page}/{limit}"},
             method = {RequestMethod.GET},
             produces = {"application/json", "application/xml"})
@@ -108,6 +126,7 @@ public class ProductController {
 
         List<SaleProduct> result = new ArrayList<SaleProduct>();
         try {
+            page -= 1;
             result = productService.getSaleProducts(page, limit);
 
             ResponseEntity<List<SaleProduct>> entity = new ResponseEntity(result, HttpStatus.OK);
@@ -116,6 +135,29 @@ public class ProductController {
         } catch (Exception e) {
             System.err.println(e.getMessage());
             ResponseEntity<List<SaleProduct>> entity = new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+            return entity;
+        }
+
+    }
+
+    @RequestMapping(value = {"/getHighProduct/{limit}"},
+            method = {RequestMethod.GET},
+            produces = {"application/json", "application/xml"})
+    @ResponseBody
+    public ResponseEntity<List<Product>>
+            getHighProduct(@PathVariable("limit") int limit) {
+
+        List<Product> result = new ArrayList<Product>();
+        try {
+
+            result = productService.getHighProduct(limit);
+
+            ResponseEntity<List<Product>> entity = new ResponseEntity(result, HttpStatus.OK);
+            return entity;
+
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            ResponseEntity<List<Product>> entity = new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
             return entity;
         }
 
