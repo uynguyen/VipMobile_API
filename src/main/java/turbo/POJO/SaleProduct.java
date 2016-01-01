@@ -5,8 +5,6 @@
  */
 package turbo.POJO;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Basic;
@@ -37,7 +35,6 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "SaleProduct.findBySalePercent", query = "SELECT s FROM SaleProduct s WHERE s.salePercent = :salePercent"),
     @NamedQuery(name = "SaleProduct.findByValidDate", query = "SELECT s FROM SaleProduct s WHERE s.validDate = :validDate")})
 public class SaleProduct implements Serializable {
-
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -52,8 +49,6 @@ public class SaleProduct implements Serializable {
     private Date validDate;
     @JoinColumn(name = "id_product", referencedColumnName = "id")
     @ManyToOne
-    @JsonIgnore
-    @JsonBackReference
     private Product idProduct;
 
     public SaleProduct() {
@@ -119,5 +114,5 @@ public class SaleProduct implements Serializable {
     public String toString() {
         return "turbo.POJO.SaleProduct[ id=" + id + " ]";
     }
-
+    
 }

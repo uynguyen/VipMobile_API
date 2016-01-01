@@ -5,7 +5,6 @@
  */
 package turbo.POJO;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
@@ -46,7 +45,6 @@ import org.codehaus.jackson.annotate.JsonIgnore;
     @NamedQuery(name = "User.findByIsActive", query = "SELECT u FROM User u WHERE u.isActive = :isActive"),
     @NamedQuery(name = "User.findByCreateDate", query = "SELECT u FROM User u WHERE u.createDate = :createDate")})
 public class User implements Serializable {
-
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -69,25 +67,18 @@ public class User implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date createDate;
     @OneToMany(mappedBy = "idUser")
-
     private Collection<ResetpassToken> resetpassTokenCollection;
     @OneToMany(mappedBy = "idUser")
-
     private Collection<UserBill> userBillCollection;
     @OneToMany(mappedBy = "userId")
-
     private Collection<AccessToken> accessTokenCollection;
     @OneToMany(mappedBy = "idUser")
-
     private Collection<RegisterToken> registerTokenCollection;
     @JoinColumn(name = "id_account", referencedColumnName = "id")
     @ManyToOne
-
     private Account idAccount;
     @JoinColumn(name = "id_role", referencedColumnName = "id")
     @ManyToOne
-    @com.fasterxml.jackson.annotation.JsonIgnore
-    @JsonBackReference
     private UserRole idRole;
 
     public User() {
@@ -225,5 +216,5 @@ public class User implements Serializable {
     public String toString() {
         return "turbo.POJO.User[ id=" + id + " ]";
     }
-
+    
 }

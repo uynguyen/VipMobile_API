@@ -6,7 +6,6 @@
 package turbo.POJO;
 
 import java.io.Serializable;
-import java.util.Collection;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,26 +14,24 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
-import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**
  *
  * @author LeeSan
  */
 @Entity
-@Table(name = "user_role", catalog = "turbo_mobileshop", schema = "public")
+@Table(catalog = "turbo_mobileshop", schema = "public")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "UserRole.findAll", query = "SELECT u FROM UserRole u"),
-    @NamedQuery(name = "UserRole.findById", query = "SELECT u FROM UserRole u WHERE u.id = :id"),
-    @NamedQuery(name = "UserRole.findByRole", query = "SELECT u FROM UserRole u WHERE u.role = :role"),
-    @NamedQuery(name = "UserRole.findByDescription", query = "SELECT u FROM UserRole u WHERE u.description = :description")})
-public class UserRole implements Serializable {
+    @NamedQuery(name = "Arguments.findAll", query = "SELECT a FROM Arguments a"),
+    @NamedQuery(name = "Arguments.findById", query = "SELECT a FROM Arguments a WHERE a.id = :id"),
+    @NamedQuery(name = "Arguments.findByName", query = "SELECT a FROM Arguments a WHERE a.name = :name"),
+    @NamedQuery(name = "Arguments.findByDataType", query = "SELECT a FROM Arguments a WHERE a.dataType = :dataType"),
+    @NamedQuery(name = "Arguments.findByDescription", query = "SELECT a FROM Arguments a WHERE a.description = :description")})
+public class Arguments implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,17 +40,18 @@ public class UserRole implements Serializable {
     private Integer id;
     @Size(max = 2147483647)
     @Column(length = 2147483647)
-    private String role;
+    private String name;
+    @Size(max = 2147483647)
+    @Column(name = "data_type", length = 2147483647)
+    private String dataType;
     @Size(max = 2147483647)
     @Column(length = 2147483647)
     private String description;
-    @OneToMany(mappedBy = "idRole")
-    private Collection<User> userCollection;
 
-    public UserRole() {
+    public Arguments() {
     }
 
-    public UserRole(Integer id) {
+    public Arguments(Integer id) {
         this.id = id;
     }
 
@@ -65,12 +63,20 @@ public class UserRole implements Serializable {
         this.id = id;
     }
 
-    public String getRole() {
-        return role;
+    public String getName() {
+        return name;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDataType() {
+        return dataType;
+    }
+
+    public void setDataType(String dataType) {
+        this.dataType = dataType;
     }
 
     public String getDescription() {
@@ -79,16 +85,6 @@ public class UserRole implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    @XmlTransient
-    @JsonIgnore
-    public Collection<User> getUserCollection() {
-        return userCollection;
-    }
-
-    public void setUserCollection(Collection<User> userCollection) {
-        this.userCollection = userCollection;
     }
 
     @Override
@@ -101,10 +97,10 @@ public class UserRole implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof UserRole)) {
+        if (!(object instanceof Arguments)) {
             return false;
         }
-        UserRole other = (UserRole) object;
+        Arguments other = (Arguments) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -113,7 +109,7 @@ public class UserRole implements Serializable {
 
     @Override
     public String toString() {
-        return "turbo.POJO.UserRole[ id=" + id + " ]";
+        return "turbo.POJO.Arguments[ id=" + id + " ]";
     }
     
 }

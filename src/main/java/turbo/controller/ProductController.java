@@ -5,9 +5,7 @@
  */
 package turbo.controller;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +18,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import turbo.POJO.Product;
-import turbo.POJO.ProductColorDetail;
-import turbo.POJO.ProductDetail;
 import turbo.POJO.SaleProduct;
 import turbo.model.ArrayObjectModel;
 import turbo.model.CategoriesModel;

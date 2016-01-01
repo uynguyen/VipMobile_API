@@ -166,7 +166,7 @@ public class UserServiceImpl extends RootService implements UserService {
         user.setUsername(userModel.getUsername());
         user.setEmail(userModel.getEmail());
         user.setIsActive(false);
-        
+        user.setCreateDate(new Date());
         user.setPassword(hashPass(userModel.getUsername(), userModel.getPassword()));
         User result = (User) userDAO.create(user);
         if (result != null) {

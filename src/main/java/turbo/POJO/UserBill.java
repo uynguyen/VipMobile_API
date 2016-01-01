@@ -78,7 +78,6 @@ public class UserBill implements Serializable {
     private BillStateCode state;
     @JoinColumn(name = "id_user", referencedColumnName = "id")
     @ManyToOne
-    
     private User idUser;
 
     public UserBill() {

@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="income" language="groovy" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="a0b42580-1ab3-4fee-aee9-46a1df380905">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<queryString>
+		<![CDATA[SELECT ROW_NUMBER() OVER(ORDER BY income.week DESC) AS row,
+income.week as startDateWeek, sum(income.sale) as total
+FROM
+(SELECT date_trunc('quarter', bill.book_date) as week, bill.total as sale
+FROM public."user_bill" as bill
+WHERE bill.state=1
+) as income
+GROUP BY income.week
+ORDER BY  income.week DESC]]>
+	</queryString>
+	<field name="row" class="java.lang.Long"/>
+	<field name="startdateweek" class="java.sql.Timestamp"/>
+	<field name="total" class="java.lang.Double"/>
+	<background>
+		<band/>
+	</background>
+	<title>
+		<band height="72">
+			<frame>
+				<reportElement mode="Opaque" x="-20" y="-20" width="595" height="92" backcolor="#006699" uuid="f2947e98-584c-4c32-b5ca-5e147926afd9"/>
+				<staticText>
+					<reportElement x="20" y="20" width="255" height="43" forecolor="#FFFFFF" uuid="023bec66-f5c9-4dd5-b87b-b487e56c6862"/>
+					<textElement>
+						<font size="34" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Doanh thu quý]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="395" y="43" width="180" height="20" forecolor="#FFFFFF" uuid="52197226-3834-4d88-9105-879624b8b1a1"/>
+					<textElement textAlignment="Right">
+						<font size="14" isBold="false"/>
+					</textElement>
+					<text><![CDATA[Tổng doanh thu từng quý]]></text>
+				</staticText>
+			</frame>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="13"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="21">
+			<line>
+				<reportElement x="-20" y="20" width="595" height="1" forecolor="#666666" uuid="8ae18809-4b55-4455-821b-5e93e7c9c923"/>
+			</line>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="0" width="28" height="20" forecolor="#006699" backcolor="#E6E6E6" uuid="83c05f24-88d8-40d6-adb1-52f51cecb506"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[#]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="28" y="0" width="292" height="20" forecolor="#006699" backcolor="#E6E6E6" uuid="144c546a-586c-4f46-9d72-f51fbdab4d46"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Quý]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="320" y="0" width="235" height="20" forecolor="#006699" backcolor="#E6E6E6" uuid="d0f85ee7-5ab8-40d8-8d7a-d77c07df7245"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tổng doanh thu]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20">
+			<line>
+				<reportElement positionType="FixRelativeToBottom" x="0" y="19" width="555" height="1" uuid="c96d8f6d-6b69-42e8-a06d-3551b7a3ea36"/>
+			</line>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="0" y="0" width="28" height="20" uuid="745d92b4-3f33-4848-af55-50281f48f5bf"/>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{row}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="28" y="0" width="292" height="20" uuid="9b9a20f8-5801-4d0f-8e85-0e483e369ad7"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Quý " + (($F{startdateweek}.getMonth()%4)+1) + " năm " + (new SimpleDateFormat("yyyy").format($F{startdateweek}))]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="320" y="0" width="235" height="20" uuid="10f902b8-ebdf-42dc-89a5-b1875cd7ee3d"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="14"/>
+					<paragraph rightIndent="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new DecimalFormat("0.000").format($F{total})]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band/>
+	</columnFooter>
+	<pageFooter>
+		<band height="17">
+			<textField>
+				<reportElement mode="Opaque" x="0" y="4" width="515" height="13" backcolor="#E6E6E6" uuid="70618dc1-79a2-47a1-b8ee-ca6e8ed84c95"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement mode="Opaque" x="515" y="4" width="40" height="13" backcolor="#E6E6E6" uuid="d508b24a-b762-4283-b169-b6f46a903f31"/>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField pattern="EEEEE dd MMMMM yyyy">
+				<reportElement x="0" y="4" width="100" height="13" uuid="b888df64-45d3-4627-97ac-e74f66f552ab"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band/>
+	</summary>
+</jasperReport>
