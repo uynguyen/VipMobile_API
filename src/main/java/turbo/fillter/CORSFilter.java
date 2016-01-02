@@ -26,9 +26,9 @@ public class CORSFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String path = (request).getRequestURI();
-        if (path.contains("/payment")) {
-            filterChain.doFilter(request, response);
-        }
+//        if (path.contains("/payment")) {
+//            filterChain.doFilter(request, response);
+//        }
         response.addHeader("Access-Control-Allow-Origin", "*");
 
         if (request.getHeader("Access-Control-Request-Method") != null && "OPTIONS".equals(request.getMethod())) {

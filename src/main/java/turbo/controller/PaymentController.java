@@ -6,7 +6,7 @@
 package turbo.controller;
 
 import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.logging.Logger;    
 
 import org.json.JSONObject;
 import org.springframework.http.HttpStatus;
@@ -53,13 +53,13 @@ public class PaymentController {
             produces = {MediaType.ALL_VALUE})
     @ResponseBody
     public ResponseEntity<String> createPayment(@RequestBody String model, HttpServletRequest request) {
-        String token = extractHeaderToken(request);
+        String token = (String) request.getAttribute("token");
         System.out.println("TOKEN" + token);
         String result = "";
         ResponseEntity<String> entity = null;
         JSONObject data = new JSONObject(model).getJSONObject("paymentinfo");
         System.out.println(model);
-        Payment p = sendCreatePayment(data.getJSONObject("paymentinfo"));
+        Payment p = sendCreatePayment(data);
         if (p == null) {
             result = "{mess:'payment failure'}";
             entity = new ResponseEntity<String>(result, HttpStatus.BAD_REQUEST);
@@ -69,7 +69,7 @@ public class PaymentController {
 
             //Save bill here....
            
-            userBillService.addNewUserBill(model, token);
+            userBillService.addNewUserBill(model, token, 1);
         }
 
         return entity;

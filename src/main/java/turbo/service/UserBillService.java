@@ -37,7 +37,7 @@ public interface UserBillService {
 
     public Arguments getVAT();
     
-    public String addNewUserBill(String jsonData, String token);
+    public String addNewUserBill(String jsonData, String token, int code);
 
     public ArrayObjectModel getUserBill(int page, int limit, String token);
     

@@ -87,6 +87,8 @@
             <!--            <mvc:mapping path="/product/*" />-->
             <mvc:mapping path="/bill/**" />
             <mvc:mapping path="/user/**" />
+            <mvc:mapping path="/payment/**" />
+                
            
             <mvc:exclude-mapping path="/user/requireToken"/>
             <mvc:exclude-mapping path="/user/tokenExpire"/>    

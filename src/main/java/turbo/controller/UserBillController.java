@@ -202,7 +202,7 @@ public class UserBillController {
 
        
             String token = (String) request.getAttribute("token");
-            String str = userBillService.addNewUserBill(jsonData, token);
+            String str = userBillService.addNewUserBill(jsonData, token, 2);
             result.setMess(str);
             return new ResponseEntity<ReturnedMessage>(result, HttpStatus.OK);
 

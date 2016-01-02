@@ -227,7 +227,7 @@ public class UserBillServiceImpl extends RootService implements UserBillService 
 
     //TODO: Send email to user to accounce
     @Override
-    public String addNewUserBill(String jsonData, String token) {
+    public String addNewUserBill(String jsonData, String token, int code) {
         try {
             JSONObject object = new JSONObject(jsonData);
             UserBill bill = new UserBill();
@@ -247,7 +247,7 @@ public class UserBillServiceImpl extends RootService implements UserBillService 
             bill.setPhone(infoObject.getString("phone"));
             bill.setIdUser(user);
 
-            BillStateCode state = billStateCodeDAO.get(2);
+            BillStateCode state = billStateCodeDAO.get(code);
             bill.setState(state);
             JSONObject cart = object.getJSONObject("cart");
 
