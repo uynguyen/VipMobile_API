@@ -5,7 +5,6 @@
  */
 package turbo.service;
 
-import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 
 import java.util.ArrayList;
@@ -18,7 +17,6 @@ import java.util.concurrent.TimeUnit;
 import javax.transaction.Transactional;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import turbo.POJO.AccessToken;
 import turbo.POJO.Account;
@@ -32,7 +30,6 @@ import turbo.POJO.UserBill;
 import turbo.bussiness.UserBillEmailHandler;
 import turbo.bussiness.EmailHandler;
 import turbo.common.AppArguments;
-import turbo.model.AccountModel;
 import turbo.model.ArrayObjectModel;
 import turbo.model.BillDetailModel;
 import turbo.model.BillStateCodeModel;

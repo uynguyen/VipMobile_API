@@ -26,9 +26,6 @@ import java.util.Enumeration;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
-import org.springframework.beans.factory.annotation.Autowired;
-import turbo.bussiness.PaypalConfig;
-import turbo.service.UserBillDAO;
 import turbo.service.UserBillService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,7 +59,7 @@ public class PaymentController {
         ResponseEntity<String> entity = null;
         JSONObject data = new JSONObject(model).getJSONObject("paymentinfo");
         System.out.println(model);
-        Payment p = sendCreatePayment(data);
+        Payment p = sendCreatePayment(data.getJSONObject("paymentinfo"));
         if (p == null) {
             result = "{mess:'payment failure'}";
             entity = new ResponseEntity<String>(result, HttpStatus.BAD_REQUEST);

@@ -29,8 +29,8 @@ public class ReportController {
 
     @Autowired
     private Report report;
-    
-    
+
+
     public ReportController() {
         super();
     }
@@ -51,13 +51,13 @@ public class ReportController {
         return entity;
     }
 
-    
+
 
     @RequestMapping(value = "/customer/all", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<String> getTopCustomerReport(HttpServletRequest request)
             throws IOException {
-        String address = "http://"
+        String address = "https://"
                 + request.getServerName()
                 + ":" + request.getServerPort()
                 + request.getContextPath();
@@ -76,13 +76,13 @@ public class ReportController {
         return entity;
     }
 
-    
-    
+
+
     @RequestMapping(value = "/income/{typeReport}", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<String> getIncomeReport(@PathVariable("typeReport") String type, HttpServletRequest request)
             throws IOException {
-        String address = "http://"
+        String address = "https://"
                 + request.getServerName()
                 + ":" + request.getServerPort()
                 + request.getContextPath();
@@ -100,5 +100,5 @@ public class ReportController {
         ResponseEntity<String> entity = new ResponseEntity<String>(res.toString(), HttpStatus.OK);
         return entity;
     }
-   
+
 }
