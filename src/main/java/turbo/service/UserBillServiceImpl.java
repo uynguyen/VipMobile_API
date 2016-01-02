@@ -246,7 +246,7 @@ public class UserBillServiceImpl extends RootService implements UserBillService 
             bill.setAddress(address);
             bill.setBookDate(new Date());
             bill.setStranportFee(transportFee.getDouble("fee"));
-            bill.setVat(object.getJSONObject("VAT").getDouble("value"));
+            bill.setVat(object.getDouble("VAT"));
             bill.setPhone(infoObject.getString("phone"));
             bill.setIdUser(user);
 
@@ -426,10 +426,12 @@ public class UserBillServiceImpl extends RootService implements UserBillService 
                 result += quantity * price;
 
             }
-            double vat = object.getJSONObject("VAT").getDouble("value") / 100;
-            result += vat * result;
+            double vat = Double.parseDouble(getVAT().getValue());
+            
+            //result += vat * result;
+            result += vat;
             result += object.getJSONObject("info").getJSONObject("fee").getDouble("fee");
-            System.out.println("TOTAL" + result);
+            System.out.println("TOTAL" + vat);
             return result;
         } catch (Exception e) {
             e.printStackTrace();

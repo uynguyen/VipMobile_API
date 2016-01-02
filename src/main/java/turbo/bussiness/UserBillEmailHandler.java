@@ -89,7 +89,7 @@ public class UserBillEmailHandler extends EmailHandler {
         result += "<h4>Mã hóa đơn: " + bill.getCode() + "</h4>";
         result += "<h4>Ngày đặt hàng: " + bill.getBookDate().toLocaleString() + "</h4>";
         result += "<h4>Tình trạng: " + bill.getState().getValue() + "</h4>";
-        result += "<h4>Thuế: " + bill.getVAT() + " %</h4>";
+        result += "<h4>Thuế: " + bill.getVAT() + " VND</h4>";
         result += "<h4>Chi phí vận chuyển: " + String.format("%,d", Integer.parseInt(String.format("%.0f", bill.getTransport_fee()))) + " VND</h4>";
         result += "<h4>Tổng cộng: " + total + " VND</h4>";
 

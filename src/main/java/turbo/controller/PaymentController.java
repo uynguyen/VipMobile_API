@@ -22,6 +22,7 @@ import com.paypal.base.rest.APIContext;
 import com.paypal.base.rest.PayPalRESTException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -31,6 +32,7 @@ import turbo.service.UserBillDAO;
 import turbo.service.UserBillService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import turbo.bussiness.PaypalConfig;
 import turbo.service.CurrencyService;
 
@@ -46,7 +48,7 @@ public class PaymentController {
 
     private UserBillService userBillService;
 
-    private CurrencyService currencyService;
+    private CurrencyService currencyService = new CurrencyService();
 
     @RequestMapping(value = {"/create"},
             method = {RequestMethod.POST},
@@ -54,9 +56,11 @@ public class PaymentController {
             produces = {MediaType.ALL_VALUE})
     @ResponseBody
     public ResponseEntity<String> createPayment(@RequestBody String model, HttpServletRequest request) {
+        String token = extractHeaderToken(request);
+        System.out.println("TOKEN" + token);
         String result = "";
         ResponseEntity<String> entity = null;
-        JSONObject data = new JSONObject(model);
+        JSONObject data = new JSONObject(model).getJSONObject("paymentinfo");
         System.out.println(model);
         Payment p = sendCreatePayment(data);
         if (p == null) {
@@ -67,7 +71,7 @@ public class PaymentController {
             entity = new ResponseEntity<String>(result, HttpStatus.OK);
 
             //Save bill here....
-            String token = (String) request.getAttribute("token");
+           
             userBillService.addNewUserBill(model, token);
         }
 
@@ -82,6 +86,7 @@ public class PaymentController {
                 .getJSONObject(0).getJSONObject("credit_card");
         JSONObject JSONTransaction = paymentinfo.getJSONArray("transactions")
                 .getJSONObject(0);
+        System.out.println(JSONTransaction.toString());
         Payment createdPayment = null;
         try {
 //            Address billingAddress = new Address();
@@ -147,6 +152,9 @@ public class PaymentController {
 
     private Amount getAmount(JSONObject JSONTransaction) {
         DecimalFormat df = new DecimalFormat("0.##");
+
+        System.out.println("SHIPP" + JSONTransaction.getJSONObject("amount")
+                .getJSONObject("details").getDouble("shipping"));
         double shipping = JSONTransaction.getJSONObject("amount")
                 .getJSONObject("details").getDouble("shipping") / currencyService.getRateVNDtoUSD();
         double tax = JSONTransaction.getJSONObject("amount")
@@ -166,6 +174,24 @@ public class PaymentController {
         amount.setDetails(details);
 
         return amount;
+    }
+
+    protected String extractHeaderToken(HttpServletRequest request) {
+        try {
+            Enumeration<String> headers = request.getHeaders("Authorization");
+            while (headers.hasMoreElements()) { // typically there is only one (most servers enforce that)
+                String value = headers.nextElement();
+                if ((value.toLowerCase().startsWith(OAuth2AccessToken.BEARER_TYPE.toLowerCase()))) {
+                    String authHeaderValue = value.substring(OAuth2AccessToken.BEARER_TYPE.length()).trim();
+
+                    return authHeaderValue;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+
     }
 
 }
