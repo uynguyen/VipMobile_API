@@ -34,7 +34,6 @@ import turbo.service.UserService;
  *
  * @author LeeSan
  */
-@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping(value = "/user")
 public class UserController {

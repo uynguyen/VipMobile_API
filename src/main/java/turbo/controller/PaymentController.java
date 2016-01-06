@@ -38,7 +38,6 @@ import turbo.service.CurrencyService;
  *
  * @author Vinlq
  */
-@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping(value = "/payment")
 public class PaymentController {
@@ -152,7 +151,7 @@ public class PaymentController {
     private Amount getAmount(JSONObject JSONTransaction) {
         DecimalFormat df = new DecimalFormat("0.##");
 
-        System.out.println("SHIPP" + JSONTransaction.getJSONObject("amount")
+        System.out.println("SHIPP " + JSONTransaction.getJSONObject("amount")
                 .getJSONObject("details").getDouble("shipping"));
         double shipping = JSONTransaction.getJSONObject("amount")
                 .getJSONObject("details").getDouble("shipping") / currencyService.getRateVNDtoUSD();
@@ -161,11 +160,17 @@ public class PaymentController {
         double subtotal = JSONTransaction.getJSONObject("amount")
                 .getJSONObject("details").getDouble("subtotal") / currencyService.getRateVNDtoUSD();
         double total = JSONTransaction.getJSONObject("amount").getDouble("total") / currencyService.getRateVNDtoUSD();
-
+        
+        double real_shipping = Math.floor(shipping*100)/100;
+        double real_tax = Math.floor(tax*100)/100;
+        double real_subtotal = Math.floor(subtotal*100)/100;
+        total = real_shipping + real_tax + real_subtotal;
+        total = Math.floor(total*100)/100;
+        
         Details details = new Details();
-        details.setShipping(df.format(shipping));
-        details.setSubtotal(df.format(subtotal));
-        details.setTax(df.format(tax));
+        details.setShipping(df.format(real_shipping));
+        details.setSubtotal(df.format(real_subtotal));
+        details.setTax(df.format(real_tax));
 
         Amount amount = new Amount();
         amount.setCurrency(JSONTransaction.getJSONObject("amount").getString("currency"));

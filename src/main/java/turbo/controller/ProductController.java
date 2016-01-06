@@ -32,7 +32,6 @@ import turbo.service.SingleProductService;
  *
  * @author LeeSan
  */
-@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping(value = "/product")
 public class ProductController {
