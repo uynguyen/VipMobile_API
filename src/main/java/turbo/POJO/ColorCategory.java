@@ -26,7 +26,7 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**
  *
- * @author 12125
+ * @author LeeSan
  */
 @Entity
 @Table(name = "color_category", catalog = "vipmobileshopapi", schema = "")
@@ -52,7 +52,7 @@ public class ColorCategory implements Serializable {
     @Column(name = "color_code", length = 65535)
     private String colorCode;
     @OneToMany(mappedBy = "idColor")
-      @JsonBackReference
+       @JsonBackReference
     @JsonIgnore
     private Collection<ProductColorDetail> productColorDetailCollection;
 
@@ -89,6 +89,8 @@ public class ColorCategory implements Serializable {
 
     @XmlTransient
     @JsonIgnore
+     @JsonBackReference
+    
     public Collection<ProductColorDetail> getProductColorDetailCollection() {
         return productColorDetailCollection;
     }

@@ -20,11 +20,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -33,11 +31,10 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**
  *
- * @author 12125
+ * @author LeeSan
  */
 @Entity
-@Table(name = "user_bill", catalog = "vipmobileshopapi", schema = "", uniqueConstraints = {
-    @UniqueConstraint(columnNames = {"state"})})
+@Table(name = "user_bill", catalog = "vipmobileshopapi", schema = "")
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "UserBill.findAll", query = "SELECT u FROM UserBill u"),
@@ -86,8 +83,8 @@ public class UserBill implements Serializable {
     private Double stranportFee;
     @OneToMany(mappedBy = "idBill")
     private Collection<BillDetail> billDetailCollection;
-    @JoinColumn(name = "state", referencedColumnName = "id")
-    @OneToOne
+    @JoinColumn(name = "state", referencedColumnName = "id", nullable = false)
+    @ManyToOne(optional = false)
     private BillStateCode state;
     @JoinColumn(name = "id_user", referencedColumnName = "id", nullable = false)
     @ManyToOne(optional = false)

@@ -25,7 +25,7 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**
  *
- * @author 12125
+ * @author LeeSan
  */
 @Entity
 @Table(name = "user_role", catalog = "vipmobileshopapi", schema = "")

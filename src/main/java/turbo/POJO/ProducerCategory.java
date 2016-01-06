@@ -27,7 +27,7 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**
  *
- * @author 12125
+ * @author LeeSan
  */
 @Entity
 @Table(name = "producer_category", catalog = "vipmobileshopapi", schema = "")
@@ -36,7 +36,6 @@ import org.codehaus.jackson.annotate.JsonIgnore;
     @NamedQuery(name = "ProducerCategory.findAll", query = "SELECT p FROM ProducerCategory p"),
     @NamedQuery(name = "ProducerCategory.findById", query = "SELECT p FROM ProducerCategory p WHERE p.id = :id"),
     @NamedQuery(name = "ProducerCategory.findByValue", query = "SELECT p FROM ProducerCategory p WHERE p.value = :value")})
-
 public class ProducerCategory implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -51,7 +50,7 @@ public class ProducerCategory implements Serializable {
     @Column(nullable = false, length = 65535)
     private String value;
     @OneToMany(mappedBy = "idProducer")
-      @JsonBackReference
+     @JsonBackReference
     @JsonIgnore
     private Collection<ProductDetail> productDetailCollection;
 
@@ -85,6 +84,8 @@ public class ProducerCategory implements Serializable {
 
     @XmlTransient
     @JsonIgnore
+     @JsonBackReference
+    
     public Collection<ProductDetail> getProductDetailCollection() {
         return productDetailCollection;
     }

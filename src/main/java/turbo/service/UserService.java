@@ -10,6 +10,7 @@ import turbo.POJO.Product;
 import turbo.POJO.User;
 import turbo.model.AccessTokenModel;
 import turbo.model.AccountModel;
+import turbo.model.FacebookLoginModel;
 import turbo.model.RegiterModel;
 import turbo.model.ResetPassModel;
 import turbo.model.UpdatePasswordModel;
@@ -40,6 +41,8 @@ public interface UserService {
 
     public String updatePassword(UpdatePasswordModel updatePasswordModel, String token);
     public String resetPass(ResetPassModel password, String resetPassToken);
+
+    public String registerUser(FacebookLoginModel facebookModel);
     
     
 }

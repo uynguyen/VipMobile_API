@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import turbo.POJO.User;
 import turbo.model.AccessTokenModel;
 import turbo.model.AccountModel;
+import turbo.model.FacebookLoginModel;
 import turbo.model.LoginModel;
 import turbo.model.RegiterModel;
 import turbo.model.RequestResetPassModel;
@@ -63,6 +64,27 @@ public class UserController {
         } catch (Exception e) {
             System.err.println(e.getMessage());
             return new ResponseEntity<AccessTokenModel>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @RequestMapping(value = {"/fbAuthenticate"},
+            method = {RequestMethod.POST},
+            consumes = {MediaType.ALL_VALUE}
+    )
+    @ResponseBody
+    public ResponseEntity<ReturnedMessage>
+            fbAuthenticate(@RequestBody FacebookLoginModel facebookModel) {
+        ReturnedMessage result = new ReturnedMessage();
+        try {
+
+            String mess = userService.registerUser(facebookModel);
+            result.setMess(mess);
+
+            return new ResponseEntity<ReturnedMessage>(result, HttpStatus.CREATED);
+
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            return new ResponseEntity<ReturnedMessage>(result, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -133,7 +155,6 @@ public class UserController {
         }
     }
 
-   
     @RequestMapping(value = {"/resetPass/{ResetPassToken}"},
             method = {RequestMethod.POST},
             consumes = {MediaType.ALL_VALUE})
@@ -147,10 +168,10 @@ public class UserController {
 
             String str = userService.resetPass(pass, resetPassToken);
             result.setMess(str);
-         //   if (str.contains("Reseted")) {
-                return new ResponseEntity<ReturnedMessage>(result, HttpStatus.OK);
-           // }
-           // return new ResponseEntity<ReturnedMessage>(result, HttpStatus.BAD_REQUEST);
+            //   if (str.contains("Reseted")) {
+            return new ResponseEntity<ReturnedMessage>(result, HttpStatus.OK);
+            // }
+            // return new ResponseEntity<ReturnedMessage>(result, HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             System.err.println(e.getMessage());
             return new ResponseEntity<ReturnedMessage>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -211,11 +232,10 @@ public class UserController {
             String token = (String) request.getAttribute("token");
             String mess = userService.updatePassword(updatePasswordModel, token);
             result.setMess(mess);
-         //   if(mess.contains("Updated"))
-                return new ResponseEntity<ReturnedMessage>(result, HttpStatus.OK);
-  
-          //  return new ResponseEntity<ReturnedMessage>(result, HttpStatus.BAD_REQUEST);
+            //   if(mess.contains("Updated"))
+            return new ResponseEntity<ReturnedMessage>(result, HttpStatus.OK);
 
+            //  return new ResponseEntity<ReturnedMessage>(result, HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             System.err.println(e.getMessage());
             return new ResponseEntity<ReturnedMessage>(HttpStatus.INTERNAL_SERVER_ERROR);

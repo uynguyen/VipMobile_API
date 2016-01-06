@@ -5,7 +5,6 @@
  */
 package turbo.POJO;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
@@ -35,10 +34,9 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**
  *
- * @author 12125
+ * @author LeeSan
  */
 @Entity
-
 @Table(catalog = "vipmobileshopapi", schema = "", uniqueConstraints = {
     @UniqueConstraint(columnNames = {"id_account"})})
 @XmlRootElement
@@ -50,6 +48,7 @@ import org.codehaus.jackson.annotate.JsonIgnore;
     @NamedQuery(name = "User.findByEmail", query = "SELECT u FROM User u WHERE u.email = :email"),
     @NamedQuery(name = "User.findByIsActive", query = "SELECT u FROM User u WHERE u.isActive = :isActive"),
     @NamedQuery(name = "User.findByCreateDate", query = "SELECT u FROM User u WHERE u.createDate = :createDate")})
+
 public class User implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id

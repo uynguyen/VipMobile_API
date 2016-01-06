@@ -27,7 +27,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author 12125
+ * @author LeeSan
  */
 @Entity
 @Table(name = "register_token", catalog = "vipmobileshopapi", schema = "")

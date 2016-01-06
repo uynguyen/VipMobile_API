@@ -31,7 +31,7 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**
  *
- * @author 12125
+ * @author LeeSan
  */
 @Entity
 @Table(catalog = "vipmobileshopapi", schema = "")
@@ -78,16 +78,17 @@ public class Product implements Serializable {
     @Size(max = 65535)
     @Column(length = 65535)
     private String description;
+    
     @OneToOne(mappedBy = "idProduct")
-      @JsonBackReference
+     @JsonBackReference
     @JsonIgnore
     private ProductDetail productDetail;
     @OneToMany(mappedBy = "idProduct")
-      @JsonBackReference
+     @JsonBackReference
     @JsonIgnore
     private Collection<BillDetail> billDetailCollection;
     @OneToMany(mappedBy = "idProduct")
-      @JsonBackReference
+     @JsonBackReference
     @JsonIgnore
     private Collection<ProductColorDetail> productColorDetailCollection;
     @OneToOne(mappedBy = "idProduct")
@@ -168,17 +169,18 @@ public class Product implements Serializable {
     public void setDescription(String description) {
         this.description = description;
     }
-    @JsonBackReference
+     @JsonBackReference
     @JsonIgnore
     public ProductDetail getProductDetail() {
         return productDetail;
     }
-
+    
     public void setProductDetail(ProductDetail productDetail) {
         this.productDetail = productDetail;
     }
 
     @XmlTransient
+     @JsonBackReference
     @JsonIgnore
     public Collection<BillDetail> getBillDetailCollection() {
         return billDetailCollection;
@@ -197,12 +199,12 @@ public class Product implements Serializable {
     public void setProductColorDetailCollection(Collection<ProductColorDetail> productColorDetailCollection) {
         this.productColorDetailCollection = productColorDetailCollection;
     }
-      @JsonBackReference
-    @JsonIgnore
+
     public SaleProduct getSaleProduct() {
         return saleProduct;
     }
-
+     @JsonBackReference
+    @JsonIgnore
     public void setSaleProduct(SaleProduct saleProduct) {
         this.saleProduct = saleProduct;
     }

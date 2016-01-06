@@ -6,7 +6,9 @@
 package turbo.POJO;
 
 import java.io.Serializable;
+import java.util.Collection;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -15,14 +17,16 @@ import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**
  *
- * @author 12125
+ * @author LeeSan
  */
 @Entity
 @Table(name = "bill_state_code", catalog = "vipmobileshopapi", schema = "")
@@ -47,8 +51,8 @@ public class BillStateCode implements Serializable {
     @Size(max = 65535)
     @Column(length = 65535)
     private String description;
-    @OneToOne(mappedBy = "state")
-    private UserBill userBill;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "state")
+    private Collection<UserBill> userBillCollection;
 
     public BillStateCode() {
     }
@@ -81,12 +85,14 @@ public class BillStateCode implements Serializable {
         this.description = description;
     }
 
-    public UserBill getUserBill() {
-        return userBill;
+    @XmlTransient
+    @JsonIgnore
+    public Collection<UserBill> getUserBillCollection() {
+        return userBillCollection;
     }
 
-    public void setUserBill(UserBill userBill) {
-        this.userBill = userBill;
+    public void setUserBillCollection(Collection<UserBill> userBillCollection) {
+        this.userBillCollection = userBillCollection;
     }
 
     @Override

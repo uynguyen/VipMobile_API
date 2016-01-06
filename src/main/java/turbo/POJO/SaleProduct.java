@@ -5,7 +5,6 @@
  */
 package turbo.POJO;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Basic;
@@ -24,11 +23,10 @@ import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
-import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**
  *
- * @author 12125
+ * @author LeeSan
  */
 @Entity
 @Table(name = "sale_product", catalog = "vipmobileshopapi", schema = "", uniqueConstraints = {
@@ -56,7 +54,6 @@ public class SaleProduct implements Serializable {
     private Date validDate;
     @JoinColumn(name = "id_product", referencedColumnName = "id")
     @OneToOne
-  
     private Product idProduct;
 
     public SaleProduct() {
@@ -94,7 +91,7 @@ public class SaleProduct implements Serializable {
     public void setValidDate(Date validDate) {
         this.validDate = validDate;
     }
-    
+
     public Product getIdProduct() {
         return idProduct;
     }

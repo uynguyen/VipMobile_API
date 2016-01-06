@@ -28,6 +28,7 @@ import turbo.POJO.Account;
 import turbo.POJO.ResetpassToken;
 import turbo.bussiness.ResetPassEmailHandler;
 import turbo.model.AccountModel;
+import turbo.model.FacebookLoginModel;
 import turbo.model.RegiterModel;
 import turbo.model.ResetPassModel;
 import turbo.model.UpdatePasswordModel;
@@ -46,7 +47,7 @@ public class UserServiceImpl extends RootService implements UserService {
 
     @Autowired
     private RegisterTokenDAO registerTokenDAO;
-    
+
     @Autowired
     private ResetPassTokenDAO resetpassTokenDAO;
 
@@ -145,9 +146,10 @@ public class UserServiceImpl extends RootService implements UserService {
 
     //TODO: Set user role
     public String registerUser(RegiterModel userModel) {
-        if(userModel.getPassword() == "" || userModel.getPassword() == null || userModel.getEmail() == null ||
-                userModel.getEmail() == "" || userModel.getUsername() == null || userModel.getUsername() == "")
+        if (userModel.getPassword() == "" || userModel.getPassword() == null || userModel.getEmail() == null
+                || userModel.getEmail() == "" || userModel.getUsername() == null || userModel.getUsername() == "") {
             return "Error";
+        }
         if (isExistUsername(userModel.getUsername())) {
             return "UserNameExisted";
         }
@@ -232,10 +234,10 @@ public class UserServiceImpl extends RootService implements UserService {
             return "Was activated";
         }
         User checkedUser = userDAO.getUserByEmail(user.getEmail());
-        if(checkedUser != null){
+        if (checkedUser != null) {
             return "Error! Email was used";
         }
-        
+
         Account acc = new Account();
         acc.setAvatar("Default");
         acc = accountDAO.create(acc);
@@ -248,14 +250,13 @@ public class UserServiceImpl extends RootService implements UserService {
 
     @Override
     public String sendResetRequestEmail(String email, String callbackURL) {
-        
+
         User user = userDAO.getUserByEmail(email);
-        
-        if(user == null || !user.getIsActive()){
+
+        if (user == null || !user.getIsActive()) {
             return "User not exist";
         }
-        
-    
+
         AccessTokenModel accToken = GenerateTokenBus.generateToken(user.getUsername());
         ResetpassToken resetpassToken = new ResetpassToken();
         resetpassToken.setIdUser(user);
@@ -269,7 +270,6 @@ public class UserServiceImpl extends RootService implements UserService {
             return "Sent";
         }
 
-        
         return "Error create reset pass token";
     }
 
@@ -305,7 +305,7 @@ public class UserServiceImpl extends RootService implements UserService {
 
     @Override
     public String resetPass(ResetPassModel password, String resetPassToken) {
-        if(password.getNewPass().compareTo(password.getRetypePass()) != 0) {
+        if (password.getNewPass().compareTo(password.getRetypePass()) != 0) {
             return "Password not match";
         }
         ResetpassToken token = resetpassTokenDAO.getResetpassToken(resetPassToken);
@@ -325,5 +325,37 @@ public class UserServiceImpl extends RootService implements UserService {
         return "Reseted";
     }
 
+    @Override
+    public String registerUser(FacebookLoginModel facebookModel) {
+
+        if (isExistUsername(facebookModel.getId())) {
+            User exist = userDAO.getUserByUsername(facebookModel.getId());
+
+            updatePass(exist, facebookModel.getToken());
+            return "Success";
+        }
+        // If doesn't exits id facebook user
+        User user = new User();
+        user.setUsername(facebookModel.getId());
+        user.setIsActive(true);
+        user.setCreateDate(new Date());
+        user.setPassword(hashPass(facebookModel.getId(), facebookModel.getToken()));
+
+        Account acc = new Account();
+        acc.setAvatar("Default");
+        acc.setFullName(facebookModel.getName());
+        acc = accountDAO.create(acc);
+        acc.setBirthday(new Date());
+        acc.setGender(true);
+        
+        if (acc != null) {
+            user.setIdAccount(acc);
+               
+            user = (User) userDAO.create(user);
+            return "Success";
+        }
+        return "FbOauthFail";
+
+    }
 
 }
